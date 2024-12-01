@@ -31,5 +31,6 @@ class UserValues(BaseModel):
     date_created: datetime
     
 class RegistrationRequests(BaseModel):
+    user_id: int
     username: str
     registration_request_description:str

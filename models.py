@@ -8,7 +8,6 @@ class Role(enum.Enum):
     manager = "manager"
     viewonly = "viewonly"
 
-# Model for approved users
 class User(Base):
     __tablename__ = "users"
 
