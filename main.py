@@ -17,8 +17,33 @@ from schemas import BaseResponse, RegistrationRequests, UserCreate, UserValues
 from services import get_user_id_by_username, verify_manager
 from auth import ALGORITHM, SECRET_KEY, create_access_token, get_current_user
 
+def create_admin_user(db: Session):
+    admin_email = "admin@gamil.com"
+    admin_password = "Adminpassword" 
+
+    existing_admin = db.query(User).filter(User.email == admin_email).first()
+    if not existing_admin:
+        hashed_password = bcrypt.hash(admin_password)
+        admin_user = User(
+            username="admin",
+            email=admin_email,
+            hashed_password=hashed_password,
+            role=Role.manager
+        )
+        db.add(admin_user)
+        db.commit()
+        db.refresh(admin_user)
+        print(f"Admin user created with email: {admin_email}")
+    else:
+        print("Admin user already exists.")
 
 Base.metadata.create_all(bind=engine)
+
+db = SessionLocal()
+try:
+    create_admin_user(db)
+finally:
+    db.close()
 
 app = FastAPI()
 
@@ -126,7 +151,7 @@ def get_registration_requests(
         for pending_user in pending_users
     ]
 
-@app.post("/approve-registration/{pending_user_id}")
+@app.post("/registration-requests/{pending_user_id}/approve-registration/")
 def approve_registration(
     pending_user_id: int,
     db: Session = Depends(get_db),
@@ -154,7 +179,7 @@ def approve_registration(
     return {"message": "User approved", "user_id": approved_user.id}
 
 
-@app.delete("/deny-registration/{pending_user_id}")
+@app.delete("/registration-requests/{pending_user_id}/deny-registration/")
 def deny_registration(
     pending_user_id: int,
     db: Session = Depends(get_db),
@@ -236,76 +261,6 @@ def downgrade_user_to_viewonly(
     db.refresh(user_to_downgrade)
 
     return {"message": f"User '{username}' downgraded to viewonly", "user_id": user_to_downgrade.id}
-
-
-@app.post("/make_admin/{pending_user_id}")
-def make_admin(
-    pending_user_id: int,
-    db: Session = Depends(get_db)
-):
-    pending_user = db.query(PendingUser).filter(PendingUser.id == pending_user_id).first()
-    
-    if not pending_user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Pending user not found"
-        )
-    
-    existing_user = db.query(User).filter(User.email == pending_user.email).first()
-    if existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User with this email already exists"
-        )
-
-    new_user = User(
-        username=pending_user.username,
-        email=pending_user.email,
-        hashed_password=pending_user.hashed_password,
-        role=Role.manager,
-        date_created=pending_user.date_created
-    )
-    
-    db.add(new_user)
-    db.delete(pending_user)
-    db.commit()
-    db.refresh(new_user)
-
-    return {"message": "User promoted to manager", "user_id": new_user.id}
-
-
-@app.post("/make_admin")
-def make_admin(pending_user_id: int, db: Session = Depends(get_db)) -> Dict[str, str]:
-    # Step 1: Fetch the pending user
-    pending_user = db.query(PendingUser).filter(PendingUser.id == pending_user_id).first()
-    if not pending_user:
-        raise HTTPException(status_code=404, detail="Pending user not found.")
-
-    # Step 2: Check if a user with the same email already exists in the users table
-    existing_user = db.query(User).filter(User.email == pending_user.email).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="User with this email already exists.")
-
-    # Step 3: Create a new user with role manager
-    new_user = User(
-        username=pending_user.username,
-        email=pending_user.email,
-        hashed_password=pending_user.hashed_password,
-        role=Role.manager
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-
-    # Step 4: Delete the user from the pending_users table
-    db.delete(pending_user)
-    db.commit()
-
-    # Step 5: Return a success message
-    return {
-        "message": f"User with ID {new_user.id} was promoted to manager",
-        "user_id": new_user.id
-    }
 
 app.add_middleware(
     CORSMiddleware,
