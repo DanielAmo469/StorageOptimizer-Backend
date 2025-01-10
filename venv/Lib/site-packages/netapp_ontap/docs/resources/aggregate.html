@@ -1,0 +1,1796 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>netapp_ontap.resources.aggregate API documentation</title>
+<meta name="description" content="Copyright &amp;copy; 2023 NetApp Inc.
+All rights reserved …" />
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/gruvbox-dark.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{overflow:auto}code.name{position:relative}.accessors{position:absolute;right:5px}.gettable_field{padding:3px;border-radius:5px;background:#0067c5;color:white}.postable_field{padding:3px;border-radius:5px;background:#007a33;color:white}.patchable_field{padding:3px;border-radius:5px;background:#c99700;color:white}.private_content{padding:3px;border-radius:5px;background:#f76464;color:white}.conditional_content{padding:3px;border-radius:5px;background:#f99948;color:white}.list_visibility{font-size:0.7em}.module_visibility_description{font-weight:bold}.private_box{border:1px solid #dd3d3d;background:#ffe5e5;border-radius:5px;padding:2px;margin:4px 0}.conditional_box{border:1px solid #f99948;border-radius:5px;padding:2px;background:#ffeac3;margin:4px 0}.try_it_out{display:flex;flex-direction:column;align-items:flex-end}.try_it_out_check{display:none}.try_it_out_button{padding:5px 23px;transition:all .3s;border:2px solid gray;border-radius:4px;cursor:pointer;user-select:none}.try_it_out_button:hover{box-shadow:0 0 5px rgba(0,0,0,.3)}.try_it_out_content{width:100%;display:none}.try_it_out_check:checked ~ .try_it_out_button{display:none}.try_it_out_check:checked ~ .try_it_out_content{display:initial}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:60%}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>netapp_ontap.resources.aggregate</code></h1>
+</header>
+<section id="section-intro">
+<p>Copyright &copy; 2023 NetApp Inc.
+All rights reserved.</p>
+<p>This file has been automatically generated based on the ONTAP REST API documentation.</p>
+<h2 id="updating-storage-aggregates">Updating storage aggregates</h2>
+<p>The PATCH operation is used to modify properties of the aggregate. There are several properties that can be modified on an aggregate. Only one property can be modified for each PATCH request.
+PATCH operations on the aggregate's disk count will be blocked while one or more nodes in the cluster are simulating or implementing automatic aggregate creation.</br>
+The following is a list of properties that can be modified using the PATCH operation including a brief description for each:</p>
+<ul>
+<li>name - This property can be changed to rename the aggregate.</li>
+<li>node.name and node.uuid - Either property can be updated in order to relocate the aggregate to a different node in the cluster.</li>
+<li>state - This property can be changed to 'online' or 'offline'. Setting an aggregate 'offline' would automatically offline all the volumes currently hosted on the aggregate.</li>
+<li>block_storage.mirror.enabled - This property can be changed from 'false' to 'true' in order to mirror the aggregate, if the system is capable of doing so.</li>
+<li>block_storage.primary.disk_count - This property can be updated to increase the number of disks in an aggregate.</li>
+<li>block_storage.primary.raid_size - This property can be updated to set the desired RAID size.</li>
+<li>block_storage.primary.raid_type - This property can be updated to set the desired RAID type.</li>
+<li>cloud_storage.tiering_fullness_threshold - This property can be updated to set the desired tiering fullness threshold if using FabricPool.</li>
+<li>cloud_storage.migrate_threshold - This property can be updated to set the desired migrate threshold if using FabricPool.</li>
+<li>data_encryption.software_encryption_enabled - This property enables or disables NAE on the aggregate.</li>
+<li>block_storage.hybrid_cache.storage_pools.allocation_units_count - This property can be updated to add a storage pool to the aggregate specifying the number of allocation units.</li>
+<li>block_storage.hybrid_cache.storage_pools.name - This property can be updated to add a storage pool to the aggregate specifying the storage pool name. block_storage.hybrid_cache.storage_pools.uuid or this field must be specified with block_storage.hybrid_cache.storage_pools.allocation_units_count.</li>
+<li>block_storage.hybrid_cache.storage_pools.uuid - This property can be updated to add a storage pool to the aggregate specifying the storage pool uuid. block_storage.hybrid_cache.storage_pools.name or this field must be specified with block_storage.hybrid_cache.storage_pools.allocation_units_count.</li>
+<li>block_storage.hybrid_cache.raid_size - This property can be updated to set the desired RAID size. This property can also be specified on the first time addition of a storage pool to the aggregate.</li>
+<li>block_storage.hybrid_cache.raid_type - This property can be updated to set the desired RAID type of a physical SSD Flash Pool. This property can also be specified on the first time addition of a storage pool to the aggregate. When specifying a raidtype of raid4, the node is required to have spare SSDs for the storage pool as well.</li>
+<li>block_storage.hybrid_cache.disk_count - This property can be specified on the first time addition of physical SSD cache to the aggregate. It can also be updated to increase the number of disks in the physical SSD cache of a hybrid aggregate.</li>
+</ul>
+<h3 id="aggregate-expansion">Aggregate expansion</h3>
+<p>The PATCH operation also supports automatically expanding an aggregate based on the spare disks which are present within the system. Running PATCH with the query "auto_provision_policy" set to "expand" starts the recommended expansion job. In order to see the expected change in capacity before starting the job, call GET on an aggregate instance with the query "auto_provision_policy" set to "expand".</p>
+<h3 id="manual-simulated-aggregate-expansion">Manual simulated aggregate expansion</h3>
+<p>The PATCH operation also supports simulated manual expansion of an aggregate.
+Running PATCH with the query "simulate" set to "true" and "block_storage.primary.disk_count" set to the final disk count will start running the prechecks associated with expanding the aggregate to the proposed size.
+The response body will include information on how many disks the aggregate can be expanded to, any associated warnings, along with the proposed final size of the aggregate.</p>
+<h2 id="deleting-storage-aggregates">Deleting storage aggregates</h2>
+<p>If volumes exist on an aggregate, they must be deleted or moved before the aggregate can be deleted.
+See the /storage/volumes API for details on moving or deleting volumes.</p>
+<h2 id="adding-a-storage-pool-to-an-aggregate">Adding a storage pool to an aggregate</h2>
+<p>A storage pool can be added to an aggregate by patching the field "block_storage.hybrid_cache.storage_pools.allocation_units_count" while also specifying the specific storage pool using the
+"block_storage.hybrid_cache.storage_pools.name" or "block_storage.hybrid_cache.storage_pools.uuid". Subsequent patches to the aggregate can be completed to increase allocation unit counts
+or adding additional storage pools. On the first time addition of a storage pool to the aggregate, the raidtype can be optionally specified using the "block_storage.hybrid_cache.raid_type" field.</p>
+<h2 id="adding-physical-ssd-cache-capacity-to-an-aggregate">Adding physical SSD cache capacity to an aggregate</h2>
+<p>The PATCH operation supports addition of a new physical SSD cache to an aggregate. It also supports expansion of existing physical SSD cache in the hybrid aggregate.
+Running PATCH with "block_storage.hybrid_cache.disk_count" set to the final disk count will expand the physical SSD cache of the hybrid aggregate to the proposed size.
+The RAID type can be optionally specified using the "block_storage.hybrid_cache.raid_type" field.
+The RAID size can be optionally specified using the "block_storage.hybrid_cache.raid_size" field.
+These operations can also be simulated by setting the query "simulate" to "true".</p>
+<hr>
+<h2 id="examples">Examples</h2>
+<h3 id="retrieving-a-specific-aggregate-from-the-cluster">Retrieving a specific aggregate from the cluster</h3>
+<p>The following example shows the response of the requested aggregate. If there is no aggregate with the requested UUID, an error is returned.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;870dd9f2-bdfa-4167-b692-57d1cec874d4&quot;)
+    resource.get()
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example0_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example0_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example0_result" class="try_it_out_content">
+<pre><code>Aggregate(
+    {
+        &quot;name&quot;: &quot;test1&quot;,
+        &quot;state&quot;: &quot;online&quot;,
+        &quot;snapshot&quot;: {
+            &quot;files_total&quot;: 10,
+            &quot;max_files_available&quot;: 5,
+            &quot;files_used&quot;: 3,
+            &quot;max_files_used&quot;: 50,
+        },
+        &quot;home_node&quot;: {&quot;name&quot;: &quot;node-1&quot;, &quot;uuid&quot;: &quot;caf95bec-f801-11e8-8af9-005056bbe5c1&quot;},
+        &quot;create_time&quot;: &quot;2018-12-04T15:40:38-05:00&quot;,
+        &quot;space&quot;: {
+            &quot;block_storage&quot;: {
+                &quot;size&quot;: 235003904,
+                &quot;full_threshold_percent&quot;: 98,
+                &quot;physical_used_percent&quot;: 1,
+                &quot;volume_footprints_percent&quot;: 14,
+                &quot;volume_deduplication_shared_count&quot;: 567543,
+                &quot;used_percent&quot;: 50,
+                &quot;physical_used&quot;: 5271552,
+                &quot;aggregate_metadata&quot;: 2655,
+                &quot;data_compaction_space_saved_percent&quot;: 47,
+                &quot;data_compacted_count&quot;: 666666,
+                &quot;volume_deduplication_space_saved&quot;: 23765,
+                &quot;volume_deduplication_space_saved_percent&quot;: 32,
+                &quot;used_including_snapshot_reserve&quot;: 674685,
+                &quot;available&quot;: 191942656,
+                &quot;aggregate_metadata_percent&quot;: 8,
+                &quot;used_including_snapshot_reserve_percent&quot;: 35,
+                &quot;used&quot;: 43061248,
+                &quot;data_compaction_space_saved&quot;: 654566,
+            },
+            &quot;cloud_storage&quot;: {&quot;used&quot;: 0},
+            &quot;efficiency_without_snapshots_flexclones&quot;: {
+                &quot;ratio&quot;: 2.0,
+                &quot;savings&quot;: 5000,
+                &quot;logical_used&quot;: 10000,
+            },
+            &quot;efficiency_without_snapshots&quot;: {
+                &quot;ratio&quot;: 1.0,
+                &quot;savings&quot;: 0,
+                &quot;logical_used&quot;: 737280,
+            },
+            &quot;efficiency&quot;: {
+                &quot;cross_volume_inline_dedupe&quot;: False,
+                &quot;cross_volume_dedupe_savings&quot;: True,
+                &quot;ratio&quot;: 6.908119720880661,
+                &quot;auto_adaptive_compression_savings&quot;: False,
+                &quot;wise_tsse_min_used_capacity_pct&quot;: 2,
+                &quot;cross_volume_background_dedupe&quot;: True,
+                &quot;logical_used&quot;: 1646350,
+                &quot;savings&quot;: 1408029,
+                &quot;enable_workload_informed_tsse&quot;: True,
+            },
+            &quot;snapshot&quot;: {
+                &quot;reserve_percent&quot;: 20,
+                &quot;total&quot;: 5000,
+                &quot;used&quot;: 3000,
+                &quot;used_percent&quot;: 45,
+                &quot;available&quot;: 2000,
+            },
+        },
+        &quot;data_encryption&quot;: {
+            &quot;software_encryption_enabled&quot;: False,
+            &quot;drive_protection_enabled&quot;: False,
+        },
+        &quot;volume-count&quot;: 0,
+        &quot;uuid&quot;: &quot;19425837-f2fa-4a9f-8f01-712f626c983c&quot;,
+        &quot;snaplock_type&quot;: &quot;non_snaplock&quot;,
+        &quot;node&quot;: {&quot;name&quot;: &quot;node-1&quot;, &quot;uuid&quot;: &quot;caf95bec-f801-11e8-8af9-005056bbe5c1&quot;},
+        &quot;block_storage&quot;: {
+            &quot;hybrid_cache&quot;: {&quot;enabled&quot;: False},
+            &quot;mirror&quot;: {&quot;enabled&quot;: False, &quot;state&quot;: &quot;unmirrored&quot;},
+            &quot;storage_type&quot;: &quot;vmdisk&quot;,
+            &quot;uses_partitions&quot;: False,
+            &quot;primary&quot;: {
+                &quot;raid_type&quot;: &quot;raid_dp&quot;,
+                &quot;disk_count&quot;: 6,
+                &quot;raid_size&quot;: 24,
+                &quot;disk_type&quot;: &quot;ssd&quot;,
+                &quot;disk_class&quot;: &quot;solid_state&quot;,
+                &quot;checksum_style&quot;: &quot;block&quot;,
+            },
+            &quot;plexes&quot;: [{&quot;name&quot;: &quot;plex0&quot;}],
+        },
+        &quot;cloud_storage&quot;: {&quot;attach_eligible&quot;: False},
+        &quot;inode_attributes&quot;: {
+            &quot;files_total&quot;: 31136,
+            &quot;max_files_possible&quot;: 2844525,
+            &quot;max_files_available&quot;: 31136,
+            &quot;used_percent&quot;: 5,
+            &quot;max_files_used&quot;: 97,
+            &quot;files_used&quot;: 97,
+        },
+    }
+)
+
+</code></pre>
+</div>
+</div>
+<h3 id="retrieving-statistics-and-metric-for-an-aggregate">Retrieving statistics and metric for an aggregate</h3>
+<p>In this example, the API returns the "statistics" and "metric" properties for the aggregate requested.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;538bf337-1b2c-11e8-bad0-005056b48388&quot;)
+    resource.get(fields=&quot;statistics,metric&quot;)
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example1_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example1_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example1_result" class="try_it_out_content">
+<pre><code>Aggregate(
+    {
+        &quot;name&quot;: &quot;aggr4&quot;,
+        &quot;statistics&quot;: {
+            &quot;timestamp&quot;: &quot;2019-07-08T22:17:09+00:00&quot;,
+            &quot;iops_raw&quot;: {
+                &quot;other&quot;: 1586535,
+                &quot;write&quot;: 1137230,
+                &quot;read&quot;: 328267,
+                &quot;total&quot;: 3052032,
+            },
+            &quot;throughput_raw&quot;: {
+                &quot;other&quot;: 146185560064,
+                &quot;write&quot;: 63771742208,
+                &quot;read&quot;: 3106045952,
+                &quot;total&quot;: 213063348224,
+            },
+            &quot;latency_raw&quot;: {
+                &quot;other&quot;: 477201985,
+                &quot;write&quot;: 313354426,
+                &quot;read&quot;: 54072313,
+                &quot;total&quot;: 844628724,
+            },
+            &quot;status&quot;: &quot;ok&quot;,
+        },
+        &quot;metric&quot;: {
+            &quot;duration&quot;: &quot;PT15S&quot;,
+            &quot;timestamp&quot;: &quot;2019-07-08T22:16:45+00:00&quot;,
+            &quot;iops&quot;: {&quot;other&quot;: 11663, &quot;write&quot;: 17, &quot;read&quot;: 1, &quot;total&quot;: 11682},
+            &quot;throughput&quot;: {
+                &quot;other&quot;: 193293789,
+                &quot;write&quot;: 840226,
+                &quot;read&quot;: 7099,
+                &quot;total&quot;: 194141115,
+            },
+            &quot;latency&quot;: {&quot;other&quot;: 123, &quot;write&quot;: 230, &quot;read&quot;: 149, &quot;total&quot;: 124},
+            &quot;status&quot;: &quot;ok&quot;,
+        },
+        &quot;uuid&quot;: &quot;538bf337-1b2c-11e8-bad0-005056b48388&quot;,
+    }
+)
+
+</code></pre>
+</div>
+</div>
+<p>For more information and examples on viewing historical performance metrics for any given aggregate, see <a href="#docs-storage-storage_aggregates_{uuid}_metrics"><code>DOC /storage/aggregates/{uuid}/metrics</code></a></p>
+<h3 id="simulating-aggregate-expansion">Simulating aggregate expansion</h3>
+<p>The following example shows the response for a simulated data aggregate expansion based on the values of the 'block_storage.primary.disk_count' attribute passed in.
+The query does not modify the existing aggregate but returns how the aggregate will look after the expansion along with any associated warnings.
+Simulated data aggregate expansion will be blocked while one or more nodes in the cluster are simulating or implementing automatic aggregate creation.
+This will be reflected in the following attributes:</p>
+<ul>
+<li>space.block_storage.size - Total usable space in bytes, not including WAFL reserve and aggregate Snapshot copy reserve.</li>
+<li>block_storage.primary.disk_count - Number of disks that could be used to create the aggregate.</li>
+</ul>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;cae60cfe-deae-42bd-babb-ef437d118314&quot;)
+    resource.block_storage = {&quot;primary&quot;: {&quot;disk_count&quot;: 13}}
+    resource.patch(hydrate=True, simulate=True)
+
+</code></pre>
+<h3 id="manual-aggregate-expansion-with-disk-size-query">Manual aggregate expansion with disk size query</h3>
+<p>The following example shows the response for aggregate expansion based on the values of the 'block_storage.hybrid_cache.disk_count' attribute based on the disk size passed in.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;cae60cfe-deae-42bd-babb-ef437d118314&quot;)
+    resource.block_storage = {&quot;hybrid_cache&quot;: {&quot;disk_count&quot;: 4}}
+    resource.patch(hydrate=True, disk_size=1902379008)
+
+</code></pre>
+<h3 id="simulating-a-manual-aggregate-expansion-with-disk-size-query">Simulating a manual aggregate expansion with disk size query</h3>
+<p>The following example shows the response for a manual aggregate expansion based on the values of the 'block_storage.hybrid_cache.disk_count' attribute based on the disk size passed in.
+The query internally maps out the appropriate expansion as well as warnings that may be associated for the hybrid enabled aggregate.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;cae60cfe-deae-42bd-babb-ef437d118314&quot;)
+    resource.block_storage = {&quot;hybrid_cache&quot;: {&quot;disk_count&quot;: 4}}
+    resource.patch(hydrate=True, simulate=True, disk_size=1902379008)
+
+</code></pre>
+<h3 id="simulating-a-manual-aggregate-expansion-with-raid-group-query">Simulating a manual aggregate expansion with raid group query</h3>
+<p>The following example shows the response for a manual aggregate expansion based on the values of the 'block_storage.primary.disk_count' attribute passed in.
+The query internally maps out the appropriate expansion as well as warnings that may be associated and lays out the new raidgroups in a more detailed view. An additional query can be passed in to specify
+raidgroup addition by new raidgroup, all raidgroups or a specific raidgroup.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;cae60cfe-deae-42bd-babb-ef437d118314&quot;)
+    resource.block_storage = {&quot;primary&quot;: {&quot;disk_count&quot;: 24}}
+    resource.patch(hydrate=True, simulate=True, raid_group=&quot;new&quot;)
+
+</code></pre>
+<h3 id="retrieving-the-usable-spare-information-for-the-cluster">Retrieving the usable spare information for the cluster</h3>
+<p>The following example shows the response from retrieving usable spare information for the expansion of this particular aggregate. The output is restricted to only spares that are compatible with this aggregate.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    print(
+        list(
+            Aggregate.get_collection(
+                uuid=&quot;cae60cfe-deae-42bd-babb-ef437d118314&quot;, show_spares=True
+            )
+        )
+    )
+
+</code></pre>
+<div class="try_it_out">
+<input id="example6_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example6_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example6_result" class="try_it_out_content">
+<pre><code>[]
+
+</code></pre>
+</div>
+</div>
+<h3 id="retrieving-the-ssd-spare-count-for-the-cluster">Retrieving the SSD spare count for the cluster</h3>
+<p>The following example shows the response from retrieving SSD spare count information for the expansion of this particular aggregate's hybrid cache tier. The output is restricted to only spares that are compatible with this aggregate.</p>
+<pre><code># The API:
+/api/storage/aggregates?show_spares=true&amp;uuid={uuid}&amp;flash_pool_eligible=true
+# The response:
+{
+  &quot;records&quot;: [],
+  &quot;num_records&quot;: 0,
+  &quot;spares&quot;: [
+    {
+      &quot;node&quot;: {
+        &quot;uuid&quot;: &quot;c35c5975-cbcb-11ec-a3e1-005056bbdb46&quot;,
+        &quot;name&quot;: &quot;node-2&quot;
+      },
+      &quot;disk_class&quot;: &quot;solid_state&quot;,
+      &quot;disk_type&quot;: &quot;ssd&quot;,
+      &quot;size&quot;: 1902379008,
+      &quot;checksum_style&quot;: &quot;block&quot;,
+      &quot;syncmirror_pool&quot;: &quot;pool0&quot;,
+      &quot;is_partition&quot;: false,
+      &quot;usable&quot;: 1,
+      &quot;layout_requirements&quot;: [
+        {
+          &quot;raid_type&quot;: &quot;raid4&quot;,
+          &quot;default&quot;: true,
+          &quot;aggregate_min_disks&quot;: 2,
+          &quot;raid_group&quot;: {
+            &quot;min&quot;: 2,
+            &quot;max&quot;: 14,
+            &quot;default&quot;: 8
+          }
+        }
+      ]
+    }
+  ]
+}
+</code></pre>
+<h3 id="retrieving-a-recommendation-for-an-aggregate-expansion">Retrieving a recommendation for an aggregate expansion</h3>
+<p>The following example shows the response with the recommended data aggregate expansion based on what disks are present within the system.
+The query does not modify the existing aggregate but returns how the aggregate will look after the expansion. The recommendation will be reflected in the attributes - 'space.block_storage.size' and 'block_storage.primary.disk_count'.
+Recommended data aggregate expansion will be blocked while one or more nodes in the cluster are simulating or implementing automatic aggregate creation.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;cae60cfe-deae-42bd-babb-ef437d118314&quot;)
+    resource.get(auto_provision_policy=&quot;expand&quot;)
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example7_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example7_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example7_result" class="try_it_out_content">
+<pre><code>Aggregate(
+    {
+        &quot;name&quot;: &quot;node_2_SSD_1&quot;,
+        &quot;space&quot;: {&quot;block_storage&quot;: {&quot;size&quot;: 1116180480}},
+        &quot;uuid&quot;: &quot;cae60cfe-deae-42bd-babb-ef437d118314&quot;,
+        &quot;node&quot;: {&quot;name&quot;: &quot;node-2&quot;, &quot;uuid&quot;: &quot;4046dda8-f802-11e8-8f6d-005056bb2030&quot;},
+        &quot;block_storage&quot;: {
+            &quot;hybrid_cache&quot;: {&quot;enabled&quot;: False},
+            &quot;mirror&quot;: {&quot;enabled&quot;: False},
+            &quot;primary&quot;: {
+                &quot;raid_type&quot;: &quot;raid_dp&quot;,
+                &quot;disk_count&quot;: 12,
+                &quot;simulated_raid_groups&quot;: [
+                    {
+                        &quot;is_partition&quot;: False,
+                        &quot;name&quot;: &quot;test/plex0/rg0&quot;,
+                        &quot;data_disk_count&quot;: 10,
+                        &quot;usable_size&quot;: 12309487,
+                        &quot;parity_disk_count&quot;: 2,
+                    }
+                ],
+                &quot;raid_size&quot;: 24,
+                &quot;disk_type&quot;: &quot;ssd&quot;,
+                &quot;disk_class&quot;: &quot;solid_state&quot;,
+            },
+        },
+    }
+)
+
+</code></pre>
+</div>
+</div>
+<h3 id="updating-an-aggregate-in-the-cluster">Updating an aggregate in the cluster</h3>
+<p>The following example shows the workflow of adding disks to the aggregate.<br>
+Step 1: Check the current disk count on the aggregate.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;19425837-f2fa-4a9f-8f01-712f626c983c&quot;)
+    resource.get(fields=&quot;block_storage.primary.disk_count&quot;)
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example8_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example8_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example8_result" class="try_it_out_content">
+<pre><code>Aggregate(
+    {
+        &quot;name&quot;: &quot;test1&quot;,
+        &quot;uuid&quot;: &quot;19425837-f2fa-4a9f-8f01-712f626c983c&quot;,
+        &quot;block_storage&quot;: {&quot;primary&quot;: {&quot;disk_count&quot;: 6}},
+    }
+)
+
+</code></pre>
+</div>
+</div>
+<p>Step 2: Update the aggregate with the new disk count in 'block_storage.primary.disk_count'. The response to PATCH is a job unless the request is invalid.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;19425837-f2fa-4a9f-8f01-712f626c983c&quot;)
+    resource.block_storage = {&quot;primary&quot;: {&quot;disk_count&quot;: 8}}
+    resource.patch()
+
+</code></pre>
+<p>Step 3: Wait for the job to finish, then call GET to see the reflected change.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;19425837-f2fa-4a9f-8f01-712f626c983c&quot;)
+    resource.get(fields=&quot;block_storage.primary.disk_count&quot;)
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example10_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example10_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example10_result" class="try_it_out_content">
+<pre><code>Aggregate(
+    {
+        &quot;name&quot;: &quot;test1&quot;,
+        &quot;uuid&quot;: &quot;19425837-f2fa-4a9f-8f01-712f626c983c&quot;,
+        &quot;block_storage&quot;: {&quot;primary&quot;: {&quot;disk_count&quot;: 8}},
+    }
+)
+
+</code></pre>
+</div>
+</div>
+<h3 id="adding-a-storage-pool-to-an-aggregate_1">Adding a storage pool to an aggregate</h3>
+<p>The following example shows how to add cache capacity from an existing storage pool to an aggregate.
+Step 1: Update the aggregate with the new storage pool allocation unit in 'block_storage.hybrid_cache.storage_pools.allocation_units_count'.
+Additionally, specify 'block_storage.hybrid_cache.storage_pools.name' or 'block_storage.hybrid_cache.storage_pools.uuid' to the storage pool.
+On the first storage pool, 'block_storage.hybrid_cache.raid_type' can be specified for the raidtype of the hybrid cache.
+The response to PATCH is a job unless the request is invalid.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;19425837-f2fa-4a9f-8f01-712f626c983c&quot;)
+    resource.block_storage = {
+        &quot;hybrid_cache&quot;: {
+            &quot;raid_type&quot;: &quot;raid_dp&quot;,
+            &quot;storage_pools&quot;: [
+                {&quot;allocation_units_count&quot;: 2, &quot;storage_pool&quot;: {&quot;name&quot;: &quot;sp1&quot;}}
+            ],
+        }
+    }
+    resource.patch()
+
+</code></pre>
+<p>Step 2: Wait for the job to finish, then call GET to see the reflected change.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;19425837-f2fa-4a9f-8f01-712f626c983c&quot;)
+    resource.get(fields=&quot;block_storage.hybrid_cache&quot;)
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example12_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example12_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example12_result" class="try_it_out_content">
+<pre><code>Aggregate({&quot;name&quot;: &quot;test1&quot;, &quot;uuid&quot;: &quot;19425837-f2fa-4a9f-8f01-712f626c983c&quot;})
+
+</code></pre>
+</div>
+</div>
+<h3 id="adding-physical-ssd-cache-capacity-to-an-aggregate_1">Adding physical SSD cache capacity to an aggregate</h3>
+<p>The following example shows how to add physical SSD cache capacity to an aggregate.
+Step 1: Specify the number of disks to be added to cache in 'block_storage.hybrid_cache.disk_count'.
+'block_storage.hybrid_cache.raid_type' can be specified for the RAID type of the hybrid cache.
+'block_storage.hybrid_cache.raid_size' can be specified for the RAID size of the hybrid cache.
+The response to PATCH is a job unless the request is invalid.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;caa8a9f1-0219-4eaf-bcad-e29c05042fe1&quot;)
+    resource.block_storage.hybrid_cache.disk_count = 3
+    resource.block_storage.hybrid_cache.raid_type = &quot;raid4&quot;
+    resource.patch()
+
+</code></pre>
+<p>Step 2: Wait for the job to finish, then call GET to see the reflected change.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;caa8a9f1-0219-4eaf-bcad-e29c05042fe1&quot;)
+    resource.get(fields=&quot;block_storage.hybrid_cache&quot;)
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example14_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example14_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example14_result" class="try_it_out_content">
+<pre><code>Aggregate({&quot;name&quot;: &quot;test1&quot;, &quot;uuid&quot;: &quot;caa8a9f1-0219-4eaf-bcad-e29c05042fe1&quot;})
+
+</code></pre>
+</div>
+</div>
+<h3 id="simulated-addition-of-physical-ssd-cache-capacity-to-an-aggregate">Simulated addition of physical SSD cache capacity to an aggregate</h3>
+<p>The following example shows the response for a simulated addition of physical SSD cache capacity to an aggregate based on the values of the
+'block_storage.hybrid_cache.disk_count', 'block_storage.hybrid_cache.raid_type' and 'block_storage.hybrid_cache.raid_size' attributes passed in.
+The query does not modify the existing aggregate but returns how the aggregate will look after the expansion along with any associated warnings.
+Simulated addition of physical SSD cache capacity to an aggregate will be blocked while one or more nodes in the cluster are simulating or implementing automatic aggregate creation.
+This will be reflected in the following attributes:</p>
+<ul>
+<li>block_storage.hybrid_cache.size - Total usable cache space in bytes, not including WAFL reserve and aggregate Snapshot copy reserve.</li>
+<li>block_storage.hybrid_cache.disk_count - Number of disks that can be added to the aggregate's cache tier.</li>
+</ul>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;7eb630d1-0e55-4cb6-8d90-957d6f4db54e&quot;)
+    resource.block_storage.hybrid_cache.disk_count = 6
+    resource.block_storage.hybrid_cache.raid_type = &quot;raid4&quot;
+    resource.block_storage.hybrid_cache.raid_size = 3
+    resource.patch(hydrate=True, simulate=True)
+
+</code></pre>
+<p>The following example shows the workflow to enable software encryption on an aggregate.<br>
+Step 1: Check the current software encryption status of the aggregate.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;f3aafdc6-be35-4d93-9590-5a402bffbe4b&quot;)
+    resource.get(fields=&quot;data_encryption.software_encryption_enabled&quot;)
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example16_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example16_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example16_result" class="try_it_out_content">
+<pre><code>Aggregate(
+    {
+        &quot;name&quot;: &quot;aggr5&quot;,
+        &quot;data_encryption&quot;: {&quot;software_encryption_enabled&quot;: False},
+        &quot;uuid&quot;: &quot;f3aafdc6-be35-4d93-9590-5a402bffbe4b&quot;,
+    }
+)
+
+</code></pre>
+</div>
+</div>
+<p>Step 2: Update the aggregate with the encryption status in 'data_encryption.software_encryption_enabled'. The response to PATCH is a job unless the request is invalid.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;f3aafdc6-be35-4d93-9590-5a402bffbe4b&quot;)
+    resource.data_encryption = {&quot;software_encryption_enabled&quot;: &quot;true&quot;}
+    resource.patch()
+
+</code></pre>
+<p>Step 3: Wait for the job to finish, then call GET to see the reflected change.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import Aggregate
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = Aggregate(uuid=&quot;f3aafdc6-be35-4d93-9590-5a402bffbe4b&quot;)
+    resource.get(fields=&quot;data_encryption.software_encryption_enabled&quot;)
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example18_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example18_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example18_result" class="try_it_out_content">
+<pre><code>Aggregate(
+    {
+        &quot;name&quot;: &quot;aggr5&quot;,
+        &quot;data_encryption&quot;: {&quot;software_encryption_enabled&quot;: True},
+        &quot;uuid&quot;: &quot;f3aafdc6-be35-4d93-9590-5a402bffbe4b&quot;,
+    }
+)
+
+</code></pre>
+</div>
+</div>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="netapp_ontap.resources.aggregate.Aggregate"><code class="flex name class">
+<span>
+<span></span>
+class <span class="ident">Aggregate</span>
+</span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Allows interaction with Aggregate objects on the host</p>
+<p>Initialize the instance of the resource.</p>
+<p>Any keyword arguments are set on the instance as properties. For example,
+if the class was named 'MyResource', then this statement would be true:</p>
+<pre><code>MyResource(name='foo').name == 'foo'
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Each positional argument represents a parent key as used in
+the URL of the object. That is, each value will be used to fill
+in a segment of the URL which refers to some parent object. The
+order of these arguments must match the order they are specified
+in the URL, from left to right.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>each entry will have its key set as an attribute name on
+the instance and its value will be the value of that attribute.</dd>
+</dl></section>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="netapp_ontap.resources.aggregate.Aggregate.count_collection"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">count_collection</span>
+</span>
+(<span>*args, connection: <a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a> = None, **kwargs) -> int</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Returns a count of all Aggregate resources that match the provided query</p>
+<hr>
+<p>This calls GET on the object to determine the number of records. It
+is more efficient than calling get_collection() because it will not
+construct any objects. Query parameters can be passed in as kwargs
+to determine a count of objects that match some filtered criteria.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Each entry represents a parent key which is used to build the
+path to the child object. If the URL definition were
+/api/foos/{foo.name}/bars, then to get the count of bars
+for a particular foo, the foo.name value should be passed.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will be sent as query parameters
+to the host. These query parameters can affect the count. A
+return_records query param will be ignored.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>On success, returns an integer count of the objects of this type.
+On failure, returns -1.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400, or if there is no connection available to use either
+passed in or on the library.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.Aggregate.delete_collection"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">delete_collection</span>
+</span>
+(<span>*args, records: Iterable[_ForwardRef('<a title="netapp_ontap.resources.aggregate.Aggregate" href="#netapp_ontap.resources.aggregate.Aggregate">Aggregate</a>')] = None, body: Union[<a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a>, dict] = None, poll: bool = True, poll_interval: Optional[int] = None, poll_timeout: Optional[int] = None, connection: <a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a> = None, **kwargs) -> <a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Deletes the aggregate specified by the UUID. This request starts a job and returns a link to that job.</p>
+<h3 id="related-ontap-commands">Related ONTAP commands</h3>
+<ul>
+<li><code>storage aggregate delete</code></li>
+</ul>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-storage-storage_aggregates_{uuid}"><code>DOC /storage/aggregates/{uuid}</code></a></li>
+</ul>
+<hr>
+<p>Delete all objects in a collection which match the given query.</p>
+<p>All records on the host which match the query will be deleted.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Each entry represents a parent key which is used to build the
+path to the child object. If the URL definition were
+/api/foos/{foo.name}/bars, then to delete the collection of bars
+for a particular foo, the foo.name value should be passed.</dd>
+<dt><strong><code>records</code></strong></dt>
+<dd>Can be provided in place of a query. If so, this list of objects
+will be deleted from the host.</dd>
+<dt><strong><code>body</code></strong></dt>
+<dd>The body of the delete request. This could be a Resource instance
+or a dictionary object.</dd>
+<dt><strong><code>poll</code></strong></dt>
+<dd>If set to True, the call will not return until the
+asynchronous job on the host has completed. Has no effect if the
+host did not return a job response.</dd>
+<dt><strong><code>poll_interval</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+often to query the job for updates.</dd>
+<dt><strong><code>poll_timeout</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+long to continue monitoring the job's status for completion.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will be sent as query parameters
+to the host. Only resources matching this query will be deleted.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A <code><a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></code> object containing the
+details of the HTTP response.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.Aggregate.find"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">find</span>
+</span>
+(<span>*args, connection: <a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a> = None, **kwargs) -> <a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Retrieves the collection of aggregates for the entire cluster.</p>
+<h3 id="expensive-properties">Expensive properties</h3>
+<p>There is an added computational cost to retrieving values for these properties. They are not included by default in GET results and must be explicitly requested using the <code>fields</code> query parameter. See <a href="#Requesting_specific_fields"><code>Requesting specific fields</code></a> to learn more.
+* <code>metric.*</code>
+* <code>space.block_storage.inactive_user_data</code>
+* <code>space.block_storage.inactive_user_data_percent</code>
+* <code>space.footprint</code>
+* <code>is_spare_low</code>
+* <code>statistics.*</code></p>
+<h3 id="related-ontap-commands">Related ONTAP commands</h3>
+<ul>
+<li><code>storage aggregate show</code></li>
+</ul>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-storage-storage_aggregates"><code>DOC /storage/aggregates</code></a></li>
+</ul>
+<hr>
+<p>Find an instance of an object on the host given a query.</p>
+<p>The host will be queried with the provided key/value pairs to find a
+matching resource. If 0 are found, None will be returned.
+If more than 1 is found, an error will be raised or returned.
+If there is exactly 1 matching record, then it will be returned.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Each entry represents a parent key which is used to build the
+path to the child object. If the URL definition were
+/api/foos/{foo.name}/bars, then to find a bar for a particular
+foo, the foo.name value should be passed.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will be sent as query parameters
+to the host.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A <code><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></code> object containing the
+details of the object or None if no matches were found.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned more
+than 1 matching resource.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.Aggregate.get_collection"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">get_collection</span>
+</span>
+(<span>*args, connection: <a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a> = None, max_records: int = None, **kwargs) -> Iterable[<a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a>]</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Retrieves the collection of aggregates for the entire cluster.</p>
+<h3 id="expensive-properties">Expensive properties</h3>
+<p>There is an added computational cost to retrieving values for these properties. They are not included by default in GET results and must be explicitly requested using the <code>fields</code> query parameter. See <a href="#Requesting_specific_fields"><code>Requesting specific fields</code></a> to learn more.
+* <code>metric.*</code>
+* <code>space.block_storage.inactive_user_data</code>
+* <code>space.block_storage.inactive_user_data_percent</code>
+* <code>space.footprint</code>
+* <code>is_spare_low</code>
+* <code>statistics.*</code></p>
+<h3 id="related-ontap-commands">Related ONTAP commands</h3>
+<ul>
+<li><code>storage aggregate show</code></li>
+</ul>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-storage-storage_aggregates"><code>DOC /storage/aggregates</code></a></li>
+</ul>
+<hr>
+<p>Fetch a list of all objects of this type from the host.</p>
+<p>This is a lazy fetch, making API calls only as necessary when the result
+of this call is iterated over. For instance, if max_records is set to 5,
+then iterating over the collection causes an API call to be sent to the
+server once for every 5 records. If the client stops iterating before
+getting to the 6th record, then no additional API calls are made.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Each entry represents a parent key which is used to build the
+path to the child object. If the URL definition were
+/api/foos/{foo.name}/bars, then to get the collection of bars
+for a particular foo, the foo.name value should be passed.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>max_records</code></strong></dt>
+<dd>The maximum number of records to return per call</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will be sent as query parameters
+to the host.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A list of <code><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></code> objects</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If there is no connection
+available to use either passed in or on the library. This would
+be not be raised when get_collection() is called, but rather
+when the result is iterated.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.Aggregate.patch_collection"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">patch_collection</span>
+</span>
+(<span>body: dict, *args, records: Iterable[_ForwardRef('<a title="netapp_ontap.resources.aggregate.Aggregate" href="#netapp_ontap.resources.aggregate.Aggregate">Aggregate</a>')] = None, poll: bool = True, poll_interval: Optional[int] = None, poll_timeout: Optional[int] = None, connection: <a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a> = None, **kwargs) -> <a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Updates the aggregate specified by the UUID with the properties in the body. This request starts a job and returns a link to that job.</p>
+<h3 id="related-ontap-commands">Related ONTAP commands</h3>
+<ul>
+<li><code>storage aggregate add-disks</code></li>
+<li><code>storage aggregate mirror</code></li>
+<li><code>storage aggregate modify</code></li>
+<li><code>storage aggregate relocation start</code></li>
+<li><code>storage aggregate rename</code></li>
+</ul>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-storage-storage_aggregates_{uuid}"><code>DOC /storage/aggregates/{uuid}</code></a></li>
+</ul>
+<hr>
+<p>Patch all objects in a collection which match the given query.</p>
+<p>All records on the host which match the query will be patched with the
+provided body.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>body</code></strong></dt>
+<dd>A dictionary of name/value pairs to set on all matching members
+of the collection. The body argument will be ignored if records
+is provided.</dd>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Each entry represents a parent key which is used to build the
+path to the child object. If the URL definition were
+/api/foos/{foo.name}/bars, then to patch the collection of bars
+for a particular foo, the foo.name value should be passed.</dd>
+<dt><strong><code>records</code></strong></dt>
+<dd>Can be provided in place of a query. If so, this list of objects
+will be patched on the host.</dd>
+<dt><strong><code>poll</code></strong></dt>
+<dd>If set to True, the call will not return until the
+asynchronous job on the host has completed. Has no effect if the
+host did not return a job response.</dd>
+<dt><strong><code>poll_interval</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+often to query the job for updates.</dd>
+<dt><strong><code>poll_timeout</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+long to continue monitoring the job's status for completion.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will be sent as query parameters
+to the host. Only resources matching this query will be patched.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A <code><a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></code> object containing the
+details of the HTTP response.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.Aggregate.post_collection"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">post_collection</span>
+</span>
+(<span>records: Iterable[_ForwardRef('<a title="netapp_ontap.resources.aggregate.Aggregate" href="#netapp_ontap.resources.aggregate.Aggregate">Aggregate</a>')], *args, hydrate: bool = False, poll: bool = True, poll_interval: Optional[int] = None, poll_timeout: Optional[int] = None, connection: <a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a> = None, **kwargs) -> Union[List[<a title="netapp_ontap.resources.aggregate.Aggregate" href="#netapp_ontap.resources.aggregate.Aggregate">Aggregate</a>], <a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a>]</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Automatically creates aggregates based on an optimal layout recommended by the system. Alternatively, properties can be provided to create an aggregate according to the requested specification. This request starts a job and returns a link to that job.
+POST operations will be blocked while one or more nodes in the cluster are simulating or implementing automatic aggregate creation.</p>
+<h3 id="required-properties">Required properties</h3>
+<p>Properties are not required for this API. The following properties are only required if you want to specify properties for aggregate creation:
+* <code>name</code> - Name of the aggregate.
+* <code>node.name</code> or <code>node.uuid</code> - Node on which the aggregate will be created.
+* <code>block_storage.primary.disk_count</code> - Number of disks to be used to create the aggregate.</p>
+<h3 id="default-values">Default values</h3>
+<p>If not specified in POST, the following default values are assigned. The remaining unspecified properties will receive system dependent default values.
+* <code>block_storage.mirror.enabled</code> - <em>false</em>
+* <code>snaplock_type</code> - <em>non_snaplock</em></p>
+<h3 id="related-ontap-commands">Related ONTAP commands</h3>
+<ul>
+<li><code>storage aggregate auto-provision</code></li>
+<li><code>storage aggregate create</code></li>
+</ul>
+<h3 id="example">Example:</h3>
+<pre><code>POST /api/storage/aggregates {&quot;node&quot;: {&quot;name&quot;: &quot;node1&quot;}, &quot;name&quot;: &quot;test&quot;, &quot;block_storage&quot;: {&quot;primary&quot;: {&quot;disk_count&quot;: &quot;10&quot;}}}
+</code></pre>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-storage-storage_aggregates"><code>DOC /storage/aggregates</code></a></li>
+</ul>
+<hr>
+<p>Send this collection of objects to the host as a creation request.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>records</code></strong></dt>
+<dd>A list of <code><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></code> objects to send
+to the server to be created.</dd>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Each entry represents a parent key which is used to build the
+path to the child object. If the URL definition were
+/api/foos/{foo.name}/bars, then to create a bar for a particular
+foo, the foo.name value should be passed.</dd>
+<dt><strong><code>hydrate</code></strong></dt>
+<dd>If set to True, after the response is received from
+the call, a a GET call will be made to refresh all fields of each
+object. When hydrate is set to True, poll must also be set to True.</dd>
+<dt><strong><code>poll</code></strong></dt>
+<dd>If set to True, the call will not return until the
+asynchronous job on the host has completed. Has no effect if the
+host did not return a job response.</dd>
+<dt><strong><code>poll_interval</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+often to query the job for updates.</dd>
+<dt><strong><code>poll_timeout</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+long to continue monitoring the job's status for completion.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will be sent as query parameters
+to the host. Only resources matching this query will be patched.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A list of <code><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></code> objects matching the provided
+type which have been created by the host and returned. This is <em>not</em>
+the same list that was provided, so to continue using the object, you
+should save this list. If poll is set to False, then a <code><a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></code>
+object is returned instead.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400</p></section>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="netapp_ontap.resources.aggregate.Aggregate.delete"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">delete</span>
+</span>
+(<span>self, body: Union[<a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a>, dict] = None, poll: bool = True, poll_interval: Optional[int] = None, poll_timeout: Optional[int] = None, **kwargs) -> <a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Deletes the aggregate specified by the UUID. This request starts a job and returns a link to that job.</p>
+<h3 id="related-ontap-commands">Related ONTAP commands</h3>
+<ul>
+<li><code>storage aggregate delete</code></li>
+</ul>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-storage-storage_aggregates_{uuid}"><code>DOC /storage/aggregates/{uuid}</code></a></li>
+</ul>
+<hr>
+<p>Send a deletion request to the host for this object.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>body</code></strong></dt>
+<dd>The body of the delete request. This could be a Resource instance
+or a dictionary object.</dd>
+<dt><strong><code>poll</code></strong></dt>
+<dd>If set to True, the call will not return until the
+asynchronous job on the host has completed. Has no effect if the
+host did not return a job response.</dd>
+<dt><strong><code>poll_interval</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+often to query the job for updates.</dd>
+<dt><strong><code>poll_timeout</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+long to continue monitoring the job's status for completion.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will be sent as query parameters
+to the host.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A <code><a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></code> object containing the
+details of the HTTP response.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.Aggregate.get"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">get</span>
+</span>
+(<span>self, **kwargs) -> <a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Retrieves the aggregate specified by the UUID. The recommend query cannot be used for this operation.</p>
+<h3 id="expensive-properties">Expensive properties</h3>
+<p>There is an added computational cost to retrieving values for these properties. They are not included by default in GET results and must be explicitly requested using the <code>fields</code> query parameter. See <a href="#Requesting_specific_fields"><code>Requesting specific fields</code></a> to learn more.
+* <code>metric.*</code>
+* <code>space.block_storage.inactive_user_data</code>
+* <code>space.block_storage.inactive_user_data_percent</code>
+* <code>space.footprint</code>
+* <code>is_spare_low</code>
+* <code>statistics.*</code></p>
+<h3 id="related-ontap-commands">Related ONTAP commands</h3>
+<ul>
+<li><code>storage aggregate show</code></li>
+</ul>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-storage-storage_aggregates_{uuid}"><code>DOC /storage/aggregates/{uuid}</code></a></li>
+</ul>
+<hr>
+<p>Fetch the details of the object from the host.</p>
+<p>Requires the keys to be set (if any). After returning, new or changed
+properties from the host will be set on the instance.</p>
+<h2 id="returns">Returns</h2>
+<p>A <code><a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></code> object containing the
+details of the HTTP response.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.Aggregate.patch"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">patch</span>
+</span>
+(<span>self, hydrate: bool = False, poll: bool = True, poll_interval: Optional[int] = None, poll_timeout: Optional[int] = None, **kwargs) -> <a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Updates the aggregate specified by the UUID with the properties in the body. This request starts a job and returns a link to that job.</p>
+<h3 id="related-ontap-commands">Related ONTAP commands</h3>
+<ul>
+<li><code>storage aggregate add-disks</code></li>
+<li><code>storage aggregate mirror</code></li>
+<li><code>storage aggregate modify</code></li>
+<li><code>storage aggregate relocation start</code></li>
+<li><code>storage aggregate rename</code></li>
+</ul>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-storage-storage_aggregates_{uuid}"><code>DOC /storage/aggregates/{uuid}</code></a></li>
+</ul>
+<hr>
+<p>Send the difference in the object's state to the host as a modification request.</p>
+<p>Calculates the difference in the object's state since the last time we
+interacted with the host and sends this in the request body.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hydrate</code></strong></dt>
+<dd>If set to True, after the response is received from
+the call, a a GET call will be made to refresh all fields of the object.</dd>
+<dt><strong><code>poll</code></strong></dt>
+<dd>If set to True, the call will not return until the
+asynchronous job on the host has completed. Has no effect if the
+host did not return a job response.</dd>
+<dt><strong><code>poll_interval</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+often to query the job for updates.</dd>
+<dt><strong><code>poll_timeout</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+long to continue monitoring the job's status for completion.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will normally be sent as query parameters
+to the host. If any of these pairs are parameters that are sent as formdata then
+only parameters of that type will be accepted and all others will be discarded.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A <code><a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></code> object containing the
+details of the HTTP response.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.Aggregate.post"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">post</span>
+</span>
+(<span>self, hydrate: bool = False, poll: bool = True, poll_interval: Optional[int] = None, poll_timeout: Optional[int] = None, **kwargs) -> <a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Automatically creates aggregates based on an optimal layout recommended by the system. Alternatively, properties can be provided to create an aggregate according to the requested specification. This request starts a job and returns a link to that job.
+POST operations will be blocked while one or more nodes in the cluster are simulating or implementing automatic aggregate creation.</p>
+<h3 id="required-properties">Required properties</h3>
+<p>Properties are not required for this API. The following properties are only required if you want to specify properties for aggregate creation:
+* <code>name</code> - Name of the aggregate.
+* <code>node.name</code> or <code>node.uuid</code> - Node on which the aggregate will be created.
+* <code>block_storage.primary.disk_count</code> - Number of disks to be used to create the aggregate.</p>
+<h3 id="default-values">Default values</h3>
+<p>If not specified in POST, the following default values are assigned. The remaining unspecified properties will receive system dependent default values.
+* <code>block_storage.mirror.enabled</code> - <em>false</em>
+* <code>snaplock_type</code> - <em>non_snaplock</em></p>
+<h3 id="related-ontap-commands">Related ONTAP commands</h3>
+<ul>
+<li><code>storage aggregate auto-provision</code></li>
+<li><code>storage aggregate create</code></li>
+</ul>
+<h3 id="example">Example:</h3>
+<pre><code>POST /api/storage/aggregates {&quot;node&quot;: {&quot;name&quot;: &quot;node1&quot;}, &quot;name&quot;: &quot;test&quot;, &quot;block_storage&quot;: {&quot;primary&quot;: {&quot;disk_count&quot;: &quot;10&quot;}}}
+</code></pre>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-storage-storage_aggregates"><code>DOC /storage/aggregates</code></a></li>
+</ul>
+<hr>
+<p>Send this object to the host as a creation request.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hydrate</code></strong></dt>
+<dd>If set to True, after the response is received from
+the call, a a GET call will be made to refresh all fields of the object.</dd>
+<dt><strong><code>poll</code></strong></dt>
+<dd>If set to True, the call will not return until the
+asynchronous job on the host has completed. Has no effect if the
+host did not return a job response.</dd>
+<dt><strong><code>poll_interval</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+often to query the job for updates.</dd>
+<dt><strong><code>poll_timeout</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+long to continue monitoring the job's status for completion.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will normally be sent as query parameters
+to the host. If any of these pairs are parameters that are sent as formdata then
+only parameters of that type will be accepted and all others will be discarded.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A <code><a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></code> object containing the
+details of the HTTP response.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400</p></section>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></b></code>:
+<ul class="hlist">
+<li><code><a title="netapp_ontap.resource.Resource.from_dict" href="../resource.html#netapp_ontap.resource.Resource.from_dict">from_dict</a></code></li>
+<li><code><a title="netapp_ontap.resource.Resource.get_collection_url" href="../resource.html#netapp_ontap.resource.Resource.get_collection_url">get_collection_url</a></code></li>
+<li><code><a title="netapp_ontap.resource.Resource.get_connection" href="../resource.html#netapp_ontap.resource.Resource.get_connection">get_connection</a></code></li>
+<li><code><a title="netapp_ontap.resource.Resource.instance_location" href="../resource.html#netapp_ontap.resource.Resource.instance_location">instance_location</a></code></li>
+<li><code><a title="netapp_ontap.resource.Resource.path_keys" href="../resource.html#netapp_ontap.resource.Resource.path_keys">path_keys</a></code></li>
+<li><code><a title="netapp_ontap.resource.Resource.poll" href="../resource.html#netapp_ontap.resource.Resource.poll">poll</a></code></li>
+<li><code><a title="netapp_ontap.resource.Resource.set_connection" href="../resource.html#netapp_ontap.resource.Resource.set_connection">set_connection</a></code></li>
+<li><code><a title="netapp_ontap.resource.Resource.to_dict" href="../resource.html#netapp_ontap.resource.Resource.to_dict">to_dict</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema"><code class="flex name class">
+<span>
+<span></span>
+class <span class="ident">AggregateSchema</span>
+</span>
+<span>(</span><span>*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>The fields of the Aggregate object</p></section>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>netapp_ontap.resource.ResourceSchema</li>
+<li>marshmallow.schema.Schema</li>
+<li>marshmallow.base.SchemaABC</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.block_storage">
+<code class="name">
+<span></span>
+<a href="../models/aggregate_block_storage.html"><span class="ident">block_storage</span><span>: AggregateBlockStorage</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The block_storage field of the aggregate.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.cloud_storage">
+<code class="name">
+<span></span>
+<a href="../models/aggregate_cloud_storage.html"><span class="ident">cloud_storage</span><span>: AggregateCloudStorage</span></a>
+<span class="accessors">
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The cloud_storage field of the aggregate.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.create_time">
+<code class="name">
+<span></span>
+<span class="ident">create_time</span><span>: str</span>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>Timestamp of aggregate creation.</p>
+<p>Example: 2018-01-01T16:00:00.000+0000</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.data_encryption">
+<code class="name">
+<span></span>
+<a href="../models/aggregate_data_encryption.html"><span class="ident">data_encryption</span><span>: AggregateDataEncryption</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The data_encryption field of the aggregate.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.dr_home_node">
+<code class="name">
+<span></span>
+<a href="../models/dr_node.html"><span class="ident">dr_home_node</span><span>: DrNode</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The dr_home_node field of the aggregate.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.home_node">
+<code class="name">
+<span></span>
+<a href="node.html"><span class="ident">home_node</span><span>: Node</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The home_node field of the aggregate.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.inactive_data_reporting">
+<code class="name">
+<span></span>
+<a href="../models/aggregate_inactive_data_reporting.html"><span class="ident">inactive_data_reporting</span><span>: AggregateInactiveDataReporting</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The inactive_data_reporting field of the aggregate.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.inode_attributes">
+<code class="name">
+<span></span>
+<a href="../models/aggregate_inode_attributes.html"><span class="ident">inode_attributes</span><span>: AggregateInodeAttributes</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The inode_attributes field of the aggregate.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.is_spare_low">
+<code class="name">
+<span></span>
+<span class="ident">is_spare_low</span><span>: bool</span>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>Specifies whether the aggregate is in a spares low condition on any of the RAID groups.
+This is an advanced property; there is an added computational cost to retrieving its value. The field is not populated for either a collection GET or an instance GET unless it is explicitly requested using the <i>fields</i> query parameter containing either footprint or **.</p>
+<p>Example: false</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.links">
+<code class="name">
+<span></span>
+<a href="../models/self_link.html"><span class="ident">links</span><span>: SelfLink</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The links field of the aggregate.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.metric">
+<code class="name">
+<span></span>
+<a href="performance_metric.html"><span class="ident">metric</span><span>: PerformanceMetric</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The metric field of the aggregate.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.name">
+<code class="name">
+<span></span>
+<span class="ident">name</span><span>: str</span>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>Aggregate name.</p>
+<p>Example: node1_aggr_1</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.node">
+<code class="name">
+<span></span>
+<a href="node.html"><span class="ident">node</span><span>: Node</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The node field of the aggregate.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.recommendation_spares">
+<code class="name">
+<span></span>
+<a href="../models/aggregate_spare.html"><span class="ident">recommendation_spares</span><span>: List[AggregateSpare]</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>Information on the aggregate's remaining hot spare disks.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.sidl_enabled">
+<code class="name">
+<span></span>
+<span class="ident">sidl_enabled</span><span>: bool</span>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>Specifies whether or not SIDL is enabled on the aggregate.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.snaplock_type">
+<code class="name">
+<span></span>
+<span class="ident">snaplock_type</span><span>: str</span>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>SnapLock type.</p>
+<p>Valid choices:</p>
+<ul>
+<li>non_snaplock</li>
+<li>compliance</li>
+<li>enterprise</li>
+</ul></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.snapshot">
+<code class="name">
+<span></span>
+<a href="../models/aggregate_snapshot.html"><span class="ident">snapshot</span><span>: AggregateSnapshot</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The snapshot field of the aggregate.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.space">
+<code class="name">
+<span></span>
+<a href="../models/aggregate_space.html"><span class="ident">space</span><span>: AggregateSpace</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The space field of the aggregate.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.state">
+<code class="name">
+<span></span>
+<span class="ident">state</span><span>: str</span>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>Operational state of the aggregate.</p>
+<p>Valid choices:</p>
+<ul>
+<li>online</li>
+<li>onlining</li>
+<li>offline</li>
+<li>offlining</li>
+<li>relocating</li>
+<li>unmounted</li>
+<li>restricted</li>
+<li>inconsistent</li>
+<li>failed</li>
+<li>unknown</li>
+</ul></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.statistics">
+<code class="name">
+<span></span>
+<a href="../models/performance_metric_raw.html"><span class="ident">statistics</span><span>: PerformanceMetricRaw</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The statistics field of the aggregate.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.tags">
+<code class="name">
+<span></span>
+<span class="ident">tags</span><span>: List[str]</span>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>Tags are an optional way to track the uses of a resource. Tag values must be formatted as key:value strings.</p>
+<p>Example: ["team:csi","environment:test"]</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.uuid">
+<code class="name">
+<span></span>
+<span class="ident">uuid</span><span>: str</span>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>Aggregate UUID.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.aggregate.AggregateSchema.volume_count">
+<code class="name">
+<span></span>
+<span class="ident">volume_count</span><span>: Size</span>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>Number of volumes in the aggregate.</p></section>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<header>
+<a class="homelink" rel="home" title="NetApp ONTAP Python Client Library">
+<img alt="NetApp Logo" src="data:image/jpeg;base64,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">
+</a>
+</header>
+<h1>Index</h1>
+<div class="toc">
+<ul>
+<li><a href="#updating-storage-aggregates">Updating storage aggregates</a><ul>
+<li><a href="#aggregate-expansion">Aggregate expansion</a></li>
+<li><a href="#manual-simulated-aggregate-expansion">Manual simulated aggregate expansion</a></li>
+</ul>
+</li>
+<li><a href="#deleting-storage-aggregates">Deleting storage aggregates</a></li>
+<li><a href="#adding-a-storage-pool-to-an-aggregate">Adding a storage pool to an aggregate</a></li>
+<li><a href="#adding-physical-ssd-cache-capacity-to-an-aggregate">Adding physical SSD cache capacity to an aggregate</a></li>
+<li><a href="#examples">Examples</a><ul>
+<li><a href="#retrieving-a-specific-aggregate-from-the-cluster">Retrieving a specific aggregate from the cluster</a></li>
+<li><a href="#retrieving-statistics-and-metric-for-an-aggregate">Retrieving statistics and metric for an aggregate</a></li>
+<li><a href="#simulating-aggregate-expansion">Simulating aggregate expansion</a></li>
+<li><a href="#manual-aggregate-expansion-with-disk-size-query">Manual aggregate expansion with disk size query</a></li>
+<li><a href="#simulating-a-manual-aggregate-expansion-with-disk-size-query">Simulating a manual aggregate expansion with disk size query</a></li>
+<li><a href="#simulating-a-manual-aggregate-expansion-with-raid-group-query">Simulating a manual aggregate expansion with raid group query</a></li>
+<li><a href="#retrieving-the-usable-spare-information-for-the-cluster">Retrieving the usable spare information for the cluster</a></li>
+<li><a href="#retrieving-the-ssd-spare-count-for-the-cluster">Retrieving the SSD spare count for the cluster</a></li>
+<li><a href="#retrieving-a-recommendation-for-an-aggregate-expansion">Retrieving a recommendation for an aggregate expansion</a></li>
+<li><a href="#updating-an-aggregate-in-the-cluster">Updating an aggregate in the cluster</a></li>
+<li><a href="#adding-a-storage-pool-to-an-aggregate_1">Adding a storage pool to an aggregate</a></li>
+<li><a href="#adding-physical-ssd-cache-capacity-to-an-aggregate_1">Adding physical SSD cache capacity to an aggregate</a></li>
+<li><a href="#simulated-addition-of-physical-ssd-cache-capacity-to-an-aggregate">Simulated addition of physical SSD cache capacity to an aggregate</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="netapp_ontap.resources" href="index.html">netapp_ontap.resources</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li class="None">
+<h4><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.Aggregate" href="#netapp_ontap.resources.aggregate.Aggregate">Aggregate</a>
+</code></h4>
+<ul class="two-column">
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.Aggregate.count_collection" href="#netapp_ontap.resources.aggregate.Aggregate.count_collection">count_collection</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.Aggregate.delete" href="#netapp_ontap.resources.aggregate.Aggregate.delete">delete</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.Aggregate.delete_collection" href="#netapp_ontap.resources.aggregate.Aggregate.delete_collection">delete_collection</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.Aggregate.find" href="#netapp_ontap.resources.aggregate.Aggregate.find">find</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.Aggregate.get" href="#netapp_ontap.resources.aggregate.Aggregate.get">get</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.Aggregate.get_collection" href="#netapp_ontap.resources.aggregate.Aggregate.get_collection">get_collection</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.Aggregate.patch" href="#netapp_ontap.resources.aggregate.Aggregate.patch">patch</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.Aggregate.patch_collection" href="#netapp_ontap.resources.aggregate.Aggregate.patch_collection">patch_collection</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.Aggregate.post" href="#netapp_ontap.resources.aggregate.Aggregate.post">post</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.Aggregate.post_collection" href="#netapp_ontap.resources.aggregate.Aggregate.post_collection">post_collection</a>
+</code></li>
+</ul>
+</li>
+<li class="None">
+<h4><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema" href="#netapp_ontap.resources.aggregate.AggregateSchema">AggregateSchema</a>
+</code></h4>
+<ul class="">
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.block_storage" href="#netapp_ontap.resources.aggregate.AggregateSchema.block_storage">block_storage</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.cloud_storage" href="#netapp_ontap.resources.aggregate.AggregateSchema.cloud_storage">cloud_storage</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.create_time" href="#netapp_ontap.resources.aggregate.AggregateSchema.create_time">create_time</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.data_encryption" href="#netapp_ontap.resources.aggregate.AggregateSchema.data_encryption">data_encryption</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.dr_home_node" href="#netapp_ontap.resources.aggregate.AggregateSchema.dr_home_node">dr_home_node</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.home_node" href="#netapp_ontap.resources.aggregate.AggregateSchema.home_node">home_node</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.inactive_data_reporting" href="#netapp_ontap.resources.aggregate.AggregateSchema.inactive_data_reporting">inactive_data_reporting</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.inode_attributes" href="#netapp_ontap.resources.aggregate.AggregateSchema.inode_attributes">inode_attributes</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.is_spare_low" href="#netapp_ontap.resources.aggregate.AggregateSchema.is_spare_low">is_spare_low</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.links" href="#netapp_ontap.resources.aggregate.AggregateSchema.links">links</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.metric" href="#netapp_ontap.resources.aggregate.AggregateSchema.metric">metric</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.name" href="#netapp_ontap.resources.aggregate.AggregateSchema.name">name</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.node" href="#netapp_ontap.resources.aggregate.AggregateSchema.node">node</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.recommendation_spares" href="#netapp_ontap.resources.aggregate.AggregateSchema.recommendation_spares">recommendation_spares</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.sidl_enabled" href="#netapp_ontap.resources.aggregate.AggregateSchema.sidl_enabled">sidl_enabled</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.snaplock_type" href="#netapp_ontap.resources.aggregate.AggregateSchema.snaplock_type">snaplock_type</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.snapshot" href="#netapp_ontap.resources.aggregate.AggregateSchema.snapshot">snapshot</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.space" href="#netapp_ontap.resources.aggregate.AggregateSchema.space">space</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.state" href="#netapp_ontap.resources.aggregate.AggregateSchema.state">state</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.statistics" href="#netapp_ontap.resources.aggregate.AggregateSchema.statistics">statistics</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.tags" href="#netapp_ontap.resources.aggregate.AggregateSchema.tags">tags</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.uuid" href="#netapp_ontap.resources.aggregate.AggregateSchema.uuid">uuid</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate.AggregateSchema.volume_count" href="#netapp_ontap.resources.aggregate.AggregateSchema.volume_count">volume_count</a>
+</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+hljs.initHighlightingOnLoad();
+// unless a language is specified, no guessing/highlighting will be done
+hljs.configure({languages: []});
+</script>
+</body>
+</html>

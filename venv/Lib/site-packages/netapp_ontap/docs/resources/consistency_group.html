@@ -1,0 +1,2098 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>netapp_ontap.resources.consistency_group API documentation</title>
+<meta name="description" content="Copyright &amp;copy; 2023 NetApp Inc.
+All rights reserved …" />
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/gruvbox-dark.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{overflow:auto}code.name{position:relative}.accessors{position:absolute;right:5px}.gettable_field{padding:3px;border-radius:5px;background:#0067c5;color:white}.postable_field{padding:3px;border-radius:5px;background:#007a33;color:white}.patchable_field{padding:3px;border-radius:5px;background:#c99700;color:white}.private_content{padding:3px;border-radius:5px;background:#f76464;color:white}.conditional_content{padding:3px;border-radius:5px;background:#f99948;color:white}.list_visibility{font-size:0.7em}.module_visibility_description{font-weight:bold}.private_box{border:1px solid #dd3d3d;background:#ffe5e5;border-radius:5px;padding:2px;margin:4px 0}.conditional_box{border:1px solid #f99948;border-radius:5px;padding:2px;background:#ffeac3;margin:4px 0}.try_it_out{display:flex;flex-direction:column;align-items:flex-end}.try_it_out_check{display:none}.try_it_out_button{padding:5px 23px;transition:all .3s;border:2px solid gray;border-radius:4px;cursor:pointer;user-select:none}.try_it_out_button:hover{box-shadow:0 0 5px rgba(0,0,0,.3)}.try_it_out_content{width:100%;display:none}.try_it_out_check:checked ~ .try_it_out_button{display:none}.try_it_out_check:checked ~ .try_it_out_content{display:initial}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:60%}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>netapp_ontap.resources.consistency_group</code></h1>
+</header>
+<section id="section-intro">
+<p>Copyright &copy; 2023 NetApp Inc.
+All rights reserved.</p>
+<p>This file has been automatically generated based on the ONTAP REST API documentation.</p>
+<h2 id="overview">Overview</h2>
+<p>A consistency group is a group of volumes that supports capabilities such as creating a snapshot of all of its member volumes at the same point-in-time with a write-fence, thus ensuring a consistent image of the volumes at that time.
+<br>Applications with datasets scoped to a single volume can have its contents saved to a Snapshot copy, replicated, or cloned in a crash-consistent manner implicitly with corresponding native ONTAP volume-granular operations. Applications with datasets spanning a group of multiple volumes must have such operations performed on the group. Typically, by first fencing writes to all the volumes in the group, flushing any writes pending in queues, executing the intended operation, that is, take Snapshot copy of every volume in the group and when that is complete, unfence and resume writes. A consistency group is the conventional mechanism for providing such group semantics.</p>
+<h2 id="consistency-group-apis">Consistency group
+APIs</h2>
+<p>The following APIs are used to perform operations related to consistency groups:</p>
+<ul>
+<li>GET
+/api/application/consistency-groups</li>
+<li>POST
+/api/application/consistency-groups</li>
+<li>GET
+/api/application/consistency-groups/{uuid}</li>
+<li>PATCH
+/api/application/consistency-groups/{uuid}</li>
+<li>DELETE
+/api/application/consistency-groups/{uuid}</li>
+</ul>
+<h2 id="examples">Examples</h2>
+<h3 id="retrieving-all-consistency-groups-of-an-svm">Retrieving all consistency groups of an SVM</h3>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    print(list(ConsistencyGroup.get_collection(**{&quot;svm.name&quot;: &quot;vs1&quot;})))
+
+</code></pre>
+<div class="try_it_out">
+<input id="example0_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example0_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example0_result" class="try_it_out_content">
+<pre><code>[
+    ConsistencyGroup(
+        {
+            &quot;name&quot;: &quot;vol1&quot;,
+            &quot;_links&quot;: {
+                &quot;self&quot;: {
+                    &quot;href&quot;: &quot;/api/application/consistency-groups/6f48d798-0a7f-11ec-a449-005056bbcf9f&quot;
+                }
+            },
+            &quot;uuid&quot;: &quot;6f48d798-0a7f-11ec-a449-005056bbcf9f&quot;,
+        }
+    ),
+    ConsistencyGroup(
+        {
+            &quot;name&quot;: &quot;parent_cg&quot;,
+            &quot;_links&quot;: {
+                &quot;self&quot;: {
+                    &quot;href&quot;: &quot;/api/application/consistency-groups/c1b22c85-0a82-11ec-a449-005056bbcf9f&quot;
+                }
+            },
+            &quot;uuid&quot;: &quot;c1b22c85-0a82-11ec-a449-005056bbcf9f&quot;,
+        }
+    ),
+    ConsistencyGroup(
+        {
+            &quot;name&quot;: &quot;child_1&quot;,
+            &quot;_links&quot;: {
+                &quot;self&quot;: {
+                    &quot;href&quot;: &quot;/api/application/consistency-groups/c1b270b1-0a82-11ec-a449-005056bbcf9f&quot;
+                }
+            },
+            &quot;uuid&quot;: &quot;c1b270b1-0a82-11ec-a449-005056bbcf9f&quot;,
+        }
+    ),
+    ConsistencyGroup(
+        {
+            &quot;name&quot;: &quot;child_2&quot;,
+            &quot;_links&quot;: {
+                &quot;self&quot;: {
+                    &quot;href&quot;: &quot;/api/application/consistency-groups/c1b270c3-0a82-11ec-a449-005056bbcf9f&quot;
+                }
+            },
+            &quot;uuid&quot;: &quot;c1b270c3-0a82-11ec-a449-005056bbcf9f&quot;,
+        }
+    ),
+]
+
+</code></pre>
+</div>
+</div>
+<h3 id="retrieving-details-of-all-consistency-groups-of-an-svm">Retrieving details of all consistency groups of an SVM</h3>
+<p>Retrieving details of the consistency groups for a specified SVM. These details are considered to be performant and will return within 1 second when 40 records or less are requested.<br/></p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    print(
+        list(
+            ConsistencyGroup.get_collection(
+                fields=&quot;*&quot;, max_records=40, **{&quot;svm.name&quot;: &quot;vs1&quot;}
+            )
+        )
+    )
+
+</code></pre>
+<div class="try_it_out">
+<input id="example1_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example1_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example1_result" class="try_it_out_content">
+<pre><code>[
+    ConsistencyGroup(
+        {
+            &quot;svm&quot;: {
+                &quot;name&quot;: &quot;vs1&quot;,
+                &quot;_links&quot;: {
+                    &quot;self&quot;: {
+                        &quot;href&quot;: &quot;/api/svm/svms/4853f97a-0a63-11ec-a449-005056bbcf9f&quot;
+                    }
+                },
+                &quot;uuid&quot;: &quot;4853f97a-0a63-11ec-a449-005056bbcf9f&quot;,
+            },
+            &quot;name&quot;: &quot;vol1&quot;,
+            &quot;space&quot;: {&quot;available&quot;: 107704320, &quot;size&quot;: 108003328, &quot;used&quot;: 299008},
+            &quot;_links&quot;: {
+                &quot;self&quot;: {
+                    &quot;href&quot;: &quot;/api/application/consistency-groups/6f48d798-0a7f-11ec-a449-005056bbcf9f&quot;
+                }
+            },
+            &quot;replicated&quot;: False,
+            &quot;uuid&quot;: &quot;6f48d798-0a7f-11ec-a449-005056bbcf9f&quot;,
+        }
+    ),
+    ConsistencyGroup(
+        {
+            &quot;snapshot_policy&quot;: {
+                &quot;_links&quot;: {
+                    &quot;self&quot;: {
+                        &quot;href&quot;: &quot;/api/storage/snapshot-policies/a30bd0fe-067d-11ec-a449-005056bbcf9f&quot;
+                    }
+                },
+                &quot;uuid&quot;: &quot;a30bd0fe-067d-11ec-a449-005056bbcf9f&quot;,
+                &quot;name&quot;: &quot;default-1weekly&quot;,
+            },
+            &quot;svm&quot;: {
+                &quot;name&quot;: &quot;vs1&quot;,
+                &quot;_links&quot;: {
+                    &quot;self&quot;: {
+                        &quot;href&quot;: &quot;/api/svm/svms/4853f97a-0a63-11ec-a449-005056bbcf9f&quot;
+                    }
+                },
+                &quot;uuid&quot;: &quot;4853f97a-0a63-11ec-a449-005056bbcf9f&quot;,
+            },
+            &quot;name&quot;: &quot;parent_cg&quot;,
+            &quot;space&quot;: {&quot;available&quot;: 78696448, &quot;size&quot;: 83886080, &quot;used&quot;: 995328},
+            &quot;_links&quot;: {
+                &quot;self&quot;: {
+                    &quot;href&quot;: &quot;/api/application/consistency-groups/c1b22c85-0a82-11ec-a449-005056bbcf9f&quot;
+                }
+            },
+            &quot;replicated&quot;: False,
+            &quot;uuid&quot;: &quot;c1b22c85-0a82-11ec-a449-005056bbcf9f&quot;,
+            &quot;consistency_groups&quot;: [
+                {
+                    &quot;_links&quot;: {
+                        &quot;self&quot;: {
+                            &quot;href&quot;: &quot;/api/application/consistency-groups/c1b270b1-0a82-11ec-a449-005056bbcf9f&quot;
+                        }
+                    },
+                    &quot;uuid&quot;: &quot;c1b270b1-0a82-11ec-a449-005056bbcf9f&quot;,
+                    &quot;name&quot;: &quot;child_1&quot;,
+                    &quot;space&quot;: {&quot;available&quot;: 39346176, &quot;size&quot;: 41943040, &quot;used&quot;: 499712},
+                },
+                {
+                    &quot;_links&quot;: {
+                        &quot;self&quot;: {
+                            &quot;href&quot;: &quot;/api/application/consistency-groups/c1b270c3-0a82-11ec-a449-005056bbcf9f&quot;
+                        }
+                    },
+                    &quot;uuid&quot;: &quot;c1b270c3-0a82-11ec-a449-005056bbcf9f&quot;,
+                    &quot;name&quot;: &quot;child_2&quot;,
+                    &quot;space&quot;: {&quot;available&quot;: 39350272, &quot;size&quot;: 41943040, &quot;used&quot;: 495616},
+                },
+            ],
+        }
+    ),
+    ConsistencyGroup(
+        {
+            &quot;snapshot_policy&quot;: {
+                &quot;_links&quot;: {
+                    &quot;self&quot;: {
+                        &quot;href&quot;: &quot;/api/storage/snapshot-policies/a30b60a4-067d-11ec-a449-005056bbcf9f&quot;
+                    }
+                },
+                &quot;uuid&quot;: &quot;a30b60a4-067d-11ec-a449-005056bbcf9f&quot;,
+                &quot;name&quot;: &quot;default&quot;,
+            },
+            &quot;svm&quot;: {
+                &quot;name&quot;: &quot;vs1&quot;,
+                &quot;_links&quot;: {
+                    &quot;self&quot;: {
+                        &quot;href&quot;: &quot;/api/svm/svms/4853f97a-0a63-11ec-a449-005056bbcf9f&quot;
+                    }
+                },
+                &quot;uuid&quot;: &quot;4853f97a-0a63-11ec-a449-005056bbcf9f&quot;,
+            },
+            &quot;name&quot;: &quot;child_1&quot;,
+            &quot;space&quot;: {&quot;available&quot;: 39346176, &quot;size&quot;: 41943040, &quot;used&quot;: 499712},
+            &quot;_links&quot;: {
+                &quot;self&quot;: {
+                    &quot;href&quot;: &quot;/api/application/consistency-groups/c1b270b1-0a82-11ec-a449-005056bbcf9f&quot;
+                }
+            },
+            &quot;uuid&quot;: &quot;c1b270b1-0a82-11ec-a449-005056bbcf9f&quot;,
+            &quot;parent_consistency_group&quot;: {
+                &quot;name&quot;: &quot;parent_cg&quot;,
+                &quot;_links&quot;: {
+                    &quot;self&quot;: {
+                        &quot;href&quot;: &quot;/api/application/consistency-groups/c1b22c85-0a82-11ec-a449-005056bbcf9f&quot;
+                    }
+                },
+                &quot;uuid&quot;: &quot;c1b22c85-0a82-11ec-a449-005056bbcf9f&quot;,
+            },
+        }
+    ),
+    ConsistencyGroup(
+        {
+            &quot;snapshot_policy&quot;: {
+                &quot;_links&quot;: {
+                    &quot;self&quot;: {
+                        &quot;href&quot;: &quot;/api/storage/snapshot-policies/a30b60a4-067d-11ec-a449-005056bbcf9f&quot;
+                    }
+                },
+                &quot;uuid&quot;: &quot;a30b60a4-067d-11ec-a449-005056bbcf9f&quot;,
+                &quot;name&quot;: &quot;default&quot;,
+            },
+            &quot;svm&quot;: {
+                &quot;name&quot;: &quot;vs1&quot;,
+                &quot;_links&quot;: {
+                    &quot;self&quot;: {
+                        &quot;href&quot;: &quot;/api/svm/svms/4853f97a-0a63-11ec-a449-005056bbcf9f&quot;
+                    }
+                },
+                &quot;uuid&quot;: &quot;4853f97a-0a63-11ec-a449-005056bbcf9f&quot;,
+            },
+            &quot;name&quot;: &quot;child_2&quot;,
+            &quot;space&quot;: {&quot;available&quot;: 39350272, &quot;size&quot;: 41943040, &quot;used&quot;: 495616},
+            &quot;_links&quot;: {
+                &quot;self&quot;: {
+                    &quot;href&quot;: &quot;/api/application/consistency-groups/c1b270c3-0a82-11ec-a449-005056bbcf9f&quot;
+                }
+            },
+            &quot;uuid&quot;: &quot;c1b270c3-0a82-11ec-a449-005056bbcf9f&quot;,
+            &quot;parent_consistency_group&quot;: {
+                &quot;name&quot;: &quot;parent_cg&quot;,
+                &quot;_links&quot;: {
+                    &quot;self&quot;: {
+                        &quot;href&quot;: &quot;/api/application/consistency-groups/c1b22c85-0a82-11ec-a449-005056bbcf9f&quot;
+                    }
+                },
+                &quot;uuid&quot;: &quot;c1b22c85-0a82-11ec-a449-005056bbcf9f&quot;,
+            },
+        }
+    ),
+]
+
+</code></pre>
+</div>
+</div>
+<h3 id="retrieving-details-of-non-nested-consistency-groups">Retrieving details of non-nested consistency groups</h3>
+<p>Retrieves details of the consistency groups without nested consistency groups, or only the parent consistency group for a number of consistency groups of a specified SVM.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    print(
+        list(
+            ConsistencyGroup.get_collection(
+                **{&quot;svm.name&quot;: &quot;vs1&quot;, &quot;parent_consistency_group.uuid&quot;: &quot;null&quot;}
+            )
+        )
+    )
+
+</code></pre>
+<div class="try_it_out">
+<input id="example2_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example2_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example2_result" class="try_it_out_content">
+<pre><code>[
+    ConsistencyGroup(
+        {
+            &quot;svm&quot;: {&quot;name&quot;: &quot;vs1&quot;},
+            &quot;name&quot;: &quot;vol1&quot;,
+            &quot;_links&quot;: {
+                &quot;self&quot;: {
+                    &quot;href&quot;: &quot;/api/application/consistency-groups/6f48d798-0a7f-11ec-a449-005056bbcf9f&quot;
+                }
+            },
+            &quot;uuid&quot;: &quot;6f48d798-0a7f-11ec-a449-005056bbcf9f&quot;,
+        }
+    ),
+    ConsistencyGroup(
+        {
+            &quot;svm&quot;: {&quot;name&quot;: &quot;vs1&quot;},
+            &quot;name&quot;: &quot;parent_cg&quot;,
+            &quot;_links&quot;: {
+                &quot;self&quot;: {
+                    &quot;href&quot;: &quot;/api/application/consistency-groups/c1b22c85-0a82-11ec-a449-005056bbcf9f&quot;
+                }
+            },
+            &quot;uuid&quot;: &quot;c1b22c85-0a82-11ec-a449-005056bbcf9f&quot;,
+        }
+    ),
+]
+
+</code></pre>
+</div>
+</div>
+<h3 id="creating-a-single-consistency-group-with-a-new-san-volume">Creating a single consistency group with a new SAN volume</h3>
+<p>Provisions an application with one consistency group, each with one new SAN volumes, with one LUN, an igroup and no explicit Snapshot copy policy, FabricPool tiering policy, storage service, and QoS policy specification. The igroup to map a LUN to is specified at LUN-granularity.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup()
+    resource.svm = {&quot;name&quot;: &quot;vs1&quot;}
+    resource.luns = [
+        {
+            &quot;name&quot;: &quot;/vol/vol1/lun1&quot;,
+            &quot;space&quot;: {&quot;size&quot;: &quot;100mb&quot;},
+            &quot;os_type&quot;: &quot;linux&quot;,
+            &quot;lun_maps&quot;: [
+                {
+                    &quot;igroup&quot;: {
+                        &quot;name&quot;: &quot;igroup1&quot;,
+                        &quot;initiators&quot;: [
+                            {
+                                &quot;name&quot;: &quot;iqn.2021-07.com.netapp.englab.gdl:scspr2429998001&quot;
+                            }
+                        ],
+                    }
+                }
+            ],
+        }
+    ]
+    resource.post(hydrate=True)
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example3_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example3_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example3_result" class="try_it_out_content">
+<pre><code>ConsistencyGroup(
+    {
+        &quot;svm&quot;: {
+            &quot;name&quot;: &quot;vs1&quot;,
+            &quot;_links&quot;: {
+                &quot;self&quot;: {&quot;href&quot;: &quot;/api/svm/svms/4853f97a-0a63-11ec-a449-005056bbcf9f&quot;}
+            },
+            &quot;uuid&quot;: &quot;4853f97a-0a63-11ec-a449-005056bbcf9f&quot;,
+        },
+        &quot;name&quot;: &quot;vol1&quot;,
+        &quot;luns&quot;: [
+            {
+                &quot;os_type&quot;: &quot;linux&quot;,
+                &quot;lun_maps&quot;: [
+                    {
+                        &quot;igroup&quot;: {
+                            &quot;initiators&quot;: [
+                                {
+                                    &quot;name&quot;: &quot;iqn.2021-07.com.netapp.englab.gdl:scspr2429998001&quot;
+                                }
+                            ],
+                            &quot;name&quot;: &quot;igroup1&quot;,
+                        }
+                    }
+                ],
+                &quot;name&quot;: &quot;/vol/vol1/lun1&quot;,
+                &quot;space&quot;: {&quot;size&quot;: 104857600},
+            }
+        ],
+        &quot;uuid&quot;: &quot;6f48d798-0a7f-11ec-a449-005056bbcf9f&quot;,
+    }
+)
+
+</code></pre>
+</div>
+</div>
+<h3 id="creating-an-application-with-two-consistency-groups-with-existing-san-volumes">Creating an Application with two consistency groups with existing SAN volumes</h3>
+<p>Provisions an application with two consistency groups, each with two existing SAN volumes, a Snapshot copy policy at application-granularity, and a distinct consistency group granular Snapshot copy policy.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup()
+    resource.svm = {&quot;name&quot;: &quot;vs1&quot;}
+    resource.name = &quot;parent_cg&quot;
+    resource.snapshot_policy = {&quot;name&quot;: &quot;default-1weekly&quot;}
+    resource.consistency_groups = [
+        {
+            &quot;name&quot;: &quot;child_1&quot;,
+            &quot;snapshot_policy&quot;: {&quot;name&quot;: &quot;default&quot;},
+            &quot;volumes&quot;: [
+                {&quot;name&quot;: &quot;existing_vol1&quot;, &quot;provisioning_options&quot;: {&quot;action&quot;: &quot;add&quot;}},
+                {&quot;name&quot;: &quot;existing_vol2&quot;, &quot;provisioning_options&quot;: {&quot;action&quot;: &quot;add&quot;}},
+            ],
+        },
+        {
+            &quot;name&quot;: &quot;child_2&quot;,
+            &quot;snapshot_policy&quot;: {&quot;name&quot;: &quot;default&quot;},
+            &quot;volumes&quot;: [
+                {&quot;name&quot;: &quot;existing_vol3&quot;, &quot;provisioning_options&quot;: {&quot;action&quot;: &quot;add&quot;}},
+                {&quot;name&quot;: &quot;existing_vol4&quot;, &quot;provisioning_options&quot;: {&quot;action&quot;: &quot;add&quot;}},
+            ],
+        },
+    ]
+    resource.post(hydrate=True)
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example4_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example4_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example4_result" class="try_it_out_content">
+<pre><code>ConsistencyGroup(
+    {
+        &quot;snapshot_policy&quot;: {&quot;name&quot;: &quot;default-1weekly&quot;},
+        &quot;svm&quot;: {
+            &quot;name&quot;: &quot;vs1&quot;,
+            &quot;_links&quot;: {
+                &quot;self&quot;: {&quot;href&quot;: &quot;/api/svm/svms/4853f97a-0a63-11ec-a449-005056bbcf9f&quot;}
+            },
+            &quot;uuid&quot;: &quot;4853f97a-0a63-11ec-a449-005056bbcf9f&quot;,
+        },
+        &quot;name&quot;: &quot;parent_cg&quot;,
+        &quot;uuid&quot;: &quot;c1b22c85-0a82-11ec-a449-005056bbcf9f&quot;,
+        &quot;consistency_groups&quot;: [
+            {
+                &quot;snapshot_policy&quot;: {&quot;name&quot;: &quot;default&quot;},
+                &quot;uuid&quot;: &quot;c1b270b1-0a82-11ec-a449-005056bbcf9f&quot;,
+                &quot;name&quot;: &quot;child_1&quot;,
+                &quot;volumes&quot;: [{&quot;name&quot;: &quot;existing_vol1&quot;}, {&quot;name&quot;: &quot;existing_vol2&quot;}],
+            },
+            {
+                &quot;snapshot_policy&quot;: {&quot;name&quot;: &quot;default&quot;},
+                &quot;uuid&quot;: &quot;c1b270c3-0a82-11ec-a449-005056bbcf9f&quot;,
+                &quot;name&quot;: &quot;child_2&quot;,
+                &quot;volumes&quot;: [{&quot;name&quot;: &quot;existing_vol3&quot;}, {&quot;name&quot;: &quot;existing_vol4&quot;}],
+            },
+        ],
+    }
+)
+
+</code></pre>
+</div>
+</div>
+<h3 id="retrieving-specific-details-of-an-existing-consistency-group">Retrieving specific details of an existing consistency group</h3>
+<p>Retrieves the details of an existing consistency group.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup(uuid=&quot;6f48d798-0a7f-11ec-a449-005056bbcf9f&quot;)
+    resource.get()
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example5_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example5_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example5_result" class="try_it_out_content">
+<pre><code>ConsistencyGroup(
+    {
+        &quot;svm&quot;: {
+            &quot;name&quot;: &quot;vs1&quot;,
+            &quot;_links&quot;: {
+                &quot;self&quot;: {&quot;href&quot;: &quot;/api/svm/svms/4853f97a-0a63-11ec-a449-005056bbcf9f&quot;}
+            },
+            &quot;uuid&quot;: &quot;4853f97a-0a63-11ec-a449-005056bbcf9f&quot;,
+        },
+        &quot;name&quot;: &quot;vol1&quot;,
+        &quot;space&quot;: {&quot;available&quot;: 107724800, &quot;size&quot;: 108003328, &quot;used&quot;: 278528},
+        &quot;_links&quot;: {
+            &quot;self&quot;: {
+                &quot;href&quot;: &quot;/api/application/consistency-groups/6f48d798-0a7f-11ec-a449-005056bbcf9f&quot;
+            }
+        },
+        &quot;replicated&quot;: False,
+        &quot;uuid&quot;: &quot;6f48d798-0a7f-11ec-a449-005056bbcf9f&quot;,
+    }
+)
+
+</code></pre>
+</div>
+</div>
+<h3 id="retrieving-all-details-of-an-existing-consistency-group">Retrieving all details of an existing consistency group</h3>
+<p>Retrieves all details of an existing consistency group. These details are not considered to be performant and are not guaranteed to return within one second.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup(uuid=&quot;6f48d798-0a7f-11ec-a449-005056bbcf9f&quot;)
+    resource.get(fields=&quot;**&quot;)
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example6_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example6_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example6_result" class="try_it_out_content">
+<pre><code>ConsistencyGroup(
+    {
+        &quot;svm&quot;: {
+            &quot;name&quot;: &quot;vs1&quot;,
+            &quot;_links&quot;: {
+                &quot;self&quot;: {&quot;href&quot;: &quot;/api/svm/svms/4853f97a-0a63-11ec-a449-005056bbcf9f&quot;}
+            },
+            &quot;uuid&quot;: &quot;4853f97a-0a63-11ec-a449-005056bbcf9f&quot;,
+        },
+        &quot;name&quot;: &quot;vol1&quot;,
+        &quot;tiering&quot;: {&quot;policy&quot;: &quot;none&quot;},
+        &quot;luns&quot;: [
+            {
+                &quot;serial_number&quot;: &quot;wIqM6]RfQK3t&quot;,
+                &quot;uuid&quot;: &quot;6f51748a-0a7f-11ec-a449-005056bbcf9f&quot;,
+                &quot;create_time&quot;: &quot;2021-08-31T13:18:24-04:00&quot;,
+                &quot;os_type&quot;: &quot;linux&quot;,
+                &quot;lun_maps&quot;: [
+                    {
+                        &quot;logical_unit_number&quot;: 0,
+                        &quot;igroup&quot;: {
+                            &quot;uuid&quot;: &quot;6f4a4b86-0a7f-11ec-a449-005056bbcf9f&quot;,
+                            &quot;os_type&quot;: &quot;linux&quot;,
+                            &quot;initiators&quot;: [
+                                {
+                                    &quot;name&quot;: &quot;iqn.2021-07.com.netapp.englab.gdl:scspr2429998001&quot;
+                                }
+                            ],
+                            &quot;name&quot;: &quot;igroup1&quot;,
+                            &quot;protocol&quot;: &quot;mixed&quot;,
+                        },
+                    }
+                ],
+                &quot;name&quot;: &quot;/vol/vol1/lun1&quot;,
+                &quot;space&quot;: {
+                    &quot;used&quot;: 0,
+                    &quot;size&quot;: 104857600,
+                    &quot;guarantee&quot;: {&quot;requested&quot;: False, &quot;reserved&quot;: False},
+                },
+            }
+        ],
+        &quot;space&quot;: {&quot;available&quot;: 107569152, &quot;size&quot;: 108003328, &quot;used&quot;: 434176},
+        &quot;_links&quot;: {
+            &quot;self&quot;: {
+                &quot;href&quot;: &quot;/api/application/consistency-groups/6f48d798-0a7f-11ec-a449-005056bbcf9f?fields=**&quot;
+            }
+        },
+        &quot;volumes&quot;: [
+            {
+                &quot;snapshot_policy&quot;: {
+                    &quot;uuid&quot;: &quot;a30b60a4-067d-11ec-a449-005056bbcf9f&quot;,
+                    &quot;name&quot;: &quot;default&quot;,
+                },
+                &quot;uuid&quot;: &quot;6f516c6c-0a7f-11ec-a449-005056bbcf9f&quot;,
+                &quot;name&quot;: &quot;vol1&quot;,
+                &quot;activity_tracking&quot;: {
+                    &quot;supported&quot;: False,
+                    &quot;state&quot;: &quot;off&quot;,
+                    &quot;unsupported_reason&quot;: {
+                        &quot;code&quot;: &quot;124518405&quot;,
+                        &quot;message&quot;: &quot;Volume activity tracking is not supported on volumes that contain LUNs.&quot;,
+                    },
+                },
+                &quot;comment&quot;: &quot;&quot;,
+                &quot;analytics&quot;: {
+                    &quot;state&quot;: &quot;off&quot;,
+                    &quot;supported&quot;: False,
+                    &quot;unsupported_reason&quot;: {
+                        &quot;code&quot;: &quot;111411207&quot;,
+                        &quot;message&quot;: &quot;File system analytics is not supported on volumes that contain LUNs.&quot;,
+                    },
+                },
+                &quot;space&quot;: {&quot;available&quot;: 107569152, &quot;size&quot;: 108003328, &quot;used&quot;: 434176},
+                &quot;tiering&quot;: {&quot;policy&quot;: &quot;none&quot;},
+                &quot;qos&quot;: {
+                    &quot;policy&quot;: {
+                        &quot;_links&quot;: {
+                            &quot;self&quot;: {
+                                &quot;href&quot;: &quot;/api/storage/qos/policies/b7189398-e572-48ab-8f69-82cd46580812&quot;
+                            }
+                        },
+                        &quot;uuid&quot;: &quot;b7189398-e572-48ab-8f69-82cd46580812&quot;,
+                        &quot;name&quot;: &quot;extreme-fixed&quot;,
+                    }
+                },
+            }
+        ],
+        &quot;replicated&quot;: False,
+        &quot;uuid&quot;: &quot;6f48d798-0a7f-11ec-a449-005056bbcf9f&quot;,
+        &quot;qos&quot;: {
+            &quot;policy&quot;: {
+                &quot;_links&quot;: {
+                    &quot;self&quot;: {
+                        &quot;href&quot;: &quot;/api/storage/qos/policies/b7189398-e572-48ab-8f69-82cd46580812&quot;
+                    }
+                },
+                &quot;uuid&quot;: &quot;b7189398-e572-48ab-8f69-82cd46580812&quot;,
+                &quot;name&quot;: &quot;extreme-fixed&quot;,
+            }
+        },
+    }
+)
+
+</code></pre>
+</div>
+</div>
+<h3 id="adding-luns-to-an-existing-volume-in-an-existing-consistency-group">Adding LUNs to an existing volume in an existing consistency group</h3>
+<p>Adds two NVMe namespaces to an existing volume in an existing consistency group, creates a new subsystem, and binds the new namespaces to it.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup(uuid=&quot;6f48d798-0a7f-11ec-a449-005056bbcf9f&quot;)
+    resource.luns = [
+        {
+            &quot;name&quot;: &quot;/vol/vol1/new_luns&quot;,
+            &quot;provisioning_options&quot;: {&quot;count&quot;: 2, &quot;action&quot;: &quot;create&quot;},
+            &quot;space&quot;: {&quot;size&quot;: &quot;100mb&quot;},
+            &quot;os_type&quot;: &quot;linux&quot;,
+            &quot;lun_maps&quot;: [
+                {
+                    &quot;igroup&quot;: {
+                        &quot;name&quot;: &quot;igroup2&quot;,
+                        &quot;initiators&quot;: [{&quot;name&quot;: &quot;01:02:03:04:05:06:07:01&quot;}],
+                    }
+                }
+            ],
+        }
+    ]
+    resource.patch()
+
+</code></pre>
+<h3 id="restoring-a-consistency-group-to-the-contents-of-an-existing-snapshot">Restoring a consistency group to the contents of an existing snapshot</h3>
+<p>Restores an existing consistency group to the contents of an existing snapshot of the consistency group.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup(uuid=&quot;6f51748a-0a7f-11ec-a449-005056bbcf9f&quot;)
+    resource.restore_to = {&quot;snapshot&quot;: {&quot;uuid&quot;: &quot;92c6c770-17a1-11eb-b141-005056acd498&quot;}}
+    resource.patch()
+
+</code></pre>
+<h3 id="deleting-a-consistency-group">Deleting a consistency group</h3>
+<p>Deletes a consistency group, where all storage originally associated with that consistency group remains in place.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup(uuid=&quot;6f48d798-0a7f-11ec-a449-005056bbcf9f&quot;)
+    resource.delete()
+
+</code></pre>
+<h3 id="cloning-an-existing-consistency-group">Cloning an existing consistency group</h3>
+<p>The following example clones an existing consistency group with the current contents:</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup()
+    resource.name = &quot;clone01_of_cg01&quot;
+    resource.svm = {&quot;name&quot;: &quot;vs_0&quot;}
+    resource.clone = {
+        &quot;volume&quot;: {&quot;prefix&quot;: &quot;my_clone_pfx&quot;, &quot;suffix&quot;: &quot;my_clone_sfx&quot;},
+        &quot;split_initiated&quot;: True,
+        &quot;parent_consistency_group&quot;: {
+            &quot;name&quot;: &quot;cg01&quot;,
+            &quot;uuid&quot;: &quot;ca5e76fb-98c0-11ec-855a-005056a7693b&quot;,
+        },
+        &quot;guarantee&quot;: {&quot;type&quot;: &quot;none&quot;},
+    }
+    resource.post(hydrate=True)
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example10_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example10_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example10_result" class="try_it_out_content">
+<pre><code>ConsistencyGroup(
+    {
+        &quot;svm&quot;: {&quot;name&quot;: &quot;vs_0&quot;},
+        &quot;name&quot;: &quot;clone01_of_cg01&quot;,
+        &quot;clone&quot;: {
+            &quot;parent_consistency_group&quot;: {
+                &quot;name&quot;: &quot;cg01&quot;,
+                &quot;uuid&quot;: &quot;ca5e76fb-98c0-11ec-855a-005056a7693b&quot;,
+            },
+            &quot;guarantee&quot;: {&quot;type&quot;: &quot;none&quot;},
+            &quot;split_initiated&quot;: True,
+            &quot;volume&quot;: {&quot;prefix&quot;: &quot;my_clone_pfx&quot;, &quot;suffix&quot;: &quot;my_clone_sfx&quot;},
+        },
+    }
+)
+
+</code></pre>
+</div>
+</div>
+<h3 id="cloning-a-consistency-group-from-an-existing-snapshot-copy">Cloning a consistency group from an existing Snapshot copy</h3>
+<p>The following example clones an existing consistency group with contents from an existing Snapshot copy:</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup()
+    resource.name = &quot;clone01_of_cg01&quot;
+    resource.svm = {&quot;name&quot;: &quot;vs_0&quot;}
+    resource.clone = {
+        &quot;volume&quot;: {&quot;prefix&quot;: &quot;my_clone_pfx&quot;, &quot;suffix&quot;: &quot;my_clone_sfx&quot;},
+        &quot;split_initiated&quot;: True,
+        &quot;parent_snapshot&quot;: {&quot;name&quot;: &quot;snap01_of_cg01&quot;},
+        &quot;parent_consistency_group&quot;: {
+            &quot;name&quot;: &quot;cg01&quot;,
+            &quot;uuid&quot;: &quot;ca5e76fb-98c0-11ec-855a-005056a7693b&quot;,
+        },
+        &quot;guarantee&quot;: {&quot;type&quot;: &quot;none&quot;},
+    }
+    resource.post(hydrate=True)
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example11_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example11_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example11_result" class="try_it_out_content">
+<pre><code>ConsistencyGroup(
+    {
+        &quot;svm&quot;: {&quot;name&quot;: &quot;vs_0&quot;},
+        &quot;name&quot;: &quot;clone01_of_cg01&quot;,
+        &quot;clone&quot;: {
+            &quot;parent_snapshot&quot;: {&quot;name&quot;: &quot;snap01_of_cg01&quot;},
+            &quot;parent_consistency_group&quot;: {
+                &quot;name&quot;: &quot;cg01&quot;,
+                &quot;uuid&quot;: &quot;ca5e76fb-98c0-11ec-855a-005056a7693b&quot;,
+            },
+            &quot;guarantee&quot;: {&quot;type&quot;: &quot;none&quot;},
+            &quot;split_initiated&quot;: True,
+            &quot;volume&quot;: {&quot;prefix&quot;: &quot;my_clone_pfx&quot;, &quot;suffix&quot;: &quot;my_clone_sfx&quot;},
+        },
+    }
+)
+
+</code></pre>
+</div>
+</div>
+<h3 id="adding-namespaces-to-an-existing-volume-in-an-existing-consistency-group">Adding namespaces to an existing volume in an existing consistency group</h3>
+<p>To add two NVMe Namespaces to an existing volume in an existing consistency group, create a new subsystem and bind the new namespaces to it.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup(uuid=&quot;6f51748a-0a7f-11ec-a449-005056bbcf9f&quot;)
+    resource.namespaces = [
+        {
+            &quot;name&quot;: &quot;/vol/vol1/new_namespace&quot;,
+            &quot;space&quot;: {&quot;size&quot;: &quot;10M&quot;},
+            &quot;os_type&quot;: &quot;windows&quot;,
+            &quot;provisioning_options&quot;: {&quot;count&quot;: 2},
+            &quot;subsystem_map&quot;: {
+                &quot;subsystem&quot;: {
+                    &quot;name&quot;: &quot;mySubsystem&quot;,
+                    &quot;hosts&quot;: [
+                        {
+                            &quot;nqn&quot;: &quot;nqn.1992-08.com.netapp:sn.d04594ef915b4c73b642169e72e4c0b1:subsystem.host1&quot;
+                        },
+                        {
+                            &quot;nqn&quot;: &quot;nqn.1992-08.com.netapp:sn.d04594ef915b4c73b642169e72e4c0b1:subsystem.host2&quot;
+                        },
+                    ],
+                }
+            },
+        }
+    ]
+    resource.patch()
+
+</code></pre>
+<h3 id="add-a-new-volume-in-an-existing-consistency-group">Add a new volume in an existing consistency group</h3>
+<p>The following example adds two new volumes to an existing consistency group.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup(uuid=&quot;6f51748a-0a7f-11ec-a449-005056bbcf9f&quot;)
+    resource.volumes = [
+        {
+            &quot;name&quot;: &quot;new_vol_&quot;,
+            &quot;provisioning_options&quot;: {&quot;count&quot;: &quot;2&quot;},
+            &quot;space&quot;: {&quot;size&quot;: &quot;1gb&quot;},
+        }
+    ]
+    resource.patch()
+
+</code></pre>
+<h3 id="adding-an-existing-volume-to-an-existing-consistency-group">Adding an existing volume to an existing consistency group</h3>
+<p>The following example adds an existing volume to an existing consistency group.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup(uuid=&quot;6f51748a-0a7f-11ec-a449-005056bbcf9f&quot;)
+    resource.volumes = [
+        {&quot;name&quot;: &quot;existing_vol&quot;, &quot;provisioning_options&quot;: {&quot;action&quot;: &quot;add&quot;}}
+    ]
+    resource.patch()
+
+</code></pre>
+<h3 id="promoting-a-single-consistency-group-to-a-nested-consistency-group">Promoting a single consistency group to a nested consistency group</h3>
+<p>The following example promotes a single consistency group to a
+nested consistency group with a new child consistency group.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup(uuid=&quot;6f51748a-0a7f-11ec-a449-005056bbcf9f&quot;)
+    resource.provisioning_options = {&quot;action&quot;: &quot;promote&quot;}
+    resource.consistency_groups = [
+        {&quot;name&quot;: &quot;cg_child&quot;, &quot;provisioning_options&quot;: {&quot;action&quot;: &quot;create&quot;}}
+    ]
+    resource.patch()
+
+</code></pre>
+<h3 id="demoting-a-nested-consistency-group-to-a-single-consistency-group">Demoting a nested consistency group to a single consistency group</h3>
+<p>The following example demotes (flattens) a nested consistency group to a
+single consistency group.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup(uuid=&quot;6f51748a-0a7f-11ec-a449-005056bbcf9f&quot;)
+    resource.provisioning_options = {&quot;action&quot;: &quot;demote&quot;}
+    resource.patch()
+
+</code></pre>
+<h3 id="adding-a-new-child-consistency-group-to-nested-consistency-group">Adding a new child consistency group to nested consistency group</h3>
+<p>The following example adds a new child consistency group to an
+existing nested consistency group, creating a new volume.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup(uuid=&quot;6f51748a-0a7f-11ec-a449-005056bbcf9f&quot;)
+    resource.consistency_groups = [
+        {
+            &quot;name&quot;: &quot;cg_child5&quot;,
+            &quot;provisioning_options&quot;: {&quot;action&quot;: &quot;create&quot;},
+            &quot;volumes&quot;: [{&quot;name&quot;: &quot;child5_vol_1&quot;, &quot;space&quot;: {&quot;size&quot;: &quot;100mb&quot;}}],
+        }
+    ]
+    resource.patch()
+
+</code></pre>
+<h3 id="removing-a-child-consistency-group-from-nested-consistency-group">Removing a child consistency group from nested consistency group</h3>
+<p>The following example removes a child consistency group from a
+nested consistency, changing it to a single consistency group
+with a new consistency group name.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup(uuid=&quot;6f51748a-0a7f-11ec-a449-005056bbcf9f&quot;)
+    resource.consistency_groups = [
+        {
+            &quot;name&quot;: &quot;cg_child5&quot;,
+            &quot;provisioning_options&quot;: {&quot;action&quot;: &quot;remove&quot;, &quot;name&quot;: &quot;new_single_cg&quot;},
+        }
+    ]
+    resource.patch()
+
+</code></pre>
+<h3 id="create-a-new-parent-consistency-group-with-an-existing-consistency-group">Create a new parent consistency group with an existing consistency group</h3>
+<p>The following example creates a new nested consistency group
+with an existing consistency group as child consistency group.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup()
+    resource.svm = {&quot;name&quot;: &quot;vs1&quot;}
+    resource.name = &quot;cg_parent2&quot;
+    resource.consistency_groups = [
+        {&quot;name&quot;: &quot;cg_large&quot;, &quot;provisioning_options&quot;: {&quot;action&quot;: &quot;add&quot;}},
+        {&quot;name&quot;: &quot;cg_standalone2&quot;, &quot;provisioning_options&quot;: {&quot;action&quot;: &quot;add&quot;}},
+    ]
+    resource.post(hydrate=True)
+    print(resource)
+
+</code></pre>
+<div class="try_it_out">
+<input id="example19_try_it_out" type="checkbox", class="try_it_out_check">
+<label for="example19_try_it_out" class="try_it_out_button">Try it out</label>
+<div id="example19_result" class="try_it_out_content">
+<pre><code>ConsistencyGroup(
+    {
+        &quot;svm&quot;: {&quot;name&quot;: &quot;vs1&quot;},
+        &quot;name&quot;: &quot;cg_parent2&quot;,
+        &quot;consistency_groups&quot;: [
+            {&quot;name&quot;: &quot;cg_large&quot;, &quot;provisioning_options&quot;: {&quot;action&quot;: &quot;add&quot;}},
+            {&quot;name&quot;: &quot;cg_standalone2&quot;, &quot;provisioning_options&quot;: {&quot;action&quot;: &quot;add&quot;}},
+        ],
+    }
+)
+
+</code></pre>
+</div>
+</div>
+<h3 id="reassign-a-volume-to-another-child-consistency-group">Reassign a volume to another child consistency group.</h3>
+<p>The following example reassigns a volume from a child consistency group
+to another child consistency group with the same parent consistency group.</p>
+<pre><code class="language-python">from netapp_ontap import HostConnection
+from netapp_ontap.resources import ConsistencyGroup
+
+with HostConnection(&quot;&lt;mgmt-ip&gt;&quot;, username=&quot;admin&quot;, password=&quot;password&quot;, verify=False):
+    resource = ConsistencyGroup(uuid=&quot;6f51748a-0a7f-11ec-a449-005056bbcf9f&quot;)
+    resource.consistency_groups = [
+        {
+            &quot;name&quot;: &quot;cg_child1&quot;,
+            &quot;volumes&quot;: [
+                {&quot;name&quot;: &quot;child2_vol_1&quot;, &quot;provisioning_options&quot;: {&quot;action&quot;: &quot;reassign&quot;}}
+            ],
+        },
+        {&quot;name&quot;: &quot;cg_child2&quot;},
+    ]
+    resource.patch()
+
+</code></pre>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroup"><code class="flex name class">
+<span>
+<span></span>
+class <span class="ident">ConsistencyGroup</span>
+</span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Allows interaction with ConsistencyGroup objects on the host</p>
+<p>Initialize the instance of the resource.</p>
+<p>Any keyword arguments are set on the instance as properties. For example,
+if the class was named 'MyResource', then this statement would be true:</p>
+<pre><code>MyResource(name='foo').name == 'foo'
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Each positional argument represents a parent key as used in
+the URL of the object. That is, each value will be used to fill
+in a segment of the URL which refers to some parent object. The
+order of these arguments must match the order they are specified
+in the URL, from left to right.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>each entry will have its key set as an attribute name on
+the instance and its value will be the value of that attribute.</dd>
+</dl></section>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroup.count_collection"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">count_collection</span>
+</span>
+(<span>*args, connection: <a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a> = None, **kwargs) -> int</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Returns a count of all ConsistencyGroup resources that match the provided query</p>
+<hr>
+<p>This calls GET on the object to determine the number of records. It
+is more efficient than calling get_collection() because it will not
+construct any objects. Query parameters can be passed in as kwargs
+to determine a count of objects that match some filtered criteria.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Each entry represents a parent key which is used to build the
+path to the child object. If the URL definition were
+/api/foos/{foo.name}/bars, then to get the count of bars
+for a particular foo, the foo.name value should be passed.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will be sent as query parameters
+to the host. These query parameters can affect the count. A
+return_records query param will be ignored.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>On success, returns an integer count of the objects of this type.
+On failure, returns -1.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400, or if there is no connection available to use either
+passed in or on the library.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroup.delete_collection"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">delete_collection</span>
+</span>
+(<span>*args, records: Iterable[_ForwardRef('<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup">ConsistencyGroup</a>')] = None, body: Union[<a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a>, dict] = None, poll: bool = True, poll_interval: Optional[int] = None, poll_timeout: Optional[int] = None, connection: <a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a> = None, **kwargs) -> <a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Deletes a consistency group.
+<br>Note this will not delete any associated volumes or LUNs. To remove those elements, you can use the appropriate object endpoint.</p>
+<h2 id="related-ontap-commands">Related ONTAP commands</h2>
+<p>There are no ONTAP commands for managing consistency groups.</p>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-application-application_consistency-groups"><code>DOC /application/consistency-groups</code></a></li>
+</ul>
+<hr>
+<p>Delete all objects in a collection which match the given query.</p>
+<p>All records on the host which match the query will be deleted.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Each entry represents a parent key which is used to build the
+path to the child object. If the URL definition were
+/api/foos/{foo.name}/bars, then to delete the collection of bars
+for a particular foo, the foo.name value should be passed.</dd>
+<dt><strong><code>records</code></strong></dt>
+<dd>Can be provided in place of a query. If so, this list of objects
+will be deleted from the host.</dd>
+<dt><strong><code>body</code></strong></dt>
+<dd>The body of the delete request. This could be a Resource instance
+or a dictionary object.</dd>
+<dt><strong><code>poll</code></strong></dt>
+<dd>If set to True, the call will not return until the
+asynchronous job on the host has completed. Has no effect if the
+host did not return a job response.</dd>
+<dt><strong><code>poll_interval</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+often to query the job for updates.</dd>
+<dt><strong><code>poll_timeout</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+long to continue monitoring the job's status for completion.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will be sent as query parameters
+to the host. Only resources matching this query will be deleted.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A <code><a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></code> object containing the
+details of the HTTP response.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroup.find"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">find</span>
+</span>
+(<span>*args, connection: <a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a> = None, **kwargs) -> <a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Retrieve details of a collection or a specific consistency group.</p>
+<h2 id="notes">Notes</h2>
+<p>When volume granular properties, such as, the storage SLC, Fabric Pool tiering are not the same for all the existing volumes of a consistency group, the corresponding property is not reported at consistency group granularity. It is only reported if all the volumes of the consistency group have the same value for that property.
+<br>If this consistency group instance has 1 or more replication relationships, the "replicated" parameter is true.
+If there are no associated replication relationships, it is false. This parameter is only included in the output for Single-CG and Parent-CG, not for Child-CG.
+If this consistency group instance has 1 or more replication relationships, the "replication_relationships" parameter is included in the output for Single-CG and Parent-CG instances.
+If there are no associated replication relationships, this parameter is not included in the output.
+Note that this parameter is an array and as such it has as many elements as the number of replication relationships associated with this consistency group. Each element of the array describes properties of one replication relationship associated with this consistency group. The "uuid" parameter identifies a specific replication relationship and the "href" parameter is a link to the corresponding SnapMirror relationship. The "is_source" parameter is true if this consistency group is the source in that relationship, otherwise it is false.</p>
+<h2 id="expensive-properties">Expensive properties</h2>
+<p>There is an added computational cost to retrieving values for these properties. They are not included by default in GET results and must be explicitly requested using the <code>fields</code> query parameter. See <a href="#docs-docs-Requesting-specific-fields"><code>DOC Requesting specific fields</code></a> to learn more.
+* <code>volumes</code>
+* <code>luns</code>
+* <code>namespaces</code></p>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-application-application_consistency-groups"><code>DOC /application/consistency-groups</code></a></li>
+</ul>
+<hr>
+<p>Find an instance of an object on the host given a query.</p>
+<p>The host will be queried with the provided key/value pairs to find a
+matching resource. If 0 are found, None will be returned.
+If more than 1 is found, an error will be raised or returned.
+If there is exactly 1 matching record, then it will be returned.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Each entry represents a parent key which is used to build the
+path to the child object. If the URL definition were
+/api/foos/{foo.name}/bars, then to find a bar for a particular
+foo, the foo.name value should be passed.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will be sent as query parameters
+to the host.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A <code><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></code> object containing the
+details of the object or None if no matches were found.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned more
+than 1 matching resource.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroup.get_collection"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">get_collection</span>
+</span>
+(<span>*args, connection: <a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a> = None, max_records: int = None, **kwargs) -> Iterable[<a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a>]</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Retrieve details of a collection or a specific consistency group.</p>
+<h2 id="notes">Notes</h2>
+<p>When volume granular properties, such as, the storage SLC, Fabric Pool tiering are not the same for all the existing volumes of a consistency group, the corresponding property is not reported at consistency group granularity. It is only reported if all the volumes of the consistency group have the same value for that property.
+<br>If this consistency group instance has 1 or more replication relationships, the "replicated" parameter is true.
+If there are no associated replication relationships, it is false. This parameter is only included in the output for Single-CG and Parent-CG, not for Child-CG.
+If this consistency group instance has 1 or more replication relationships, the "replication_relationships" parameter is included in the output for Single-CG and Parent-CG instances.
+If there are no associated replication relationships, this parameter is not included in the output.
+Note that this parameter is an array and as such it has as many elements as the number of replication relationships associated with this consistency group. Each element of the array describes properties of one replication relationship associated with this consistency group. The "uuid" parameter identifies a specific replication relationship and the "href" parameter is a link to the corresponding SnapMirror relationship. The "is_source" parameter is true if this consistency group is the source in that relationship, otherwise it is false.</p>
+<h2 id="expensive-properties">Expensive properties</h2>
+<p>There is an added computational cost to retrieving values for these properties. They are not included by default in GET results and must be explicitly requested using the <code>fields</code> query parameter. See <a href="#docs-docs-Requesting-specific-fields"><code>DOC Requesting specific fields</code></a> to learn more.
+* <code>volumes</code>
+* <code>luns</code>
+* <code>namespaces</code></p>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-application-application_consistency-groups"><code>DOC /application/consistency-groups</code></a></li>
+</ul>
+<hr>
+<p>Fetch a list of all objects of this type from the host.</p>
+<p>This is a lazy fetch, making API calls only as necessary when the result
+of this call is iterated over. For instance, if max_records is set to 5,
+then iterating over the collection causes an API call to be sent to the
+server once for every 5 records. If the client stops iterating before
+getting to the 6th record, then no additional API calls are made.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Each entry represents a parent key which is used to build the
+path to the child object. If the URL definition were
+/api/foos/{foo.name}/bars, then to get the collection of bars
+for a particular foo, the foo.name value should be passed.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>max_records</code></strong></dt>
+<dd>The maximum number of records to return per call</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will be sent as query parameters
+to the host.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A list of <code><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></code> objects</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If there is no connection
+available to use either passed in or on the library. This would
+be not be raised when get_collection() is called, but rather
+when the result is iterated.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroup.patch_collection"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">patch_collection</span>
+</span>
+(<span>body: dict, *args, records: Iterable[_ForwardRef('<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup">ConsistencyGroup</a>')] = None, poll: bool = True, poll_interval: Optional[int] = None, poll_timeout: Optional[int] = None, connection: <a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a> = None, **kwargs) -> <a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Updates a consistency group.
+<br>Note that this operation will never delete storage elements. You can specify only elements that should be added to the consistency group regardless of existing storage objects.</p>
+<h2 id="related-ontap-commands">Related ONTAP commands</h2>
+<p>N/A. There are no ONTAP commands for managing consistency groups.</p>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-application-application_consistency-groups"><code>DOC /application/consistency-groups</code></a></li>
+</ul>
+<hr>
+<p>Patch all objects in a collection which match the given query.</p>
+<p>All records on the host which match the query will be patched with the
+provided body.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>body</code></strong></dt>
+<dd>A dictionary of name/value pairs to set on all matching members
+of the collection. The body argument will be ignored if records
+is provided.</dd>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Each entry represents a parent key which is used to build the
+path to the child object. If the URL definition were
+/api/foos/{foo.name}/bars, then to patch the collection of bars
+for a particular foo, the foo.name value should be passed.</dd>
+<dt><strong><code>records</code></strong></dt>
+<dd>Can be provided in place of a query. If so, this list of objects
+will be patched on the host.</dd>
+<dt><strong><code>poll</code></strong></dt>
+<dd>If set to True, the call will not return until the
+asynchronous job on the host has completed. Has no effect if the
+host did not return a job response.</dd>
+<dt><strong><code>poll_interval</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+often to query the job for updates.</dd>
+<dt><strong><code>poll_timeout</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+long to continue monitoring the job's status for completion.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will be sent as query parameters
+to the host. Only resources matching this query will be patched.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A <code><a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></code> object containing the
+details of the HTTP response.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroup.post_collection"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">post_collection</span>
+</span>
+(<span>records: Iterable[_ForwardRef('<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup">ConsistencyGroup</a>')], *args, hydrate: bool = False, poll: bool = True, poll_interval: Optional[int] = None, poll_timeout: Optional[int] = None, connection: <a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a> = None, **kwargs) -> Union[List[<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup">ConsistencyGroup</a>], <a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a>]</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Creates a consistency group with one or more consistency groups having:
+* new SAN volumes,
+* existing SAN, NVMe or NAS FlexVol volumes in a new or existing consistency group</p>
+<h2 id="required-properties">Required properties</h2>
+<ul>
+<li><code>svm.uuid</code> or <code>svm.name</code> - Existing SVM in which to create the group.</li>
+<li><code>volumes</code>, <code>luns</code> or <code>namespaces</code></li>
+</ul>
+<h2 id="naming-conventions">Naming Conventions</h2>
+<h3 id="consistency-groups">Consistency groups</h3>
+<ul>
+<li>name or consistency_groups[].name, if specified</li>
+<li>derived from volumes[0].name, if only one volume is specified, same as volume name</li>
+</ul>
+<h3 id="volume">Volume</h3>
+<ul>
+<li>volumes[].name, if specified</li>
+<li>derived from volume prefix in luns[].name</li>
+<li>derived from cg[].name, suffixed by "_#" where "#" is a system generated unique number</li>
+<li>suffixed by "_#" where "#" is a system generated unique number, if provisioning_options.count is provided</li>
+</ul>
+<h3 id="lun">LUN</h3>
+<ul>
+<li>luns[].name, if specified</li>
+<li>derived from volumes[].name, suffixed by "_#" where "#" is a system generated unique number</li>
+<li>suffixed by "_#" where "#" is a system generated unique number, if provisioning_options.count is provided</li>
+</ul>
+<h3 id="nvme-namespace">NVMe Namespace</h3>
+<ul>
+<li>namespaces[].name, if specified</li>
+<li>derived from volumes[].name, suffixed by "_#" where "#" is a system generated unique number</li>
+<li>suffixed by "_#" where "#" is a system generated unique number, if provisioning_options.count is provided</li>
+</ul>
+<h2 id="related-ontap-commands">Related ONTAP commands</h2>
+<p>There are no ONTAP commands for managing consistency group.</p>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-application-application_consistency-groups"><code>DOC /application/consistency-groups</code></a></li>
+</ul>
+<hr>
+<p>Send this collection of objects to the host as a creation request.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>records</code></strong></dt>
+<dd>A list of <code><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></code> objects to send
+to the server to be created.</dd>
+<dt><strong><code>*args</code></strong></dt>
+<dd>Each entry represents a parent key which is used to build the
+path to the child object. If the URL definition were
+/api/foos/{foo.name}/bars, then to create a bar for a particular
+foo, the foo.name value should be passed.</dd>
+<dt><strong><code>hydrate</code></strong></dt>
+<dd>If set to True, after the response is received from
+the call, a a GET call will be made to refresh all fields of each
+object. When hydrate is set to True, poll must also be set to True.</dd>
+<dt><strong><code>poll</code></strong></dt>
+<dd>If set to True, the call will not return until the
+asynchronous job on the host has completed. Has no effect if the
+host did not return a job response.</dd>
+<dt><strong><code>poll_interval</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+often to query the job for updates.</dd>
+<dt><strong><code>poll_timeout</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+long to continue monitoring the job's status for completion.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will be sent as query parameters
+to the host. Only resources matching this query will be patched.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A list of <code><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></code> objects matching the provided
+type which have been created by the host and returned. This is <em>not</em>
+the same list that was provided, so to continue using the object, you
+should save this list. If poll is set to False, then a <code><a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></code>
+object is returned instead.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400</p></section>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroup.delete"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">delete</span>
+</span>
+(<span>self, body: Union[<a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a>, dict] = None, poll: bool = True, poll_interval: Optional[int] = None, poll_timeout: Optional[int] = None, **kwargs) -> <a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Deletes a consistency group.
+<br>Note this will not delete any associated volumes or LUNs. To remove those elements, you can use the appropriate object endpoint.</p>
+<h2 id="related-ontap-commands">Related ONTAP commands</h2>
+<p>There are no ONTAP commands for managing consistency groups.</p>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-application-application_consistency-groups"><code>DOC /application/consistency-groups</code></a></li>
+</ul>
+<hr>
+<p>Send a deletion request to the host for this object.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>body</code></strong></dt>
+<dd>The body of the delete request. This could be a Resource instance
+or a dictionary object.</dd>
+<dt><strong><code>poll</code></strong></dt>
+<dd>If set to True, the call will not return until the
+asynchronous job on the host has completed. Has no effect if the
+host did not return a job response.</dd>
+<dt><strong><code>poll_interval</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+often to query the job for updates.</dd>
+<dt><strong><code>poll_timeout</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+long to continue monitoring the job's status for completion.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will be sent as query parameters
+to the host.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A <code><a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></code> object containing the
+details of the HTTP response.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroup.get"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">get</span>
+</span>
+(<span>self, **kwargs) -> <a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Retrieves a single consistency group.</p>
+<h3 id="expensive-properties">Expensive properties</h3>
+<p>There is an added computational cost to retrieving values for these properties. They are not included by default in GET results and must be explicitly requested using the <code>fields</code> query parameter. See <a href="#docs-docs-Requesting-specific-fields"><code>DOC Requesting specific fields</code></a> to learn more.
+* <code>volumes</code>
+* <code>luns</code>
+* <code>namespaces</code></p>
+<h2 id="related-ontap-commands">Related ONTAP commands</h2>
+<p>There are no ONTAP commands for managing consistency groups.</p>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-application-application_consistency-groups"><code>DOC /application/consistency-groups</code></a></li>
+</ul>
+<hr>
+<p>Fetch the details of the object from the host.</p>
+<p>Requires the keys to be set (if any). After returning, new or changed
+properties from the host will be set on the instance.</p>
+<h2 id="returns">Returns</h2>
+<p>A <code><a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></code> object containing the
+details of the HTTP response.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroup.patch"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">patch</span>
+</span>
+(<span>self, hydrate: bool = False, poll: bool = True, poll_interval: Optional[int] = None, poll_timeout: Optional[int] = None, **kwargs) -> <a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Updates a consistency group.
+<br>Note that this operation will never delete storage elements. You can specify only elements that should be added to the consistency group regardless of existing storage objects.</p>
+<h2 id="related-ontap-commands">Related ONTAP commands</h2>
+<p>N/A. There are no ONTAP commands for managing consistency groups.</p>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-application-application_consistency-groups"><code>DOC /application/consistency-groups</code></a></li>
+</ul>
+<hr>
+<p>Send the difference in the object's state to the host as a modification request.</p>
+<p>Calculates the difference in the object's state since the last time we
+interacted with the host and sends this in the request body.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hydrate</code></strong></dt>
+<dd>If set to True, after the response is received from
+the call, a a GET call will be made to refresh all fields of the object.</dd>
+<dt><strong><code>poll</code></strong></dt>
+<dd>If set to True, the call will not return until the
+asynchronous job on the host has completed. Has no effect if the
+host did not return a job response.</dd>
+<dt><strong><code>poll_interval</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+often to query the job for updates.</dd>
+<dt><strong><code>poll_timeout</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+long to continue monitoring the job's status for completion.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will normally be sent as query parameters
+to the host. If any of these pairs are parameters that are sent as formdata then
+only parameters of that type will be accepted and all others will be discarded.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A <code><a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></code> object containing the
+details of the HTTP response.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroup.post"><code class="name flex">
+<span>
+<span></span>
+def <span class="ident">post</span>
+</span>
+(<span>self, hydrate: bool = False, poll: bool = True, poll_interval: Optional[int] = None, poll_timeout: Optional[int] = None, **kwargs) -> <a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Creates a consistency group with one or more consistency groups having:
+* new SAN volumes,
+* existing SAN, NVMe or NAS FlexVol volumes in a new or existing consistency group</p>
+<h2 id="required-properties">Required properties</h2>
+<ul>
+<li><code>svm.uuid</code> or <code>svm.name</code> - Existing SVM in which to create the group.</li>
+<li><code>volumes</code>, <code>luns</code> or <code>namespaces</code></li>
+</ul>
+<h2 id="naming-conventions">Naming Conventions</h2>
+<h3 id="consistency-groups">Consistency groups</h3>
+<ul>
+<li>name or consistency_groups[].name, if specified</li>
+<li>derived from volumes[0].name, if only one volume is specified, same as volume name</li>
+</ul>
+<h3 id="volume">Volume</h3>
+<ul>
+<li>volumes[].name, if specified</li>
+<li>derived from volume prefix in luns[].name</li>
+<li>derived from cg[].name, suffixed by "_#" where "#" is a system generated unique number</li>
+<li>suffixed by "_#" where "#" is a system generated unique number, if provisioning_options.count is provided</li>
+</ul>
+<h3 id="lun">LUN</h3>
+<ul>
+<li>luns[].name, if specified</li>
+<li>derived from volumes[].name, suffixed by "_#" where "#" is a system generated unique number</li>
+<li>suffixed by "_#" where "#" is a system generated unique number, if provisioning_options.count is provided</li>
+</ul>
+<h3 id="nvme-namespace">NVMe Namespace</h3>
+<ul>
+<li>namespaces[].name, if specified</li>
+<li>derived from volumes[].name, suffixed by "_#" where "#" is a system generated unique number</li>
+<li>suffixed by "_#" where "#" is a system generated unique number, if provisioning_options.count is provided</li>
+</ul>
+<h2 id="related-ontap-commands">Related ONTAP commands</h2>
+<p>There are no ONTAP commands for managing consistency group.</p>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="#docs-application-application_consistency-groups"><code>DOC /application/consistency-groups</code></a></li>
+</ul>
+<hr>
+<p>Send this object to the host as a creation request.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>hydrate</code></strong></dt>
+<dd>If set to True, after the response is received from
+the call, a a GET call will be made to refresh all fields of the object.</dd>
+<dt><strong><code>poll</code></strong></dt>
+<dd>If set to True, the call will not return until the
+asynchronous job on the host has completed. Has no effect if the
+host did not return a job response.</dd>
+<dt><strong><code>poll_interval</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+often to query the job for updates.</dd>
+<dt><strong><code>poll_timeout</code></strong></dt>
+<dd>If the operation returns a job, this specifies how
+long to continue monitoring the job's status for completion.</dd>
+<dt><strong><code>connection</code></strong></dt>
+<dd>The <code><a title="netapp_ontap.host_connection.HostConnection" href="../host_connection.html#netapp_ontap.host_connection.HostConnection">HostConnection</a></code> object
+to use for this API call. If unset, tries to use the connection
+which is set globally for the library or from the current context.</dd>
+<dt><strong><code>**kwargs</code></strong></dt>
+<dd>Any key/value pairs passed will normally be sent as query parameters
+to the host. If any of these pairs are parameters that are sent as formdata then
+only parameters of that type will be accepted and all others will be discarded.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A <code><a title="netapp_ontap.response.NetAppResponse" href="../response.html#netapp_ontap.response.NetAppResponse">NetAppResponse</a></code> object containing the
+details of the HTTP response.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code>: If the API call returned a status
+code &gt;= 400</p></section>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></b></code>:
+<ul class="hlist">
+<li><code><a title="netapp_ontap.resource.Resource.from_dict" href="../resource.html#netapp_ontap.resource.Resource.from_dict">from_dict</a></code></li>
+<li><code><a title="netapp_ontap.resource.Resource.get_collection_url" href="../resource.html#netapp_ontap.resource.Resource.get_collection_url">get_collection_url</a></code></li>
+<li><code><a title="netapp_ontap.resource.Resource.get_connection" href="../resource.html#netapp_ontap.resource.Resource.get_connection">get_connection</a></code></li>
+<li><code><a title="netapp_ontap.resource.Resource.instance_location" href="../resource.html#netapp_ontap.resource.Resource.instance_location">instance_location</a></code></li>
+<li><code><a title="netapp_ontap.resource.Resource.path_keys" href="../resource.html#netapp_ontap.resource.Resource.path_keys">path_keys</a></code></li>
+<li><code><a title="netapp_ontap.resource.Resource.poll" href="../resource.html#netapp_ontap.resource.Resource.poll">poll</a></code></li>
+<li><code><a title="netapp_ontap.resource.Resource.set_connection" href="../resource.html#netapp_ontap.resource.Resource.set_connection">set_connection</a></code></li>
+<li><code><a title="netapp_ontap.resource.Resource.to_dict" href="../resource.html#netapp_ontap.resource.Resource.to_dict">to_dict</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema"><code class="flex name class">
+<span>
+<span></span>
+class <span class="ident">ConsistencyGroupSchema</span>
+</span>
+<span>(</span><span>*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>The fields of the ConsistencyGroup object</p></section>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>netapp_ontap.resource.ResourceSchema</li>
+<li>marshmallow.schema.Schema</li>
+<li>marshmallow.base.SchemaABC</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.application">
+<code class="name">
+<span></span>
+<a href="../models/consistency_group_application.html"><span class="ident">application</span><span>: ConsistencyGroupApplication</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The application field of the consistency_group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.clone">
+<code class="name">
+<span></span>
+<a href="../models/consistency_group_clone.html"><span class="ident">clone</span><span>: ConsistencyGroupClone</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The clone field of the consistency_group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.consistency_groups">
+<code class="name">
+<span></span>
+<a href="../models/consistency_group_child.html"><span class="ident">consistency_groups</span><span>: List[ConsistencyGroupChild]</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>A consistency group is a mutually exclusive aggregation of volumes or other consistency groups. A consistency group can only be associated with one direct parent consistency group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.links">
+<code class="name">
+<span></span>
+<a href="../models/self_link.html"><span class="ident">links</span><span>: SelfLink</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The links field of the consistency_group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.luns">
+<code class="name">
+<span></span>
+<a href="../models/consistency_group_lun.html"><span class="ident">luns</span><span>: List[ConsistencyGroupLun]</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The LUNs array can be used to create or modify LUNs in a consistency group on a new or existing volume that is a member of the consistency group. LUNs are considered members of a consistency group if they are located on a volume that is a member of the consistency group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.metric">
+<code class="name">
+<span></span>
+<a href="consistency_group_metrics.html"><span class="ident">metric</span><span>: ConsistencyGroupMetrics</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The metric field of the consistency_group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.name">
+<code class="name">
+<span></span>
+<span class="ident">name</span><span>: str</span>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>Name of the consistency group. The consistency group name must be unique within an SVM.<br/>
+If not provided and the consistency group contains only one volume, the name will be generated based on the volume name. If the consistency group contains more than one volume, the name is required.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.namespaces">
+<code class="name">
+<span></span>
+<a href="../models/consistency_group_consistency_groups_namespaces.html"><span class="ident">namespaces</span><span>: List[ConsistencyGroupConsistencyGroupsNamespaces]</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>An NVMe namespace is a collection of addressable logical blocks presented to hosts connected to the SVM using the NVMe over Fabrics protocol.
+In ONTAP, an NVMe namespace is located within a volume. Optionally, it can be located within a qtree in a volume.<br/>
+An NVMe namespace is created to a specified size using thin or thick provisioning as determined by the volume on which it is created. NVMe namespaces support being cloned. An NVMe namespace cannot be renamed, resized, or moved to a different volume. NVMe namespaces do not support the assignment of a QoS policy for performance management, but a QoS policy can be assigned to the volume containing the namespace. See the NVMe namespace object model to learn more about each of the properties supported by the NVMe namespace REST API.<br/>
+An NVMe namespace must be mapped to an NVMe subsystem to grant access to the subsystem's hosts. Hosts can then access the NVMe namespace and perform I/O using the NVMe over Fabrics protocol.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.parent_consistency_group">
+<code class="name">
+<span></span>
+<a href="#netapp_ontap.resources.consistency_group"><span class="ident">parent_consistency_group</span><span>: ConsistencyGroup</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The parent_consistency_group field of the consistency_group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.provisioning_options">
+<code class="name">
+<span></span>
+<a href="../models/consistency_group_provisioning_options.html"><span class="ident">provisioning_options</span><span>: ConsistencyGroupProvisioningOptions</span></a>
+<span class="accessors">
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The provisioning_options field of the consistency_group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.qos">
+<code class="name">
+<span></span>
+<a href="../models/consistency_group_qos.html"><span class="ident">qos</span><span>: ConsistencyGroupQos</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The qos field of the consistency_group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.replicated">
+<code class="name">
+<span></span>
+<span class="ident">replicated</span><span>: bool</span>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>Indicates whether or not replication has been enabled on this consistency group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.replication_relationships">
+<code class="name">
+<span></span>
+<a href="../models/consistency_group_replication_relationships.html"><span class="ident">replication_relationships</span><span>: List[ConsistencyGroupReplicationRelationships]</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>Indicates the SnapMirror relationship of this consistency group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.replication_source">
+<code class="name">
+<span></span>
+<span class="ident">replication_source</span><span>: bool</span>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>Since support for this field is to be removed in the next release, use replication_relationships.is_source instead.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.restore_to">
+<code class="name">
+<span></span>
+<a href="../models/consistency_group_consistency_groups_restore_to.html"><span class="ident">restore_to</span><span>: ConsistencyGroupConsistencyGroupsRestoreTo</span></a>
+<span class="accessors">
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The restore_to field of the consistency_group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.snapshot_policy">
+<code class="name">
+<span></span>
+<a href="snapshot_policy.html"><span class="ident">snapshot_policy</span><span>: SnapshotPolicy</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The Snapshot copy policy of the consistency group.<br/>
+This is the dedicated consistency group Snapshot copy policy, not an aggregation of the volume granular Snapshot copy policy.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.space">
+<code class="name">
+<span></span>
+<a href="../models/consistency_group_space.html"><span class="ident">space</span><span>: ConsistencyGroupSpace</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The space field of the consistency_group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.statistics">
+<code class="name">
+<span></span>
+<a href="../models/consistency_group_statistics.html"><span class="ident">statistics</span><span>: ConsistencyGroupStatistics</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The statistics field of the consistency_group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.svm">
+<code class="name">
+<span></span>
+<a href="svm.html"><span class="ident">svm</span><span>: Svm</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The svm field of the consistency_group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.tiering">
+<code class="name">
+<span></span>
+<a href="../models/consistency_group_tiering.html"><span class="ident">tiering</span><span>: ConsistencyGroupTiering</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The tiering field of the consistency_group.</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.uuid">
+<code class="name">
+<span></span>
+<span class="ident">uuid</span><span>: str</span>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>The unique identifier of the consistency group. The UUID is generated by ONTAP when the consistency group is created.</p>
+<p>Example: 1cd8a442-86d1-11e0-ae1c-123478563412</p></section>
+</dd>
+<dt id="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.volumes">
+<code class="name">
+<span></span>
+<a href="../models/consistency_group_consistency_groups_volumes.html"><span class="ident">volumes</span><span>: List[ConsistencyGroupConsistencyGroupsVolumes]</span></a>
+<span class="accessors">
+<span class="gettable_field">GET</span>
+<span class="postable_field">POST</span>
+<span class="patchable_field">PATCH</span>
+</span>
+</code>
+</dt>
+<dd>
+<section class="desc"><p>A consistency group is a mutually exclusive aggregation of volumes or other consistency groups. A volume can only be associated with one direct parent consistency group.<br/>
+The volumes array can be used to create new volumes in the consistency group, add existing volumes to the consistency group, or modify existing volumes that are already members of the consistency group.<br/>
+The total number of volumes across all child consistency groups contained in a consistency group is constrained by the same limit.</p></section>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<header>
+<a class="homelink" rel="home" title="NetApp ONTAP Python Client Library">
+<img alt="NetApp Logo" src="data:image/jpeg;base64,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">
+</a>
+</header>
+<h1>Index</h1>
+<div class="toc">
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#consistency-group-apis">Consistency group
+APIs</a></li>
+<li><a href="#examples">Examples</a><ul>
+<li><a href="#retrieving-all-consistency-groups-of-an-svm">Retrieving all consistency groups of an SVM</a></li>
+<li><a href="#retrieving-details-of-all-consistency-groups-of-an-svm">Retrieving details of all consistency groups of an SVM</a></li>
+<li><a href="#retrieving-details-of-non-nested-consistency-groups">Retrieving details of non-nested consistency groups</a></li>
+<li><a href="#creating-a-single-consistency-group-with-a-new-san-volume">Creating a single consistency group with a new SAN volume</a></li>
+<li><a href="#creating-an-application-with-two-consistency-groups-with-existing-san-volumes">Creating an Application with two consistency groups with existing SAN volumes</a></li>
+<li><a href="#retrieving-specific-details-of-an-existing-consistency-group">Retrieving specific details of an existing consistency group</a></li>
+<li><a href="#retrieving-all-details-of-an-existing-consistency-group">Retrieving all details of an existing consistency group</a></li>
+<li><a href="#adding-luns-to-an-existing-volume-in-an-existing-consistency-group">Adding LUNs to an existing volume in an existing consistency group</a></li>
+<li><a href="#restoring-a-consistency-group-to-the-contents-of-an-existing-snapshot">Restoring a consistency group to the contents of an existing snapshot</a></li>
+<li><a href="#deleting-a-consistency-group">Deleting a consistency group</a></li>
+<li><a href="#cloning-an-existing-consistency-group">Cloning an existing consistency group</a></li>
+<li><a href="#cloning-a-consistency-group-from-an-existing-snapshot-copy">Cloning a consistency group from an existing Snapshot copy</a></li>
+<li><a href="#adding-namespaces-to-an-existing-volume-in-an-existing-consistency-group">Adding namespaces to an existing volume in an existing consistency group</a></li>
+<li><a href="#add-a-new-volume-in-an-existing-consistency-group">Add a new volume in an existing consistency group</a></li>
+<li><a href="#adding-an-existing-volume-to-an-existing-consistency-group">Adding an existing volume to an existing consistency group</a></li>
+<li><a href="#promoting-a-single-consistency-group-to-a-nested-consistency-group">Promoting a single consistency group to a nested consistency group</a></li>
+<li><a href="#demoting-a-nested-consistency-group-to-a-single-consistency-group">Demoting a nested consistency group to a single consistency group</a></li>
+<li><a href="#adding-a-new-child-consistency-group-to-nested-consistency-group">Adding a new child consistency group to nested consistency group</a></li>
+<li><a href="#removing-a-child-consistency-group-from-nested-consistency-group">Removing a child consistency group from nested consistency group</a></li>
+<li><a href="#create-a-new-parent-consistency-group-with-an-existing-consistency-group">Create a new parent consistency group with an existing consistency group</a></li>
+<li><a href="#reassign-a-volume-to-another-child-consistency-group">Reassign a volume to another child consistency group.</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="netapp_ontap.resources" href="index.html">netapp_ontap.resources</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li class="None">
+<h4><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup">ConsistencyGroup</a>
+</code></h4>
+<ul class="two-column">
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup.count_collection" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup.count_collection">count_collection</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup.delete" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup.delete">delete</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup.delete_collection" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup.delete_collection">delete_collection</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup.find" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup.find">find</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup.get" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup.get">get</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup.get_collection" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup.get_collection">get_collection</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup.patch" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup.patch">patch</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup.patch_collection" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup.patch_collection">patch_collection</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup.post" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup.post">post</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroup.post_collection" href="#netapp_ontap.resources.consistency_group.ConsistencyGroup.post_collection">post_collection</a>
+</code></li>
+</ul>
+</li>
+<li class="None">
+<h4><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema">ConsistencyGroupSchema</a>
+</code></h4>
+<ul class="">
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.application" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.application">application</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.clone" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.clone">clone</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.consistency_groups" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.consistency_groups">consistency_groups</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.links" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.links">links</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.luns" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.luns">luns</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.metric" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.metric">metric</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.name" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.name">name</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.namespaces" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.namespaces">namespaces</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.parent_consistency_group" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.parent_consistency_group">parent_consistency_group</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.provisioning_options" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.provisioning_options">provisioning_options</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.qos" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.qos">qos</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.replicated" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.replicated">replicated</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.replication_relationships" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.replication_relationships">replication_relationships</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.replication_source" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.replication_source">replication_source</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.restore_to" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.restore_to">restore_to</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.snapshot_policy" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.snapshot_policy">snapshot_policy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.space" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.space">space</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.statistics" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.statistics">statistics</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.svm" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.svm">svm</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.tiering" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.tiering">tiering</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.uuid" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.uuid">uuid</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.volumes" href="#netapp_ontap.resources.consistency_group.ConsistencyGroupSchema.volumes">volumes</a>
+</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+hljs.initHighlightingOnLoad();
+// unless a language is specified, no guessing/highlighting will be done
+hljs.configure({languages: []});
+</script>
+</body>
+</html>
