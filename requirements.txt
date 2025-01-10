@@ -4,3 +4,7 @@ pydantic==2.10.4
 python_jose==3.3.0
 SQLAlchemy==2.0.34
 uvicorn==0.34.0
+psycopg2
+pydantic[email]
+bcrypt
+python-multipart
