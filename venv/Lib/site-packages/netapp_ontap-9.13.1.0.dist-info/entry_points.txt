@@ -1,0 +1,3 @@
+[console_scripts]
+ontap-cli = netapp_ontap.__main__:main [cli]
+

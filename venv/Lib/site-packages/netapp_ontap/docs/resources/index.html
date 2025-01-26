@@ -1,0 +1,2499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>netapp_ontap.resources API documentation</title>
+<meta name="description" content="Copyright &amp;copy; 2021 NetApp Inc. All rights reserved …" />
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/gruvbox-dark.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{overflow:auto}code.name{position:relative}.accessors{position:absolute;right:5px}.gettable_field{padding:3px;border-radius:5px;background:#0067c5;color:white}.postable_field{padding:3px;border-radius:5px;background:#007a33;color:white}.patchable_field{padding:3px;border-radius:5px;background:#c99700;color:white}.private_content{padding:3px;border-radius:5px;background:#f76464;color:white}.conditional_content{padding:3px;border-radius:5px;background:#f99948;color:white}.list_visibility{font-size:0.7em}.module_visibility_description{font-weight:bold}.private_box{border:1px solid #dd3d3d;background:#ffe5e5;border-radius:5px;padding:2px;margin:4px 0}.conditional_box{border:1px solid #f99948;border-radius:5px;padding:2px;background:#ffeac3;margin:4px 0}.try_it_out{display:flex;flex-direction:column;align-items:flex-end}.try_it_out_check{display:none}.try_it_out_button{padding:5px 23px;transition:all .3s;border:2px solid gray;border-radius:4px;cursor:pointer;user-select:none}.try_it_out_button:hover{box-shadow:0 0 5px rgba(0,0,0,.3)}.try_it_out_content{width:100%;display:none}.try_it_out_check:checked ~ .try_it_out_button{display:none}.try_it_out_check:checked ~ .try_it_out_content{display:initial}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:60%}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>netapp_ontap.resources</code></h1>
+</header>
+<section id="section-intro">
+<p>Copyright &copy; 2021 NetApp Inc. All rights reserved.</p>
+<p>All of the modules in this package represent individual object models which can
+be imported and used for communicating with the REST APIs. To see their interface,
+look at <code><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></code>.</p>
+<h2 id="constructor">Constructor</h2>
+<p>Once you've imported the resources you want to work with into your application and set the host
+connection, the next step is to create an instance of the resource you want to perform
+operations on. A resource represents a snapshot of an object that exist on the host. Any keyword
+arguments passed into the constructor will be set as properties of that instance.</p>
+<pre><code class="language-python"># Create an instance of the cluster resource
+from netapp_ontap.resources import Cluster
+from netapp_ontap.import config, HostConnection
+config.CONNECTION = HostConnection(host, username=&quot;username&quot;, password=&quot;password&quot;)
+cluster = Cluster()
+cluster.get()
+</code></pre>
+<h2 id="to_dict">to_dict()</h2>
+<p>to_dict() is a function that will return a dictionary representation of the object's state.
+It serializes the current state of the object which is a <code><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></code> type into
+a 'dict' type, allowing you to view the information in a readable format.
+If you only want certain fields in the dictionary, 'only' may be passed in as a tuple of strings.</p>
+<h2 id="from_dict">from_dict()</h2>
+<p>from_dict() is a function that can be used to construct a resource from a dictionary.
+It does the opposite of to_dict(), it will deserialize a dictionary to a
+<code><a title="netapp_ontap.resource.Resource" href="../resource.html#netapp_ontap.resource.Resource">Resource</a></code> type. This can be used when constructing an object that
+you want to post to a resource. Field validation is done when you call from_dict.
+Enums, strings, and integers of the object will be validated
+When invalid data is passed in, a ValidationError will be raised.</p>
+<h2 id="verb-methods">Verb methods</h2>
+<p>The following operations are supported by this library. However, for a specific resource,
+you might only be able to call a subset of these functions.</p>
+<h3 id="get">get()</h3>
+<p>get() will fetch the details of an object from the host. For the required keys (if any) that need
+to be set, refer to the resource's page to see what those are.</p>
+<pre><code class="language-python">svm = Svm(uuid=&quot;44034ec2-46eb-4e0c-b2e8-6215abd6a9ad&quot;)
+svm.get()
+print(svm)
+</code></pre>
+<h3 id="get_collection">get_collection()</h3>
+<p>get_collection() will fetch all records of the resource type from the host. It returns a generator which
+you can then iterate through to view information about each object on the host. By default, only
+key values are returned for each resource. You can specify 'fields=field1,field2,&hellip;' to
+retrieve more fields for each resource.</p>
+<pre><code class="language-python">for svm in Svm.get_collection():
+    pprint.pprint(svm.to_dict())
+</code></pre>
+<h3 id="count_collection">count_collection()</h3>
+<p>count_collection() will return the number of records in the collection for the given resource</p>
+<pre><code class="language-python">num_svms = Svm.count_collection()
+assert Svm.count_collection(name=&quot;non-existent&quot;) == 0
+
+</code></pre>
+<h3 id="find">find()</h3>
+<p>find() will find an instance of an object of the desired resource on the host given a query.
+A query will be constructed with the provided key/value pairs and will be sent to the host.
+The find() operation is a wrapper on get_collection. It returns an instance of the resource
+if exactly one matching record is found, so you are expected to provide the necessary query
+parameters to filter get_collection() down to exactly one record. If 0 matches are found, it
+returns <code>None</code>. If more than one match is found a <code><a title="netapp_ontap.error.NetAppRestError" href="../error.html#netapp_ontap.error.NetAppRestError">NetAppRestError</a></code> is
+raised.</p>
+<pre><code class="language-python">svm = Svm.find(name=&quot;test_vserver&quot;)
+</code></pre>
+<h3 id="patch">patch()</h3>
+<p>patch() will modify any fields of an object that have been changed by the client application.
+You can modify a field of an object by setting it to the desired value, then calling the patch() on
+it. Only the fields of the object that have changed since the last iteraction with the host
+will be sent in the PATCH request body. To see which fields are modifiable, you can reference
+the ONTAP REST API Documentation.</p>
+<pre><code class="language-python">svm = Svm.find(name=&quot;test_vserver&quot;)
+svm.state = &quot;stopped&quot;
+svm.comment = &quot;this svm is offline&quot;
+svm.patch()
+</code></pre>
+<p>If you pass in parameters through the patch method that are read in as formData then the request
+will be of multipart/form-data content-type. Swagger 2.0 does not care whether it is a Post or Patch method.
+Due to the swagger 2.0 specifications, data type of both formData and body cannot be present in the same request.
+If the type of formdata parameter is file then it will be read as a string literal by default unless you prefix an '@' to the string.
+Whenever the string starts with an '@' then it will assume it is a path to a file and try to open and read
+the contents of the file instead. For example resource.patch(file1="/u/name/1.txt") will be sent as a string
+literal while resource.patch(file1="@/u/name/1.txt") will open and read the file and send the contents instead.</p>
+<pre><code class="language-python">resource = FileInfo(&quot;1234&quot;, &quot;my_file.txt&quot;)
+resource.patch(file1=&quot;@/u/name/1.txt&quot;)
+</code></pre>
+<h3 id="patch_collection">patch_collection()</h3>
+<p>patch_collection() will patch all objects in a collection which match a given query
+with the request body.</p>
+<pre><code class="language-python"># modify the state of all volumes whose name begins with 'testVol' on vserver vs1
+Volume.patch_collection({'state': 'offline'}, name='testVol*')
+</code></pre>
+<h3 id="delete">delete()</h3>
+<p>delete() will send a request to delete the object from the host.</p>
+<pre><code class="language-python">aggr = Aggregate.find(name='test_aggr')
+aggr.delete()
+</code></pre>
+<h3 id="delete_collection">delete_collection()</h3>
+<p>delete_collection() will delete all objects on the host which match
+the provided query.</p>
+<pre><code class="language-python">svm = Svm.delete_collection(name='test_vserver')
+</code></pre>
+<h3 id="post">post()</h3>
+<p>post() will create a new object on the host. During post(), the resource will update it's location
+and key fields. This allows you to perform other instance methods such as get(), patch(),
+or delete() following the post() operation. In order to POST to a resource, you first
+have to create an object, then you may call post() on it. The operation will send the object
+to the host as a request to create a new object of the resource type.</p>
+<pre><code class="language-python">volume = Volume.from_dict({
+    'name': 'vol1',
+    'svm': {'name':'vs1'},
+    'aggregates': [{'name'}:'aggr1'
+}]
+volume.post()
+</code></pre>
+<p>If you pass in parameters through the post method that are read in as formData then the request
+will be of multipart/form-data content-type. Due to the swagger 2.0 specifications, data type of
+both formData and body cannot be present in the same request. If the type of formdata parameter is
+file then it will be read as a string literal by default unless you prefix an @ to the string.
+Whenever the string starts with an @ then it will assume it is a path to a file and try to open and read
+the contents of the file instead. For example resource.post("file1"="/u/name/1.txt") will be sent as a string
+literal while resource.post("file1"="@/u/name/1.txt") will open and read the file and send the contents instead.</p>
+<p>Two path keys are required for this example, volume.uuid and path</p>
+<pre><code class="language-python">resource = FileInfo(&quot;1234&quot;, &quot;my_file.txt&quot;)
+resource.post(file1=&quot;@/u/name/1.txt&quot;)
+</code></pre>
+<h2 id="resources">Resources</h2>
+<table>
+<thead>
+<tr>
+<th align="left">URL</th>
+<th align="left">Resource</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>/api/security/key-managers/{security_key_manager[uuid]}/keys/{node[uuid]}/key-ids</code></td>
+<td align="left"><a title="netapp_ontap.resources.key_manager_keys.KeyManagerKeys" href="../resources/key_manager_keys.html"><code>KeyManagerKeys</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/namespaces/{nvme_namespace[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.performance_namespace_metric.PerformanceNamespaceMetric" href="../resources/performance_namespace_metric.html"><code>PerformanceNamespaceMetric</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/software/download</code></td>
+<td align="left"><a title="netapp_ontap.resources.software_package_download.SoftwarePackageDownload" href="../resources/software_package_download.html"><code>SoftwarePackageDownload</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/key-manager-configs</code></td>
+<td align="left"><a title="netapp_ontap.resources.key_manager_config.KeyManagerConfig" href="../resources/key_manager_config.html"><code>KeyManagerConfig</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/group-policies/{svm[uuid]}/central-access-rules</code></td>
+<td align="left"><a title="netapp_ontap.resources.group_policy_object_central_access_rule.GroupPolicyObjectCentralAccessRule" href="../resources/group_policy_object_central_access_rule.html"><code>GroupPolicyObjectCentralAccessRule</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nfs/export-policies</code></td>
+<td align="left"><a title="netapp_ontap.resources.export_policy.ExportPolicy" href="../resources/export_policy.html"><code>ExportPolicy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/fpolicy</code></td>
+<td align="left"><a title="netapp_ontap.resources.fpolicy.Fpolicy" href="../resources/fpolicy.html"><code>Fpolicy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/roles</code></td>
+<td align="left"><a title="netapp_ontap.resources.role.Role" href="../resources/role.html"><code>Role</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/volumes/{volume[uuid]}/top-metrics/clients</code></td>
+<td align="left"><a title="netapp_ontap.resources.top_metrics_client.TopMetricsClient" href="../resources/top_metrics_client.html"><code>TopMetricsClient</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/svm/migrations/{svm_migration[uuid]}/volumes</code></td>
+<td align="left"><a title="netapp_ontap.resources.svm_migration_volume.SvmMigrationVolume" href="../resources/svm_migration_volume.html"><code>SvmMigrationVolume</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/file-security/permissions/{svm[uuid]}/{file_directory_security[path]}</code></td>
+<td align="left"><a title="netapp_ontap.resources.file_directory_security.FileDirectorySecurity" href="../resources/file_directory_security.html"><code>FileDirectorySecurity</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/counter/tables/{counter_table[name]}/rows</code></td>
+<td align="left"><a title="netapp_ontap.resources.counter_row.CounterRow" href="../resources/counter_row.html"><code>CounterRow</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/san/lun-maps/{lun[uuid]}/{igroup[uuid]}/reporting-nodes</code></td>
+<td align="left"><a title="netapp_ontap.resources.lun_map_reporting_node.LunMapReportingNode" href="../resources/lun_map_reporting_node.html"><code>LunMapReportingNode</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/application/applications/{application[uuid]}/components/{component[uuid]}/snapshots</code></td>
+<td align="left"><a title="netapp_ontap.resources.application_component_snapshot.ApplicationComponentSnapshot" href="../resources/application_component_snapshot.html"><code>ApplicationComponentSnapshot</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/sessions</code></td>
+<td align="left"><a title="netapp_ontap.resources.cifs_session.CifsSession" href="../resources/cifs_session.html"><code>CifsSession</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/licensing/capacity-pools</code></td>
+<td align="left"><a title="netapp_ontap.resources.capacity_pool.CapacityPool" href="../resources/capacity_pool.html"><code>CapacityPool</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/shares</code></td>
+<td align="left"><a title="netapp_ontap.resources.cifs_share.CifsShare" href="../resources/cifs_share.html"><code>CifsShare</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nfs/kerberos/interfaces</code></td>
+<td align="left"><a title="netapp_ontap.resources.kerberos_interface.KerberosInterface" href="../resources/kerberos_interface.html"><code>KerberosInterface</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/ssh</code></td>
+<td align="left"><a title="netapp_ontap.resources.cluster_ssh_server.ClusterSshServer" href="../resources/cluster_ssh_server.html"><code>ClusterSshServer</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/fc/wwpn-aliases</code></td>
+<td align="left"><a title="netapp_ontap.resources.wwpn_alias.WwpnAlias" href="../resources/wwpn_alias.html"><code>WwpnAlias</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/local-users</code></td>
+<td align="left"><a title="netapp_ontap.resources.local_cifs_user.LocalCifsUser" href="../resources/local_cifs_user.html"><code>LocalCifsUser</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/shelves</code></td>
+<td align="left"><a title="netapp_ontap.resources.shelf.Shelf" href="../resources/shelf.html"><code>Shelf</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/volumes</code></td>
+<td align="left"><a title="netapp_ontap.resources.volume.Volume" href="../resources/volume.html"><code>Volume</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/resource-tags/{resource_tag[value]}/resources</code></td>
+<td align="left"><a title="netapp_ontap.resources.resource_tag_resource.ResourceTagResource" href="../resources/resource_tag_resource.html"><code>ResourceTagResource</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/ethernet/ports</code></td>
+<td align="left"><a title="netapp_ontap.resources.port.Port" href="../resources/port.html"><code>Port</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/shadowcopy-sets</code></td>
+<td align="left"><a title="netapp_ontap.resources.shadowcopy_set.ShadowcopySet" href="../resources/shadowcopy_set.html"><code>ShadowcopySet</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/snaplock/compliance-clocks</code></td>
+<td align="left"><a title="netapp_ontap.resources.snaplock_compliance_clock.SnaplockComplianceClock" href="../resources/snaplock_compliance_clock.html"><code>SnaplockComplianceClock</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/fc/ports</code></td>
+<td align="left"><a title="netapp_ontap.resources.fc_port.FcPort" href="../resources/fc_port.html"><code>FcPort</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/san/portsets</code></td>
+<td align="left"><a title="netapp_ontap.resources.portset.Portset" href="../resources/portset.html"><code>Portset</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/ip/bgp/peer-groups</code></td>
+<td align="left"><a title="netapp_ontap.resources.bgp_peer_group.BgpPeerGroup" href="../resources/bgp_peer_group.html"><code>BgpPeerGroup</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cloud/targets</code></td>
+<td align="left"><a title="netapp_ontap.resources.cloud_target.CloudTarget" href="../resources/cloud_target.html"><code>CloudTarget</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/san/vvol-bindings</code></td>
+<td align="left"><a title="netapp_ontap.resources.vvol_binding.VvolBinding" href="../resources/vvol_binding.html"><code>VvolBinding</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/ip/interfaces</code></td>
+<td align="left"><a title="netapp_ontap.resources.ip_interface.IpInterface" href="../resources/ip_interface.html"><code>IpInterface</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/svm/svms/{svm[uuid]}/top-metrics/directories</code></td>
+<td align="left"><a title="netapp_ontap.resources.top_metrics_svm_directory.TopMetricsSvmDirectory" href="../resources/top_metrics_svm_directory.html"><code>TopMetricsSvmDirectory</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/snmp</code></td>
+<td align="left"><a title="netapp_ontap.resources.snmp.Snmp" href="../resources/snmp.html"><code>Snmp</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/san/lun-maps</code></td>
+<td align="left"><a title="netapp_ontap.resources.lun_map.LunMap" href="../resources/lun_map.html"><code>LunMap</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/configuration-backup/backups</code></td>
+<td align="left"><a title="netapp_ontap.resources.configuration_backup_file.ConfigurationBackupFile" href="../resources/configuration_backup_file.html"><code>ConfigurationBackupFile</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nfs/services</code></td>
+<td align="left"><a title="netapp_ontap.resources.nfs_service.NfsService" href="../resources/nfs_service.html"><code>NfsService</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/fpolicy/{svm[uuid]}/policies</code></td>
+<td align="left"><a title="netapp_ontap.resources.fpolicy_policy.FpolicyPolicy" href="../resources/fpolicy_policy.html"><code>FpolicyPolicy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/authentication/cluster/ad-proxy</code></td>
+<td align="left"><a title="netapp_ontap.resources.cluster_ad_proxy.ClusterAdProxy" href="../resources/cluster_ad_proxy.html"><code>ClusterAdProxy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/ntp/servers</code></td>
+<td align="left"><a title="netapp_ontap.resources.ntp_server.NtpServer" href="../resources/ntp_server.html"><code>NtpServer</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/application/consistency-groups/{consistency_group[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.consistency_group_metrics.ConsistencyGroupMetrics" href="../resources/consistency_group_metrics.html"><code>ConsistencyGroupMetrics</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/file/clone/split-loads</code></td>
+<td align="left"><a title="netapp_ontap.resources.split_load.SplitLoad" href="../resources/split_load.html"><code>SplitLoad</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/snaplock/audit-logs</code></td>
+<td align="left"><a title="netapp_ontap.resources.snaplock_log.SnaplockLog" href="../resources/snaplock_log.html"><code>SnaplockLog</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nfs/services/{svm[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.performance_svm_nfs.PerformanceSvmNfs" href="../resources/performance_svm_nfs.html"><code>PerformanceSvmNfs</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/authentication/publickeys</code></td>
+<td align="left"><a title="netapp_ontap.resources.publickey.Publickey" href="../resources/publickey.html"><code>Publickey</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/cache/setting</code></td>
+<td align="left"><a title="netapp_ontap.resources.global_cache_setting.GlobalCacheSetting" href="../resources/global_cache_setting.html"><code>GlobalCacheSetting</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/login/messages</code></td>
+<td align="left"><a title="netapp_ontap.resources.login_messages.LoginMessages" href="../resources/login_messages.html"><code>LoginMessages</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/svm/peer-permissions</code></td>
+<td align="left"><a title="netapp_ontap.resources.svm_peer_permission.SvmPeerPermission" href="../resources/svm_peer_permission.html"><code>SvmPeerPermission</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/san/fcp/services</code></td>
+<td align="left"><a title="netapp_ontap.resources.fcp_service.FcpService" href="../resources/fcp_service.html"><code>FcpService</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/aggregates/{aggregate[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.performance_metric.PerformanceMetric" href="../resources/performance_metric.html"><code>PerformanceMetric</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nfs/connected-clients</code></td>
+<td align="left"><a title="netapp_ontap.resources.nfs_clients.NfsClients" href="../resources/nfs_clients.html"><code>NfsClients</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/ems</code></td>
+<td align="left"><a title="netapp_ontap.resources.ems_config.EmsConfig" href="../resources/ems_config.html"><code>EmsConfig</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/users-and-groups/privileges</code></td>
+<td align="left"><a title="netapp_ontap.resources.user_group_privileges.UserGroupPrivileges" href="../resources/user_group_privileges.html"><code>UserGroupPrivileges</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/file/copy</code></td>
+<td align="left"><a title="netapp_ontap.resources.file_copy.FileCopy" href="../resources/file_copy.html"><code>FileCopy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/vscan/server-status</code></td>
+<td align="left"><a title="netapp_ontap.resources.vscan_server_status.VscanServerStatus" href="../resources/vscan_server_status.html"><code>VscanServerStatus</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/metrocluster/nodes</code></td>
+<td align="left"><a title="netapp_ontap.resources.metrocluster_node.MetroclusterNode" href="../resources/metrocluster_node.html"><code>MetroclusterNode</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/application/applications</code></td>
+<td align="left"><a title="netapp_ontap.resources.application.Application" href="../resources/application.html"><code>Application</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/host-record</code></td>
+<td align="left"><a title="netapp_ontap.resources.host_record.HostRecord" href="../resources/host_record.html"><code>HostRecord</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/netgroup-files</code></td>
+<td align="left"><a title="netapp_ontap.resources.netgroup_file.NetgroupFile" href="../resources/netgroup_file.html"><code>NetgroupFile</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/quota/rules</code></td>
+<td align="left"><a title="netapp_ontap.resources.quota_rule.QuotaRule" href="../resources/quota_rule.html"><code>QuotaRule</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster</code></td>
+<td align="left"><a title="netapp_ontap.resources.cluster.Cluster" href="../resources/cluster.html"><code>Cluster</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nvme/services</code></td>
+<td align="left"><a title="netapp_ontap.resources.nvme_service.NvmeService" href="../resources/nvme_service.html"><code>NvmeService</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/login/totps</code></td>
+<td align="left"><a title="netapp_ontap.resources.totp.Totp" href="../resources/totp.html"><code>Totp</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/ndmp/svms</code></td>
+<td align="left"><a title="netapp_ontap.resources.ndmp_svm.NdmpSvm" href="../resources/ndmp_svm.html"><code>NdmpSvm</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/san/iscsi/sessions</code></td>
+<td align="left"><a title="netapp_ontap.resources.iscsi_session.IscsiSession" href="../resources/iscsi_session.html"><code>IscsiSession</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/unix-groups/{svm[uuid]}/{unix_group[name]}/users</code></td>
+<td align="left"><a title="netapp_ontap.resources.unix_group_users.UnixGroupUsers" href="../resources/unix_group_users.html"><code>UnixGroupUsers</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/local-groups/{svm[uuid]}/{local_cifs_group[sid]}/members</code></td>
+<td align="left"><a title="netapp_ontap.resources.local_cifs_group_members.LocalCifsGroupMembers" href="../resources/local_cifs_group_members.html"><code>LocalCifsGroupMembers</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/snaplock/file</code></td>
+<td align="left"><a title="netapp_ontap.resources.snaplock_file_retention.SnaplockFileRetention" href="../resources/snaplock_file_retention.html"><code>SnaplockFileRetention</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/chassis</code></td>
+<td align="left"><a title="netapp_ontap.resources.chassis.Chassis" href="../resources/chassis.html"><code>Chassis</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/application/templates</code></td>
+<td align="left"><a title="netapp_ontap.resources.application_template.ApplicationTemplate" href="../resources/application_template.html"><code>ApplicationTemplate</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/snmp/users</code></td>
+<td align="left"><a title="netapp_ontap.resources.snmp_user.SnmpUser" href="../resources/snmp_user.html"><code>SnmpUser</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/auto-update</code></td>
+<td align="left"><a title="netapp_ontap.resources.auto_update_info.AutoUpdateInfo" href="../resources/auto_update_info.html"><code>AutoUpdateInfo</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/key-managers/{security_key_manager[uuid]}/auth-keys</code></td>
+<td align="left"><a title="netapp_ontap.resources.key_manager_auth_key.KeyManagerAuthKey" href="../resources/key_manager_auth_key.html"><code>KeyManagerAuthKey</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/netbios</code></td>
+<td align="left"><a title="netapp_ontap.resources.netbios.Netbios" href="../resources/netbios.html"><code>Netbios</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/unix-users</code></td>
+<td align="left"><a title="netapp_ontap.resources.unix_user.UnixUser" href="../resources/unix_user.html"><code>UnixUser</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nvme/services/{svm[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.performance_nvme_metric.PerformanceNvmeMetric" href="../resources/performance_nvme_metric.html"><code>PerformanceNvmeMetric</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/application/applications/{application[uuid]}/components</code></td>
+<td align="left"><a title="netapp_ontap.resources.application_component.ApplicationComponent" href="../resources/application_component.html"><code>ApplicationComponent</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/svm/migrations</code></td>
+<td align="left"><a title="netapp_ontap.resources.svm_migration.SvmMigration" href="../resources/svm_migration.html"><code>SvmMigration</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/snmp/traphosts</code></td>
+<td align="left"><a title="netapp_ontap.resources.snmp_traphost.SnmpTraphost" href="../resources/snmp_traphost.html"><code>SnmpTraphost</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/snapmirror/relationships/{relationship[uuid]}/transfers</code></td>
+<td align="left"><a title="netapp_ontap.resources.snapmirror_transfer.SnapmirrorTransfer" href="../resources/snapmirror_transfer.html"><code>SnapmirrorTransfer</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/certificates</code></td>
+<td align="left"><a title="netapp_ontap.resources.security_certificate.SecurityCertificate" href="../resources/security_certificate.html"><code>SecurityCertificate</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/ldap</code></td>
+<td align="left"><a title="netapp_ontap.resources.ldap_service.LdapService" href="../resources/ldap_service.html"><code>LdapService</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/file-security/permissions/{svm[uuid]}/{file_directory_security_acl[path]}/acl</code></td>
+<td align="left"><a title="netapp_ontap.resources.file_directory_security_acl.FileDirectorySecurityAcl" href="../resources/file_directory_security_acl.html"><code>FileDirectorySecurityAcl</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/svm/svms/{svm[uuid]}/top-metrics/users</code></td>
+<td align="left"><a title="netapp_ontap.resources.top_metrics_svm_user.TopMetricsSvmUser" href="../resources/top_metrics_svm_user.html"><code>TopMetricsSvmUser</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nvme/subsystem-controllers</code></td>
+<td align="left"><a title="netapp_ontap.resources.nvme_subsystem_controller.NvmeSubsystemController" href="../resources/nvme_subsystem_controller.html"><code>NvmeSubsystemController</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/s3/services</code></td>
+<td align="left"><a title="netapp_ontap.resources.s3_service.S3Service" href="../resources/s3_service.html"><code>S3Service</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/resource-tags</code></td>
+<td align="left"><a title="netapp_ontap.resources.resource_tag.ResourceTag" href="../resources/resource_tag.html"><code>ResourceTag</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/snaplock/event-retention/operations</code></td>
+<td align="left"><a title="netapp_ontap.resources.ebr_operation.EbrOperation" href="../resources/ebr_operation.html"><code>EbrOperation</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nvme/subsystem-maps</code></td>
+<td align="left"><a title="netapp_ontap.resources.nvme_subsystem_map.NvmeSubsystemMap" href="../resources/nvme_subsystem_map.html"><code>NvmeSubsystemMap</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/ems/destinations</code></td>
+<td align="left"><a title="netapp_ontap.resources.ems_destination.EmsDestination" href="../resources/ems_destination.html"><code>EmsDestination</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/metrocluster/interconnects</code></td>
+<td align="left"><a title="netapp_ontap.resources.metrocluster_interconnect.MetroclusterInterconnect" href="../resources/metrocluster_interconnect.html"><code>MetroclusterInterconnect</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/luns/{lun[uuid]}/attributes</code></td>
+<td align="left"><a title="netapp_ontap.resources.lun_attribute.LunAttribute" href="../resources/lun_attribute.html"><code>LunAttribute</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/group-policies/{svm[uuid]}/restricted-groups</code></td>
+<td align="left"><a title="netapp_ontap.resources.group_policy_object_restricted_group.GroupPolicyObjectRestrictedGroup" href="../resources/group_policy_object_restricted_group.html"><code>GroupPolicyObjectRestrictedGroup</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/cache/host/settings</code></td>
+<td align="left"><a title="netapp_ontap.resources.hosts_settings.HostsSettings" href="../resources/hosts_settings.html"><code>HostsSettings</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/svm/svms/{svm[uuid]}/top-metrics/files</code></td>
+<td align="left"><a title="netapp_ontap.resources.top_metrics_svm_file.TopMetricsSvmFile" href="../resources/top_metrics_svm_file.html"><code>TopMetricsSvmFile</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/fc/fabrics/{fabric[name]}/switches</code></td>
+<td align="left"><a title="netapp_ontap.resources.fc_switch.FcSwitch" href="../resources/fc_switch.html"><code>FcSwitch</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/san/igroups/{igroup[uuid]}/igroups</code></td>
+<td align="left"><a title="netapp_ontap.resources.igroup_nested.IgroupNested" href="../resources/igroup_nested.html"><code>IgroupNested</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/ntp/keys</code></td>
+<td align="left"><a title="netapp_ontap.resources.ntp_key.NtpKey" href="../resources/ntp_key.html"><code>NtpKey</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/group-policies</code></td>
+<td align="left"><a title="netapp_ontap.resources.policies_and_rules_to_be_applied.PoliciesAndRulesToBeApplied" href="../resources/policies_and_rules_to_be_applied.html"><code>PoliciesAndRulesToBeApplied</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/s3/services/{svm[uuid]}/policies</code></td>
+<td align="left"><a title="netapp_ontap.resources.s3_policy.S3Policy" href="../resources/s3_policy.html"><code>S3Policy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/licensing/licenses</code></td>
+<td align="left"><a title="netapp_ontap.resources.license_package.LicensePackage" href="../resources/license_package.html"><code>LicensePackage</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/vscan/{svm[uuid]}/events</code></td>
+<td align="left"><a title="netapp_ontap.resources.vscan_event.VscanEvent" href="../resources/vscan_event.html"><code>VscanEvent</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/snapshot-policies</code></td>
+<td align="left"><a title="netapp_ontap.resources.snapshot_policy.SnapshotPolicy" href="../resources/snapshot_policy.html"><code>SnapshotPolicy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/web</code></td>
+<td align="left"><a title="netapp_ontap.resources.web.Web" href="../resources/web.html"><code>Web</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/ndmp/nodes</code></td>
+<td align="left"><a title="netapp_ontap.resources.ndmp_node.NdmpNode" href="../resources/ndmp_node.html"><code>NdmpNode</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/ndmp/svms/{svm[uuid]}/passwords</code></td>
+<td align="left"><a title="netapp_ontap.resources.ndmp_password.NdmpPassword" href="../resources/ndmp_password.html"><code>NdmpPassword</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/software/packages</code></td>
+<td align="left"><a title="netapp_ontap.resources.software_package.SoftwarePackage" href="../resources/software_package.html"><code>SoftwarePackage</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/configuration-backup</code></td>
+<td align="left"><a title="netapp_ontap.resources.configuration_backup.ConfigurationBackup" href="../resources/configuration_backup.html"><code>ConfigurationBackup</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/multi-admin-verify/rules</code></td>
+<td align="left"><a title="netapp_ontap.resources.multi_admin_verify_rule.MultiAdminVerifyRule" href="../resources/multi_admin_verify_rule.html"><code>MultiAdminVerifyRule</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/ssh/svms</code></td>
+<td align="left"><a title="netapp_ontap.resources.svm_ssh_server.SvmSshServer" href="../resources/svm_ssh_server.html"><code>SvmSshServer</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/volume-efficiency-policies</code></td>
+<td align="left"><a title="netapp_ontap.resources.volume_efficiency_policy.VolumeEfficiencyPolicy" href="../resources/volume_efficiency_policy.html"><code>VolumeEfficiencyPolicy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/aggregates/{aggregate[uuid]}/plexes</code></td>
+<td align="left"><a title="netapp_ontap.resources.plex.Plex" href="../resources/plex.html"><code>Plex</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/ipsec/policies</code></td>
+<td align="left"><a title="netapp_ontap.resources.ipsec_policy.IpsecPolicy" href="../resources/ipsec_policy.html"><code>IpsecPolicy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/s3/services/{svm[uuid]}/groups</code></td>
+<td align="left"><a title="netapp_ontap.resources.s3_group.S3Group" href="../resources/s3_group.html"><code>S3Group</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/shadow-copies</code></td>
+<td align="left"><a title="netapp_ontap.resources.shadowcopy.Shadowcopy" href="../resources/shadowcopy.html"><code>Shadowcopy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/key-managers/{security_key_manager[uuid]}/key-servers</code></td>
+<td align="left"><a title="netapp_ontap.resources.key_server.KeyServer" href="../resources/key_server.html"><code>KeyServer</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/application/applications/{application[uuid]}/snapshots</code></td>
+<td align="left"><a title="netapp_ontap.resources.application_snapshot.ApplicationSnapshot" href="../resources/application_snapshot.html"><code>ApplicationSnapshot</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/jobs</code></td>
+<td align="left"><a title="netapp_ontap.resources.job.Job" href="../resources/job.html"><code>Job</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/ndmp</code></td>
+<td align="left"><a title="netapp_ontap.resources.cluster_ndmp_properties.ClusterNdmpProperties" href="../resources/cluster_ndmp_properties.html"><code>ClusterNdmpProperties</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/users-and-groups/bulk-import</code></td>
+<td align="left"><a title="netapp_ontap.resources.local_cifs_users_and_groups_import.LocalCifsUsersAndGroupsImport" href="../resources/local_cifs_users_and_groups_import.html"><code>LocalCifsUsersAndGroupsImport</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/volumes/{volume[uuid]}/top-metrics/directories</code></td>
+<td align="left"><a title="netapp_ontap.resources.top_metrics_directory.TopMetricsDirectory" href="../resources/top_metrics_directory.html"><code>TopMetricsDirectory</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/local-groups</code></td>
+<td align="left"><a title="netapp_ontap.resources.local_cifs_group.LocalCifsGroup" href="../resources/local_cifs_group.html"><code>LocalCifsGroup</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.cluster_metrics.ClusterMetrics" href="../resources/cluster_metrics.html"><code>ClusterMetrics</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/key-managers</code></td>
+<td align="left"><a title="netapp_ontap.resources.security_key_manager.SecurityKeyManager" href="../resources/security_key_manager.html"><code>SecurityKeyManager</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/domains/{svm[uuid]}/preferred-domain-controllers</code></td>
+<td align="left"><a title="netapp_ontap.resources.cifs_domain_preferred_dc.CifsDomainPreferredDc" href="../resources/cifs_domain_preferred_dc.html"><code>CifsDomainPreferredDc</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/application/consistency-groups</code></td>
+<td align="left"><a title="netapp_ontap.resources.consistency_group.ConsistencyGroup" href="../resources/consistency_group.html"><code>ConsistencyGroup</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/roles/{owner[uuid]}/{role[name]}/privileges</code></td>
+<td align="left"><a title="netapp_ontap.resources.role_privilege.RolePrivilege" href="../resources/role_privilege.html"><code>RolePrivilege</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/vscan/{svm[uuid]}/on-demand-policies</code></td>
+<td align="left"><a title="netapp_ontap.resources.vscan_on_demand.VscanOnDemand" href="../resources/vscan_on_demand.html"><code>VscanOnDemand</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/software/history</code></td>
+<td align="left"><a title="netapp_ontap.resources.software_history.SoftwareHistory" href="../resources/software_history.html"><code>SoftwareHistory</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/accounts</code></td>
+<td align="left"><a title="netapp_ontap.resources.account.Account" href="../resources/account.html"><code>Account</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nfs/connected-client-settings</code></td>
+<td align="left"><a title="netapp_ontap.resources.nfs_clients_cache.NfsClientsCache" href="../resources/nfs_clients_cache.html"><code>NfsClientsCache</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/luns</code></td>
+<td align="left"><a title="netapp_ontap.resources.lun.Lun" href="../resources/lun.html"><code>Lun</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/switches</code></td>
+<td align="left"><a title="netapp_ontap.resources.storage_switch.StorageSwitch" href="../resources/storage_switch.html"><code>StorageSwitch</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/autosupport</code></td>
+<td align="left"><a title="netapp_ontap.resources.autosupport.Autosupport" href="../resources/autosupport.html"><code>Autosupport</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/volumes/{volume[uuid]}/files</code></td>
+<td align="left"><a title="netapp_ontap.resources.file_info.FileInfo" href="../resources/file_info.html"><code>FileInfo</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/ip/service-policies</code></td>
+<td align="left"><a title="netapp_ontap.resources.ip_service_policy.IpServicePolicy" href="../resources/ip_service_policy.html"><code>IpServicePolicy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/snaplock/file-fingerprints</code></td>
+<td align="left"><a title="netapp_ontap.resources.snaplock_file_fingerprint.SnaplockFileFingerprint" href="../resources/snaplock_file_fingerprint.html"><code>SnaplockFileFingerprint</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/ipspaces</code></td>
+<td align="left"><a title="netapp_ontap.resources.ipspace.Ipspace" href="../resources/ipspace.html"><code>Ipspace</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/http-proxy</code></td>
+<td align="left"><a title="netapp_ontap.resources.network_http_proxy.NetworkHttpProxy" href="../resources/network_http_proxy.html"><code>NetworkHttpProxy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/active-directory</code></td>
+<td align="left"><a title="netapp_ontap.resources.active_directory.ActiveDirectory" href="../resources/active_directory.html"><code>ActiveDirectory</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/ipsec</code></td>
+<td align="left"><a title="netapp_ontap.resources.ipsec.Ipsec" href="../resources/ipsec.html"><code>Ipsec</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/cache/netgroup/settings</code></td>
+<td align="left"><a title="netapp_ontap.resources.netgroups_settings.NetgroupsSettings" href="../resources/netgroups_settings.html"><code>NetgroupsSettings</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/group-policies/{svm[uuid]}/objects</code></td>
+<td align="left"><a title="netapp_ontap.resources.group_policy_object.GroupPolicyObject" href="../resources/group_policy_object.html"><code>GroupPolicyObject</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/s3/services/{svm[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.performance_s3_metric.PerformanceS3Metric" href="../resources/performance_s3_metric.html"><code>PerformanceS3Metric</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/ethernet/switch/ports</code></td>
+<td align="left"><a title="netapp_ontap.resources.switch_port.SwitchPort" href="../resources/switch_port.html"><code>SwitchPort</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/gcp-kms</code></td>
+<td align="left"><a title="netapp_ontap.resources.gcp_kms.GcpKms" href="../resources/gcp_kms.html"><code>GcpKms</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/local-hosts</code></td>
+<td align="left"><a title="netapp_ontap.resources.local_host.LocalHost" href="../resources/local_host.html"><code>LocalHost</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/ems/filters/{ems_filter[name]}/rules</code></td>
+<td align="left"><a title="netapp_ontap.resources.ems_filter_rule.EmsFilterRule" href="../resources/ems_filter_rule.html"><code>EmsFilterRule</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/flexcache/flexcaches</code></td>
+<td align="left"><a title="netapp_ontap.resources.flexcache.Flexcache" href="../resources/flexcache.html"><code>Flexcache</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/fpolicy/{svm[uuid]}/events</code></td>
+<td align="left"><a title="netapp_ontap.resources.fpolicy_event.FpolicyEvent" href="../resources/fpolicy_event.html"><code>FpolicyEvent</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/fc/logins</code></td>
+<td align="left"><a title="netapp_ontap.resources.fc_login.FcLogin" href="../resources/fc_login.html"><code>FcLogin</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/metrocluster/svms</code></td>
+<td align="left"><a title="netapp_ontap.resources.metrocluster_svm.MetroclusterSvm" href="../resources/metrocluster_svm.html"><code>MetroclusterSvm</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/ems/role-configs</code></td>
+<td align="left"><a title="netapp_ontap.resources.ems_role_config.EmsRoleConfig" href="../resources/ems_role_config.html"><code>EmsRoleConfig</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/services</code></td>
+<td align="left"><a title="netapp_ontap.resources.cifs_service.CifsService" href="../resources/cifs_service.html"><code>CifsService</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nvme/subsystems/{subsystem[uuid]}/hosts</code></td>
+<td align="left"><a title="netapp_ontap.resources.nvme_subsystem_host.NvmeSubsystemHost" href="../resources/nvme_subsystem_host.html"><code>NvmeSubsystemHost</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nfs/kerberos/realms</code></td>
+<td align="left"><a title="netapp_ontap.resources.kerberos_realm.KerberosRealm" href="../resources/kerberos_realm.html"><code>KerberosRealm</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/domains</code></td>
+<td align="left"><a title="netapp_ontap.resources.cifs_domain.CifsDomain" href="../resources/cifs_domain.html"><code>CifsDomain</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/volumes/{volume[uuid]}/top-metrics/files</code></td>
+<td align="left"><a title="netapp_ontap.resources.top_metrics_file.TopMetricsFile" href="../resources/top_metrics_file.html"><code>TopMetricsFile</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/flexcache/origins</code></td>
+<td align="left"><a title="netapp_ontap.resources.flexcache_origin.FlexcacheOrigin" href="../resources/flexcache_origin.html"><code>FlexcacheOrigin</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/san/igroups/{igroup[uuid]}/initiators</code></td>
+<td align="left"><a title="netapp_ontap.resources.igroup_initiator.IgroupInitiator" href="../resources/igroup_initiator.html"><code>IgroupInitiator</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/mediators</code></td>
+<td align="left"><a title="netapp_ontap.resources.mediator.Mediator" href="../resources/mediator.html"><code>Mediator</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/locks</code></td>
+<td align="left"><a title="netapp_ontap.resources.client_lock.ClientLock" href="../resources/client_lock.html"><code>ClientLock</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/autosupport/messages</code></td>
+<td align="left"><a title="netapp_ontap.resources.autosupport_message.AutosupportMessage" href="../resources/autosupport_message.html"><code>AutosupportMessage</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/ems/filters</code></td>
+<td align="left"><a title="netapp_ontap.resources.ems_filter.EmsFilter" href="../resources/ems_filter.html"><code>EmsFilter</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/metrocluster/operations</code></td>
+<td align="left"><a title="netapp_ontap.resources.metrocluster_operation.MetroclusterOperation" href="../resources/metrocluster_operation.html"><code>MetroclusterOperation</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/schedules</code></td>
+<td align="left"><a title="netapp_ontap.resources.schedule.Schedule" href="../resources/schedule.html"><code>Schedule</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/azure-key-vaults</code></td>
+<td align="left"><a title="netapp_ontap.resources.azure_key_vault.AzureKeyVault" href="../resources/azure_key_vault.html"><code>AzureKeyVault</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/metrocluster/dr-groups</code></td>
+<td align="left"><a title="netapp_ontap.resources.metrocluster_dr_group.MetroclusterDrGroup" href="../resources/metrocluster_dr_group.html"><code>MetroclusterDrGroup</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/ems/application-logs</code></td>
+<td align="left"><a title="netapp_ontap.resources.ems_application_log.EmsApplicationLog" href="../resources/ems_application_log.html"><code>EmsApplicationLog</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/fpolicy/{svm[uuid]}/connections</code></td>
+<td align="left"><a title="netapp_ontap.resources.fpolicy_connection.FpolicyConnection" href="../resources/fpolicy_connection.html"><code>FpolicyConnection</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/ethernet/ports/{port[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.port_metrics.PortMetrics" href="../resources/port_metrics.html"><code>PortMetrics</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security</code></td>
+<td align="left"><a title="netapp_ontap.resources.security_config.SecurityConfig" href="../resources/security_config.html"><code>SecurityConfig</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/dns</code></td>
+<td align="left"><a title="netapp_ontap.resources.dns.Dns" href="../resources/dns.html"><code>Dns</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/ems/messages</code></td>
+<td align="left"><a title="netapp_ontap.resources.ems_message.EmsMessage" href="../resources/ems_message.html"><code>EmsMessage</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/nodes/{node[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.node_metrics.NodeMetrics" href="../resources/node_metrics.html"><code>NodeMetrics</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/authentication/password</code></td>
+<td align="left"><a title="netapp_ontap.resources.account_password.AccountPassword" href="../resources/account_password.html"><code>AccountPassword</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/vscan/{svm[uuid]}/on-access-policies</code></td>
+<td align="left"><a title="netapp_ontap.resources.vscan_on_access.VscanOnAccess" href="../resources/vscan_on_access.html"><code>VscanOnAccess</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/san/portsets/{portset[uuid]}/interfaces</code></td>
+<td align="left"><a title="netapp_ontap.resources.portset_interface.PortsetInterface" href="../resources/portset_interface.html"><code>PortsetInterface</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/file/moves</code></td>
+<td align="left"><a title="netapp_ontap.resources.file_move.FileMove" href="../resources/file_move.html"><code>FileMove</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/volumes/{volume[uuid]}/snapshots</code></td>
+<td align="left"><a title="netapp_ontap.resources.snapshot.Snapshot" href="../resources/snapshot.html"><code>Snapshot</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/vscan</code></td>
+<td align="left"><a title="netapp_ontap.resources.vscan.Vscan" href="../resources/vscan.html"><code>Vscan</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/cache/unix-group/settings</code></td>
+<td align="left"><a title="netapp_ontap.resources.unix_group_settings.UnixGroupSettings" href="../resources/unix_group_settings.html"><code>UnixGroupSettings</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/namespaces</code></td>
+<td align="left"><a title="netapp_ontap.resources.nvme_namespace.NvmeNamespace" href="../resources/nvme_namespace.html"><code>NvmeNamespace</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/s3/services/{svm[uuid]}/users</code></td>
+<td align="left"><a title="netapp_ontap.resources.s3_user.S3User" href="../resources/s3_user.html"><code>S3User</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/firmware/history</code></td>
+<td align="left"><a title="netapp_ontap.resources.firmware_history.FirmwareHistory" href="../resources/firmware_history.html"><code>FirmwareHistory</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/luns/{lun[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.performance_lun_metric.PerformanceLunMetric" href="../resources/performance_lun_metric.html"><code>PerformanceLunMetric</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/vscan/{svm[uuid]}/scanner-pools</code></td>
+<td align="left"><a title="netapp_ontap.resources.vscan_scanner_pool.VscanScannerPool" href="../resources/vscan_scanner_pool.html"><code>VscanScannerPool</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/qos/policies</code></td>
+<td align="left"><a title="netapp_ontap.resources.qos_policy.QosPolicy" href="../resources/qos_policy.html"><code>QosPolicy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/fc/ports/{fc_port[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.performance_fc_port_metric.PerformanceFcPortMetric" href="../resources/performance_fc_port_metric.html"><code>PerformanceFcPortMetric</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/snapshot-policies/{snapshot_policy[uuid]}/schedules</code></td>
+<td align="left"><a title="netapp_ontap.resources.snapshot_policy_schedule.SnapshotPolicySchedule" href="../resources/snapshot_policy_schedule.html"><code>SnapshotPolicySchedule</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/connections</code></td>
+<td align="left"><a title="netapp_ontap.resources.cifs_connection.CifsConnection" href="../resources/cifs_connection.html"><code>CifsConnection</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/authentication/cluster/ldap</code></td>
+<td align="left"><a title="netapp_ontap.resources.cluster_ldap.ClusterLdap" href="../resources/cluster_ldap.html"><code>ClusterLdap</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/svm/peers</code></td>
+<td align="left"><a title="netapp_ontap.resources.svm_peer.SvmPeer" href="../resources/svm_peer.html"><code>SvmPeer</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/cluster</code></td>
+<td align="left"><a title="netapp_ontap.resources.cluster_space.ClusterSpace" href="../resources/cluster_space.html"><code>ClusterSpace</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/fc/interfaces/{fc_interface[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.performance_fc_interface_metric.PerformanceFcInterfaceMetric" href="../resources/performance_fc_interface_metric.html"><code>PerformanceFcInterfaceMetric</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/disks</code></td>
+<td align="left"><a title="netapp_ontap.resources.disk.Disk" href="../resources/disk.html"><code>Disk</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/home-directory/search-paths</code></td>
+<td align="left"><a title="netapp_ontap.resources.cifs_search_path.CifsSearchPath" href="../resources/cifs_search_path.html"><code>CifsSearchPath</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/snaplock/litigations/{litigation[id]}/files</code></td>
+<td align="left"><a title="netapp_ontap.resources.snaplock_litigation_file.SnaplockLitigationFile" href="../resources/snaplock_litigation_file.html"><code>SnaplockLitigationFile</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/ethernet/switches</code></td>
+<td align="left"><a title="netapp_ontap.resources.switch.Switch" href="../resources/switch.html"><code>Switch</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/auto-update/configurations</code></td>
+<td align="left"><a title="netapp_ontap.resources.auto_update_configuration.AutoUpdateConfiguration" href="../resources/auto_update_configuration.html"><code>AutoUpdateConfiguration</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/ldap-schemas</code></td>
+<td align="left"><a title="netapp_ontap.resources.ldap_schema.LdapSchema" href="../resources/ldap_schema.html"><code>LdapSchema</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/qtrees</code></td>
+<td align="left"><a title="netapp_ontap.resources.qtree.Qtree" href="../resources/qtree.html"><code>Qtree</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nvme/subsystems</code></td>
+<td align="left"><a title="netapp_ontap.resources.nvme_subsystem.NvmeSubsystem" href="../resources/nvme_subsystem.html"><code>NvmeSubsystem</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/ndmp/sessions</code></td>
+<td align="left"><a title="netapp_ontap.resources.ndmp_session.NdmpSession" href="../resources/ndmp_session.html"><code>NdmpSession</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/sensors</code></td>
+<td align="left"><a title="netapp_ontap.resources.sensors.Sensors" href="../resources/sensors.html"><code>Sensors</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/bridges</code></td>
+<td align="left"><a title="netapp_ontap.resources.storage_bridge.StorageBridge" href="../resources/storage_bridge.html"><code>StorageBridge</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/key-stores</code></td>
+<td align="left"><a title="netapp_ontap.resources.security_keystore.SecurityKeystore" href="../resources/security_keystore.html"><code>SecurityKeystore</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/metrocluster</code></td>
+<td align="left"><a title="netapp_ontap.resources.metrocluster.Metrocluster" href="../resources/metrocluster.html"><code>Metrocluster</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/quota/reports</code></td>
+<td align="left"><a title="netapp_ontap.resources.quota_report.QuotaReport" href="../resources/quota_report.html"><code>QuotaReport</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/ipsec/security-associations</code></td>
+<td align="left"><a title="netapp_ontap.resources.security_association.SecurityAssociation" href="../resources/security_association.html"><code>SecurityAssociation</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/svm/svms/{svm[uuid]}/web</code></td>
+<td align="left"><a title="netapp_ontap.resources.web_svm.WebSvm" href="../resources/web_svm.html"><code>WebSvm</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/pools</code></td>
+<td align="left"><a title="netapp_ontap.resources.storage_pool.StoragePool" href="../resources/storage_pool.html"><code>StoragePool</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/snaplock/event-retention/policies</code></td>
+<td align="left"><a title="netapp_ontap.resources.snaplock_retention_policy.SnaplockRetentionPolicy" href="../resources/snaplock_retention_policy.html"><code>SnaplockRetentionPolicy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/file/clone</code></td>
+<td align="left"><a title="netapp_ontap.resources.file_clone.FileClone" href="../resources/file_clone.html"><code>FileClone</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/nodes</code></td>
+<td align="left"><a title="netapp_ontap.resources.node.Node" href="../resources/node.html"><code>Node</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/coredump/coredumps</code></td>
+<td align="left"><a title="netapp_ontap.resources.coredump.Coredump" href="../resources/coredump.html"><code>Coredump</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/ipsec/ca-certificates</code></td>
+<td align="left"><a title="netapp_ontap.resources.ipsec_ca_certificate.IpsecCaCertificate" href="../resources/ipsec_ca_certificate.html"><code>IpsecCaCertificate</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/audit</code></td>
+<td align="left"><a title="netapp_ontap.resources.audit.Audit" href="../resources/audit.html"><code>Audit</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/fc/interfaces</code></td>
+<td align="left"><a title="netapp_ontap.resources.fc_interface.FcInterface" href="../resources/fc_interface.html"><code>FcInterface</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/multi-admin-verify/approval-groups</code></td>
+<td align="left"><a title="netapp_ontap.resources.multi_admin_verify_approval_group.MultiAdminVerifyApprovalGroup" href="../resources/multi_admin_verify_approval_group.html"><code>MultiAdminVerifyApprovalGroup</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/multi-admin-verify</code></td>
+<td align="left"><a title="netapp_ontap.resources.multi_admin_verify_config.MultiAdminVerifyConfig" href="../resources/multi_admin_verify_config.html"><code>MultiAdminVerifyConfig</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/svm/svms</code></td>
+<td align="left"><a title="netapp_ontap.resources.svm.Svm" href="../resources/svm.html"><code>Svm</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/services/{svm[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.performance_cifs_metric.PerformanceCifsMetric" href="../resources/performance_cifs_metric.html"><code>PerformanceCifsMetric</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/nis</code></td>
+<td align="left"><a title="netapp_ontap.resources.nis_service.NisService" href="../resources/nis_service.html"><code>NisService</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/svm/svms/{svm[uuid]}/top-metrics/clients</code></td>
+<td align="left"><a title="netapp_ontap.resources.top_metrics_svm_client.TopMetricsSvmClient" href="../resources/top_metrics_svm_client.html"><code>TopMetricsSvmClient</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/anti-ransomware/suspects</code></td>
+<td align="left"><a title="netapp_ontap.resources.anti_ransomware_suspect.AntiRansomwareSuspect" href="../resources/anti_ransomware_suspect.html"><code>AntiRansomwareSuspect</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/cache/unix-user/settings</code></td>
+<td align="left"><a title="netapp_ontap.resources.unix_user_settings.UnixUserSettings" href="../resources/unix_user_settings.html"><code>UnixUserSettings</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/multi-admin-verify/requests</code></td>
+<td align="left"><a title="netapp_ontap.resources.multi_admin_verify_request.MultiAdminVerifyRequest" href="../resources/multi_admin_verify_request.html"><code>MultiAdminVerifyRequest</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/file/clone/split-status</code></td>
+<td align="left"><a title="netapp_ontap.resources.split_status.SplitStatus" href="../resources/split_status.html"><code>SplitStatus</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/cache/group-membership/settings</code></td>
+<td align="left"><a title="netapp_ontap.resources.group_membership_settings.GroupMembershipSettings" href="../resources/group_membership_settings.html"><code>GroupMembershipSettings</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/name-mappings</code></td>
+<td align="left"><a title="netapp_ontap.resources.name_mapping.NameMapping" href="../resources/name_mapping.html"><code>NameMapping</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/s3/services/{svm[uuid]}/buckets</code></td>
+<td align="left"><a title="netapp_ontap.resources.s3_bucket_svm.S3BucketSvm" href="../resources/s3_bucket_svm.html"><code>S3BucketSvm</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/ports</code></td>
+<td align="left"><a title="netapp_ontap.resources.storage_port.StoragePort" href="../resources/storage_port.html"><code>StoragePort</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/san/igroups</code></td>
+<td align="left"><a title="netapp_ontap.resources.igroup.Igroup" href="../resources/igroup.html"><code>Igroup</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/snapmirror/relationships</code></td>
+<td align="left"><a title="netapp_ontap.resources.snapmirror_relationship.SnapmirrorRelationship" href="../resources/snapmirror_relationship.html"><code>SnapmirrorRelationship</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/volumes/{volume[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.volume_metrics.VolumeMetrics" href="../resources/volume_metrics.html"><code>VolumeMetrics</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/group-policies/{svm[uuid]}/central-access-policies</code></td>
+<td align="left"><a title="netapp_ontap.resources.group_policy_object_central_access_policy.GroupPolicyObjectCentralAccessPolicy" href="../resources/group_policy_object_central_access_policy.html"><code>GroupPolicyObjectCentralAccessPolicy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nvme/interfaces</code></td>
+<td align="left"><a title="netapp_ontap.resources.nvme_interface.NvmeInterface" href="../resources/nvme_interface.html"><code>NvmeInterface</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/volumes/{volume[uuid]}/top-metrics/users</code></td>
+<td align="left"><a title="netapp_ontap.resources.top_metrics_user.TopMetricsUser" href="../resources/top_metrics_user.html"><code>TopMetricsUser</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/application/consistency-groups/{consistency_group[uuid]}/snapshots</code></td>
+<td align="left"><a title="netapp_ontap.resources.consistency_group_snapshot.ConsistencyGroupSnapshot" href="../resources/consistency_group_snapshot.html"><code>ConsistencyGroupSnapshot</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/metrocluster/diagnostics</code></td>
+<td align="left"><a title="netapp_ontap.resources.metrocluster_diagnostics.MetroclusterDiagnostics" href="../resources/metrocluster_diagnostics.html"><code>MetroclusterDiagnostics</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/snapmirror/policies</code></td>
+<td align="left"><a title="netapp_ontap.resources.snapmirror_policy.SnapmirrorPolicy" href="../resources/snapmirror_policy.html"><code>SnapmirrorPolicy</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/software</code></td>
+<td align="left"><a title="netapp_ontap.resources.software.Software" href="../resources/software.html"><code>Software</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/tape-devices</code></td>
+<td align="left"><a title="netapp_ontap.resources.tape_device.TapeDevice" href="../resources/tape_device.html"><code>TapeDevice</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nfs/connected-client-maps</code></td>
+<td align="left"><a title="netapp_ontap.resources.nfs_clients_map.NfsClientsMap" href="../resources/nfs_clients_map.html"><code>NfsClientsMap</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/ems/events</code></td>
+<td align="left"><a title="netapp_ontap.resources.ems_event.EmsEvent" href="../resources/ems_event.html"><code>EmsEvent</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/s3/buckets</code></td>
+<td align="left"><a title="netapp_ontap.resources.s3_bucket.S3Bucket" href="../resources/s3_bucket.html"><code>S3Bucket</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/ip/routes</code></td>
+<td align="left"><a title="netapp_ontap.resources.network_route.NetworkRoute" href="../resources/network_route.html"><code>NetworkRoute</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/counter/tables</code></td>
+<td align="left"><a title="netapp_ontap.resources.counter_table.CounterTable" href="../resources/counter_table.html"><code>CounterTable</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/active-directory/{svm[uuid]}/preferred-domain-controllers</code></td>
+<td align="left"><a title="netapp_ontap.resources.active_directory_preferred_dc.ActiveDirectoryPreferredDc" href="../resources/active_directory_preferred_dc.html"><code>ActiveDirectoryPreferredDc</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/ethernet/broadcast-domains</code></td>
+<td align="left"><a title="netapp_ontap.resources.broadcast_domain.BroadcastDomain" href="../resources/broadcast_domain.html"><code>BroadcastDomain</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/san/iscsi/services/{svm[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.performance_iscsi_metric.PerformanceIscsiMetric" href="../resources/performance_iscsi_metric.html"><code>PerformanceIscsiMetric</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/name-services/unix-groups</code></td>
+<td align="left"><a title="netapp_ontap.resources.unix_group.UnixGroup" href="../resources/unix_group.html"><code>UnixGroup</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/fc/fabrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.fabric.Fabric" href="../resources/fabric.html"><code>Fabric</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/ip/interfaces/{ip_interface[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.interface_metrics.InterfaceMetrics" href="../resources/interface_metrics.html"><code>InterfaceMetrics</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/snaplock/litigations/{litigation[id]}/operations</code></td>
+<td align="left"><a title="netapp_ontap.resources.snaplock_legal_hold_operation.SnaplockLegalHoldOperation" href="../resources/snaplock_legal_hold_operation.html"><code>SnaplockLegalHoldOperation</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/file-security/effective-permissions</code></td>
+<td align="left"><a title="netapp_ontap.resources.effective_permission.EffectivePermission" href="../resources/effective_permission.html"><code>EffectivePermission</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/licensing/license-managers</code></td>
+<td align="left"><a title="netapp_ontap.resources.license_manager.LicenseManager" href="../resources/license_manager.html"><code>LicenseManager</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/audit/{svm[uuid]}/object-store</code></td>
+<td align="left"><a title="netapp_ontap.resources.s3_audit.S3Audit" href="../resources/s3_audit.html"><code>S3Audit</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nfs/export-policies/{policy[id]}/rules/{export_rule[index]}/clients</code></td>
+<td align="left"><a title="netapp_ontap.resources.export_client.ExportClient" href="../resources/export_client.html"><code>ExportClient</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/audit/destinations</code></td>
+<td align="left"><a title="netapp_ontap.resources.security_audit_log_forward.SecurityAuditLogForward" href="../resources/security_audit_log_forward.html"><code>SecurityAuditLogForward</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/snaplock/litigations</code></td>
+<td align="left"><a title="netapp_ontap.resources.snaplock_litigation.SnaplockLitigation" href="../resources/snaplock_litigation.html"><code>SnaplockLitigation</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/file/clone/tokens</code></td>
+<td align="left"><a title="netapp_ontap.resources.token.Token" href="../resources/token.html"><code>Token</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/qos/workloads</code></td>
+<td align="left"><a title="netapp_ontap.resources.qos_workload.QosWorkload" href="../resources/qos_workload.html"><code>QosWorkload</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/authentication/cluster/nis</code></td>
+<td align="left"><a title="netapp_ontap.resources.cluster_nis_service.ClusterNisService" href="../resources/cluster_nis_service.html"><code>ClusterNisService</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/fpolicy/{svm[uuid]}/engines</code></td>
+<td align="left"><a title="netapp_ontap.resources.fpolicy_engine.FpolicyEngine" href="../resources/fpolicy_engine.html"><code>FpolicyEngine</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/nfs/export-policies/{policy[id]}/rules</code></td>
+<td align="left"><a title="netapp_ontap.resources.export_rule.ExportRule" href="../resources/export_rule.html"><code>ExportRule</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/authentication/cluster/saml-sp</code></td>
+<td align="left"><a title="netapp_ontap.resources.security_saml_sp.SecuritySamlSp" href="../resources/security_saml_sp.html"><code>SecuritySamlSp</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/ip/subnets</code></td>
+<td align="left"><a title="netapp_ontap.resources.ip_subnet.IpSubnet" href="../resources/ip_subnet.html"><code>IpSubnet</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/shares/{svm[uuid]}/{cifs_share[share]}/acls</code></td>
+<td align="left"><a title="netapp_ontap.resources.cifs_share_acl.CifsShareAcl" href="../resources/cifs_share_acl.html"><code>CifsShareAcl</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/session/files</code></td>
+<td align="left"><a title="netapp_ontap.resources.cifs_open_file.CifsOpenFile" href="../resources/cifs_open_file.html"><code>CifsOpenFile</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/audit/messages</code></td>
+<td align="left"><a title="netapp_ontap.resources.security_audit_log.SecurityAuditLog" href="../resources/security_audit_log.html"><code>SecurityAuditLog</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/aws-kms</code></td>
+<td align="left"><a title="netapp_ontap.resources.aws_kms.AwsKms" href="../resources/aws_kms.html"><code>AwsKms</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/security/audit</code></td>
+<td align="left"><a title="netapp_ontap.resources.security_audit.SecurityAudit" href="../resources/security_audit.html"><code>SecurityAudit</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/aggregates</code></td>
+<td align="left"><a title="netapp_ontap.resources.aggregate.Aggregate" href="../resources/aggregate.html"><code>Aggregate</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/storage/aggregates/{aggregate[uuid]}/cloud-stores</code></td>
+<td align="left"><a title="netapp_ontap.resources.cloud_store.CloudStore" href="../resources/cloud_store.html"><code>CloudStore</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/support/auto-update/updates</code></td>
+<td align="left"><a title="netapp_ontap.resources.auto_update_status.AutoUpdateStatus" href="../resources/auto_update_status.html"><code>AutoUpdateStatus</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/cluster/peers</code></td>
+<td align="left"><a title="netapp_ontap.resources.cluster_peer.ClusterPeer" href="../resources/cluster_peer.html"><code>ClusterPeer</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/san/fcp/services/{svm[uuid]}/metrics</code></td>
+<td align="left"><a title="netapp_ontap.resources.performance_fcp_metric.PerformanceFcpMetric" href="../resources/performance_fcp_metric.html"><code>PerformanceFcpMetric</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/san/iscsi/services</code></td>
+<td align="left"><a title="netapp_ontap.resources.iscsi_service.IscsiService" href="../resources/iscsi_service.html"><code>IscsiService</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/san/iscsi/credentials</code></td>
+<td align="left"><a title="netapp_ontap.resources.iscsi_credentials.IscsiCredentials" href="../resources/iscsi_credentials.html"><code>IscsiCredentials</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/cifs/unix-symlink-mapping</code></td>
+<td align="left"><a title="netapp_ontap.resources.cifs_symlink_mapping.CifsSymlinkMapping" href="../resources/cifs_symlink_mapping.html"><code>CifsSymlinkMapping</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/network/fc/fabrics/{fabric[name]}/zones</code></td>
+<td align="left"><a title="netapp_ontap.resources.fc_zone.FcZone" href="../resources/fc_zone.html"><code>FcZone</code></a></td>
+</tr>
+<tr>
+<td align="left"><code>/api/protocols/s3/services/{svm[uuid]}/buckets/{s3_bucket[uuid]}/rules</code></td>
+<td align="left"><a title="netapp_ontap.resources.s3_bucket_lifecycle_rule.S3BucketLifecycleRule" href="../resources/s3_bucket_lifecycle_rule.html"><code>S3BucketLifecycleRule</code></a></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<header>
+<a class="homelink" rel="home" title="NetApp ONTAP Python Client Library">
+<img alt="NetApp Logo" src="data:image/jpeg;base64,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">
+</a>
+</header>
+<h1>Index</h1>
+<div class="toc">
+<ul>
+<li><a href="#constructor">Constructor</a></li>
+<li><a href="#to_dict">to_dict()</a></li>
+<li><a href="#from_dict">from_dict()</a></li>
+<li><a href="#verb-methods">Verb methods</a><ul>
+<li><a href="#get">get()</a></li>
+<li><a href="#get_collection">get_collection()</a></li>
+<li><a href="#count_collection">count_collection()</a></li>
+<li><a href="#find">find()</a></li>
+<li><a href="#patch">patch()</a></li>
+<li><a href="#patch_collection">patch_collection()</a></li>
+<li><a href="#delete">delete()</a></li>
+<li><a href="#delete_collection">delete_collection()</a></li>
+<li><a href="#post">post()</a></li>
+</ul>
+</li>
+<li><a href="#resources">Resources</a></li>
+</ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="netapp_ontap" href="../index.html">netapp_ontap</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<ul>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.account" href="account.html">netapp_ontap.resources.account</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.account_password" href="account_password.html">netapp_ontap.resources.account_password</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.active_directory" href="active_directory.html">netapp_ontap.resources.active_directory</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.active_directory_preferred_dc" href="active_directory_preferred_dc.html">netapp_ontap.resources.active_directory_preferred_dc</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aggregate" href="aggregate.html">netapp_ontap.resources.aggregate</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.anti_ransomware_suspect" href="anti_ransomware_suspect.html">netapp_ontap.resources.anti_ransomware_suspect</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.application" href="application.html">netapp_ontap.resources.application</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.application_component" href="application_component.html">netapp_ontap.resources.application_component</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.application_component_snapshot" href="application_component_snapshot.html">netapp_ontap.resources.application_component_snapshot</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.application_snapshot" href="application_snapshot.html">netapp_ontap.resources.application_snapshot</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.application_template" href="application_template.html">netapp_ontap.resources.application_template</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.audit" href="audit.html">netapp_ontap.resources.audit</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.auto_update_configuration" href="auto_update_configuration.html">netapp_ontap.resources.auto_update_configuration</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.auto_update_info" href="auto_update_info.html">netapp_ontap.resources.auto_update_info</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.auto_update_status" href="auto_update_status.html">netapp_ontap.resources.auto_update_status</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.autosupport" href="autosupport.html">netapp_ontap.resources.autosupport</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.autosupport_message" href="autosupport_message.html">netapp_ontap.resources.autosupport_message</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.aws_kms" href="aws_kms.html">netapp_ontap.resources.aws_kms</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.azure_key_vault" href="azure_key_vault.html">netapp_ontap.resources.azure_key_vault</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.bgp_peer_group" href="bgp_peer_group.html">netapp_ontap.resources.bgp_peer_group</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.broadcast_domain" href="broadcast_domain.html">netapp_ontap.resources.broadcast_domain</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.capacity_pool" href="capacity_pool.html">netapp_ontap.resources.capacity_pool</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.chassis" href="chassis.html">netapp_ontap.resources.chassis</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cifs_connection" href="cifs_connection.html">netapp_ontap.resources.cifs_connection</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cifs_domain" href="cifs_domain.html">netapp_ontap.resources.cifs_domain</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cifs_domain_preferred_dc" href="cifs_domain_preferred_dc.html">netapp_ontap.resources.cifs_domain_preferred_dc</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cifs_open_file" href="cifs_open_file.html">netapp_ontap.resources.cifs_open_file</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cifs_search_path" href="cifs_search_path.html">netapp_ontap.resources.cifs_search_path</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cifs_service" href="cifs_service.html">netapp_ontap.resources.cifs_service</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cifs_session" href="cifs_session.html">netapp_ontap.resources.cifs_session</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cifs_share" href="cifs_share.html">netapp_ontap.resources.cifs_share</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cifs_share_acl" href="cifs_share_acl.html">netapp_ontap.resources.cifs_share_acl</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cifs_symlink_mapping" href="cifs_symlink_mapping.html">netapp_ontap.resources.cifs_symlink_mapping</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cli" href="cli.html">netapp_ontap.resources.cli</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.client_lock" href="client_lock.html">netapp_ontap.resources.client_lock</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cloud_store" href="cloud_store.html">netapp_ontap.resources.cloud_store</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cloud_target" href="cloud_target.html">netapp_ontap.resources.cloud_target</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cluster" href="cluster.html">netapp_ontap.resources.cluster</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cluster_ad_proxy" href="cluster_ad_proxy.html">netapp_ontap.resources.cluster_ad_proxy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cluster_ldap" href="cluster_ldap.html">netapp_ontap.resources.cluster_ldap</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cluster_metrics" href="cluster_metrics.html">netapp_ontap.resources.cluster_metrics</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cluster_ndmp_properties" href="cluster_ndmp_properties.html">netapp_ontap.resources.cluster_ndmp_properties</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cluster_nis_service" href="cluster_nis_service.html">netapp_ontap.resources.cluster_nis_service</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cluster_peer" href="cluster_peer.html">netapp_ontap.resources.cluster_peer</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cluster_space" href="cluster_space.html">netapp_ontap.resources.cluster_space</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.cluster_ssh_server" href="cluster_ssh_server.html">netapp_ontap.resources.cluster_ssh_server</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.configuration_backup" href="configuration_backup.html">netapp_ontap.resources.configuration_backup</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.configuration_backup_file" href="configuration_backup_file.html">netapp_ontap.resources.configuration_backup_file</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group" href="consistency_group.html">netapp_ontap.resources.consistency_group</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group_metrics" href="consistency_group_metrics.html">netapp_ontap.resources.consistency_group_metrics</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.consistency_group_snapshot" href="consistency_group_snapshot.html">netapp_ontap.resources.consistency_group_snapshot</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.coredump" href="coredump.html">netapp_ontap.resources.coredump</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.counter_row" href="counter_row.html">netapp_ontap.resources.counter_row</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.counter_table" href="counter_table.html">netapp_ontap.resources.counter_table</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.disk" href="disk.html">netapp_ontap.resources.disk</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.dns" href="dns.html">netapp_ontap.resources.dns</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ebr_operation" href="ebr_operation.html">netapp_ontap.resources.ebr_operation</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.effective_permission" href="effective_permission.html">netapp_ontap.resources.effective_permission</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ems_application_log" href="ems_application_log.html">netapp_ontap.resources.ems_application_log</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ems_config" href="ems_config.html">netapp_ontap.resources.ems_config</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ems_destination" href="ems_destination.html">netapp_ontap.resources.ems_destination</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ems_event" href="ems_event.html">netapp_ontap.resources.ems_event</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ems_filter" href="ems_filter.html">netapp_ontap.resources.ems_filter</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ems_filter_rule" href="ems_filter_rule.html">netapp_ontap.resources.ems_filter_rule</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ems_message" href="ems_message.html">netapp_ontap.resources.ems_message</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ems_role_config" href="ems_role_config.html">netapp_ontap.resources.ems_role_config</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.export_client" href="export_client.html">netapp_ontap.resources.export_client</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.export_policy" href="export_policy.html">netapp_ontap.resources.export_policy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.export_rule" href="export_rule.html">netapp_ontap.resources.export_rule</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.fabric" href="fabric.html">netapp_ontap.resources.fabric</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.fc_interface" href="fc_interface.html">netapp_ontap.resources.fc_interface</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.fc_login" href="fc_login.html">netapp_ontap.resources.fc_login</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.fc_port" href="fc_port.html">netapp_ontap.resources.fc_port</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.fc_switch" href="fc_switch.html">netapp_ontap.resources.fc_switch</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.fc_zone" href="fc_zone.html">netapp_ontap.resources.fc_zone</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.fcp_service" href="fcp_service.html">netapp_ontap.resources.fcp_service</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.file_clone" href="file_clone.html">netapp_ontap.resources.file_clone</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.file_copy" href="file_copy.html">netapp_ontap.resources.file_copy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.file_directory_security" href="file_directory_security.html">netapp_ontap.resources.file_directory_security</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.file_directory_security_acl" href="file_directory_security_acl.html">netapp_ontap.resources.file_directory_security_acl</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.file_info" href="file_info.html">netapp_ontap.resources.file_info</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.file_move" href="file_move.html">netapp_ontap.resources.file_move</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.firmware_history" href="firmware_history.html">netapp_ontap.resources.firmware_history</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.flexcache" href="flexcache.html">netapp_ontap.resources.flexcache</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.flexcache_origin" href="flexcache_origin.html">netapp_ontap.resources.flexcache_origin</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.fpolicy" href="fpolicy.html">netapp_ontap.resources.fpolicy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.fpolicy_connection" href="fpolicy_connection.html">netapp_ontap.resources.fpolicy_connection</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.fpolicy_engine" href="fpolicy_engine.html">netapp_ontap.resources.fpolicy_engine</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.fpolicy_event" href="fpolicy_event.html">netapp_ontap.resources.fpolicy_event</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.fpolicy_policy" href="fpolicy_policy.html">netapp_ontap.resources.fpolicy_policy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.gcp_kms" href="gcp_kms.html">netapp_ontap.resources.gcp_kms</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.global_cache_setting" href="global_cache_setting.html">netapp_ontap.resources.global_cache_setting</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.group_membership_settings" href="group_membership_settings.html">netapp_ontap.resources.group_membership_settings</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.group_policy_object" href="group_policy_object.html">netapp_ontap.resources.group_policy_object</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.group_policy_object_central_access_policy" href="group_policy_object_central_access_policy.html">netapp_ontap.resources.group_policy_object_central_access_policy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.group_policy_object_central_access_rule" href="group_policy_object_central_access_rule.html">netapp_ontap.resources.group_policy_object_central_access_rule</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.group_policy_object_restricted_group" href="group_policy_object_restricted_group.html">netapp_ontap.resources.group_policy_object_restricted_group</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.host_record" href="host_record.html">netapp_ontap.resources.host_record</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.hosts_settings" href="hosts_settings.html">netapp_ontap.resources.hosts_settings</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.igroup" href="igroup.html">netapp_ontap.resources.igroup</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.igroup_initiator" href="igroup_initiator.html">netapp_ontap.resources.igroup_initiator</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.igroup_nested" href="igroup_nested.html">netapp_ontap.resources.igroup_nested</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.interface_metrics" href="interface_metrics.html">netapp_ontap.resources.interface_metrics</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ip_interface" href="ip_interface.html">netapp_ontap.resources.ip_interface</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ip_service_policy" href="ip_service_policy.html">netapp_ontap.resources.ip_service_policy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ip_subnet" href="ip_subnet.html">netapp_ontap.resources.ip_subnet</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ipsec" href="ipsec.html">netapp_ontap.resources.ipsec</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ipsec_ca_certificate" href="ipsec_ca_certificate.html">netapp_ontap.resources.ipsec_ca_certificate</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ipsec_policy" href="ipsec_policy.html">netapp_ontap.resources.ipsec_policy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ipspace" href="ipspace.html">netapp_ontap.resources.ipspace</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.iscsi_credentials" href="iscsi_credentials.html">netapp_ontap.resources.iscsi_credentials</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.iscsi_service" href="iscsi_service.html">netapp_ontap.resources.iscsi_service</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.iscsi_session" href="iscsi_session.html">netapp_ontap.resources.iscsi_session</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.job" href="job.html">netapp_ontap.resources.job</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.kerberos_interface" href="kerberos_interface.html">netapp_ontap.resources.kerberos_interface</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.kerberos_realm" href="kerberos_realm.html">netapp_ontap.resources.kerberos_realm</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.key_manager_auth_key" href="key_manager_auth_key.html">netapp_ontap.resources.key_manager_auth_key</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.key_manager_config" href="key_manager_config.html">netapp_ontap.resources.key_manager_config</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.key_manager_keys" href="key_manager_keys.html">netapp_ontap.resources.key_manager_keys</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.key_server" href="key_server.html">netapp_ontap.resources.key_server</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ldap_schema" href="ldap_schema.html">netapp_ontap.resources.ldap_schema</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ldap_service" href="ldap_service.html">netapp_ontap.resources.ldap_service</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.license_manager" href="license_manager.html">netapp_ontap.resources.license_manager</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.license_package" href="license_package.html">netapp_ontap.resources.license_package</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.local_cifs_group" href="local_cifs_group.html">netapp_ontap.resources.local_cifs_group</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.local_cifs_group_members" href="local_cifs_group_members.html">netapp_ontap.resources.local_cifs_group_members</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.local_cifs_user" href="local_cifs_user.html">netapp_ontap.resources.local_cifs_user</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.local_cifs_users_and_groups_import" href="local_cifs_users_and_groups_import.html">netapp_ontap.resources.local_cifs_users_and_groups_import</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.local_host" href="local_host.html">netapp_ontap.resources.local_host</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.login_messages" href="login_messages.html">netapp_ontap.resources.login_messages</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.lun" href="lun.html">netapp_ontap.resources.lun</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.lun_attribute" href="lun_attribute.html">netapp_ontap.resources.lun_attribute</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.lun_map" href="lun_map.html">netapp_ontap.resources.lun_map</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.lun_map_reporting_node" href="lun_map_reporting_node.html">netapp_ontap.resources.lun_map_reporting_node</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.mediator" href="mediator.html">netapp_ontap.resources.mediator</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.metrocluster" href="metrocluster.html">netapp_ontap.resources.metrocluster</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.metrocluster_diagnostics" href="metrocluster_diagnostics.html">netapp_ontap.resources.metrocluster_diagnostics</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.metrocluster_dr_group" href="metrocluster_dr_group.html">netapp_ontap.resources.metrocluster_dr_group</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.metrocluster_interconnect" href="metrocluster_interconnect.html">netapp_ontap.resources.metrocluster_interconnect</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.metrocluster_node" href="metrocluster_node.html">netapp_ontap.resources.metrocluster_node</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.metrocluster_operation" href="metrocluster_operation.html">netapp_ontap.resources.metrocluster_operation</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.metrocluster_svm" href="metrocluster_svm.html">netapp_ontap.resources.metrocluster_svm</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.multi_admin_verify_approval_group" href="multi_admin_verify_approval_group.html">netapp_ontap.resources.multi_admin_verify_approval_group</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.multi_admin_verify_config" href="multi_admin_verify_config.html">netapp_ontap.resources.multi_admin_verify_config</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.multi_admin_verify_request" href="multi_admin_verify_request.html">netapp_ontap.resources.multi_admin_verify_request</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.multi_admin_verify_rule" href="multi_admin_verify_rule.html">netapp_ontap.resources.multi_admin_verify_rule</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.name_mapping" href="name_mapping.html">netapp_ontap.resources.name_mapping</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ndmp_node" href="ndmp_node.html">netapp_ontap.resources.ndmp_node</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ndmp_password" href="ndmp_password.html">netapp_ontap.resources.ndmp_password</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ndmp_session" href="ndmp_session.html">netapp_ontap.resources.ndmp_session</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ndmp_svm" href="ndmp_svm.html">netapp_ontap.resources.ndmp_svm</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.netbios" href="netbios.html">netapp_ontap.resources.netbios</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.netgroup_file" href="netgroup_file.html">netapp_ontap.resources.netgroup_file</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.netgroups_settings" href="netgroups_settings.html">netapp_ontap.resources.netgroups_settings</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.network_http_proxy" href="network_http_proxy.html">netapp_ontap.resources.network_http_proxy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.network_route" href="network_route.html">netapp_ontap.resources.network_route</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.nfs_clients" href="nfs_clients.html">netapp_ontap.resources.nfs_clients</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.nfs_clients_cache" href="nfs_clients_cache.html">netapp_ontap.resources.nfs_clients_cache</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.nfs_clients_map" href="nfs_clients_map.html">netapp_ontap.resources.nfs_clients_map</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.nfs_service" href="nfs_service.html">netapp_ontap.resources.nfs_service</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.nis_service" href="nis_service.html">netapp_ontap.resources.nis_service</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.node" href="node.html">netapp_ontap.resources.node</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.node_metrics" href="node_metrics.html">netapp_ontap.resources.node_metrics</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ntp_key" href="ntp_key.html">netapp_ontap.resources.ntp_key</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.ntp_server" href="ntp_server.html">netapp_ontap.resources.ntp_server</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.nvme_interface" href="nvme_interface.html">netapp_ontap.resources.nvme_interface</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.nvme_namespace" href="nvme_namespace.html">netapp_ontap.resources.nvme_namespace</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.nvme_service" href="nvme_service.html">netapp_ontap.resources.nvme_service</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.nvme_subsystem" href="nvme_subsystem.html">netapp_ontap.resources.nvme_subsystem</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.nvme_subsystem_controller" href="nvme_subsystem_controller.html">netapp_ontap.resources.nvme_subsystem_controller</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.nvme_subsystem_host" href="nvme_subsystem_host.html">netapp_ontap.resources.nvme_subsystem_host</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.nvme_subsystem_map" href="nvme_subsystem_map.html">netapp_ontap.resources.nvme_subsystem_map</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.performance_cifs_metric" href="performance_cifs_metric.html">netapp_ontap.resources.performance_cifs_metric</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.performance_fc_interface_metric" href="performance_fc_interface_metric.html">netapp_ontap.resources.performance_fc_interface_metric</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.performance_fc_port_metric" href="performance_fc_port_metric.html">netapp_ontap.resources.performance_fc_port_metric</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.performance_fcp_metric" href="performance_fcp_metric.html">netapp_ontap.resources.performance_fcp_metric</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.performance_iscsi_metric" href="performance_iscsi_metric.html">netapp_ontap.resources.performance_iscsi_metric</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.performance_lun_metric" href="performance_lun_metric.html">netapp_ontap.resources.performance_lun_metric</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.performance_metric" href="performance_metric.html">netapp_ontap.resources.performance_metric</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.performance_namespace_metric" href="performance_namespace_metric.html">netapp_ontap.resources.performance_namespace_metric</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.performance_nvme_metric" href="performance_nvme_metric.html">netapp_ontap.resources.performance_nvme_metric</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.performance_s3_metric" href="performance_s3_metric.html">netapp_ontap.resources.performance_s3_metric</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.performance_svm_nfs" href="performance_svm_nfs.html">netapp_ontap.resources.performance_svm_nfs</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.plex" href="plex.html">netapp_ontap.resources.plex</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.policies_and_rules_to_be_applied" href="policies_and_rules_to_be_applied.html">netapp_ontap.resources.policies_and_rules_to_be_applied</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.port" href="port.html">netapp_ontap.resources.port</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.port_metrics" href="port_metrics.html">netapp_ontap.resources.port_metrics</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.portset" href="portset.html">netapp_ontap.resources.portset</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.portset_interface" href="portset_interface.html">netapp_ontap.resources.portset_interface</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.publickey" href="publickey.html">netapp_ontap.resources.publickey</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.qos_policy" href="qos_policy.html">netapp_ontap.resources.qos_policy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.qos_workload" href="qos_workload.html">netapp_ontap.resources.qos_workload</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.qtree" href="qtree.html">netapp_ontap.resources.qtree</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.quota_report" href="quota_report.html">netapp_ontap.resources.quota_report</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.quota_rule" href="quota_rule.html">netapp_ontap.resources.quota_rule</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.resource_tag" href="resource_tag.html">netapp_ontap.resources.resource_tag</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.resource_tag_resource" href="resource_tag_resource.html">netapp_ontap.resources.resource_tag_resource</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.role" href="role.html">netapp_ontap.resources.role</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.role_privilege" href="role_privilege.html">netapp_ontap.resources.role_privilege</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.s3_audit" href="s3_audit.html">netapp_ontap.resources.s3_audit</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.s3_bucket" href="s3_bucket.html">netapp_ontap.resources.s3_bucket</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.s3_bucket_lifecycle_rule" href="s3_bucket_lifecycle_rule.html">netapp_ontap.resources.s3_bucket_lifecycle_rule</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.s3_bucket_svm" href="s3_bucket_svm.html">netapp_ontap.resources.s3_bucket_svm</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.s3_group" href="s3_group.html">netapp_ontap.resources.s3_group</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.s3_policy" href="s3_policy.html">netapp_ontap.resources.s3_policy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.s3_service" href="s3_service.html">netapp_ontap.resources.s3_service</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.s3_user" href="s3_user.html">netapp_ontap.resources.s3_user</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.schedule" href="schedule.html">netapp_ontap.resources.schedule</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.security_association" href="security_association.html">netapp_ontap.resources.security_association</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.security_audit" href="security_audit.html">netapp_ontap.resources.security_audit</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.security_audit_log" href="security_audit_log.html">netapp_ontap.resources.security_audit_log</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.security_audit_log_forward" href="security_audit_log_forward.html">netapp_ontap.resources.security_audit_log_forward</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.security_certificate" href="security_certificate.html">netapp_ontap.resources.security_certificate</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.security_config" href="security_config.html">netapp_ontap.resources.security_config</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.security_key_manager" href="security_key_manager.html">netapp_ontap.resources.security_key_manager</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.security_keystore" href="security_keystore.html">netapp_ontap.resources.security_keystore</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.security_saml_sp" href="security_saml_sp.html">netapp_ontap.resources.security_saml_sp</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.sensors" href="sensors.html">netapp_ontap.resources.sensors</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.shadowcopy" href="shadowcopy.html">netapp_ontap.resources.shadowcopy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.shadowcopy_set" href="shadowcopy_set.html">netapp_ontap.resources.shadowcopy_set</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.shelf" href="shelf.html">netapp_ontap.resources.shelf</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snaplock_compliance_clock" href="snaplock_compliance_clock.html">netapp_ontap.resources.snaplock_compliance_clock</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snaplock_file_fingerprint" href="snaplock_file_fingerprint.html">netapp_ontap.resources.snaplock_file_fingerprint</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snaplock_file_retention" href="snaplock_file_retention.html">netapp_ontap.resources.snaplock_file_retention</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snaplock_legal_hold_operation" href="snaplock_legal_hold_operation.html">netapp_ontap.resources.snaplock_legal_hold_operation</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snaplock_litigation" href="snaplock_litigation.html">netapp_ontap.resources.snaplock_litigation</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snaplock_litigation_file" href="snaplock_litigation_file.html">netapp_ontap.resources.snaplock_litigation_file</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snaplock_log" href="snaplock_log.html">netapp_ontap.resources.snaplock_log</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snaplock_retention_policy" href="snaplock_retention_policy.html">netapp_ontap.resources.snaplock_retention_policy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snapmirror_policy" href="snapmirror_policy.html">netapp_ontap.resources.snapmirror_policy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snapmirror_relationship" href="snapmirror_relationship.html">netapp_ontap.resources.snapmirror_relationship</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snapmirror_transfer" href="snapmirror_transfer.html">netapp_ontap.resources.snapmirror_transfer</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snapshot" href="snapshot.html">netapp_ontap.resources.snapshot</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snapshot_policy" href="snapshot_policy.html">netapp_ontap.resources.snapshot_policy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snapshot_policy_schedule" href="snapshot_policy_schedule.html">netapp_ontap.resources.snapshot_policy_schedule</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snmp" href="snmp.html">netapp_ontap.resources.snmp</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snmp_traphost" href="snmp_traphost.html">netapp_ontap.resources.snmp_traphost</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.snmp_user" href="snmp_user.html">netapp_ontap.resources.snmp_user</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.software" href="software.html">netapp_ontap.resources.software</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.software_history" href="software_history.html">netapp_ontap.resources.software_history</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.software_package" href="software_package.html">netapp_ontap.resources.software_package</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.software_package_download" href="software_package_download.html">netapp_ontap.resources.software_package_download</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.split_load" href="split_load.html">netapp_ontap.resources.split_load</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.split_status" href="split_status.html">netapp_ontap.resources.split_status</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.storage_bridge" href="storage_bridge.html">netapp_ontap.resources.storage_bridge</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.storage_pool" href="storage_pool.html">netapp_ontap.resources.storage_pool</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.storage_port" href="storage_port.html">netapp_ontap.resources.storage_port</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.storage_switch" href="storage_switch.html">netapp_ontap.resources.storage_switch</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.svm" href="svm.html">netapp_ontap.resources.svm</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.svm_migration" href="svm_migration.html">netapp_ontap.resources.svm_migration</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.svm_migration_volume" href="svm_migration_volume.html">netapp_ontap.resources.svm_migration_volume</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.svm_peer" href="svm_peer.html">netapp_ontap.resources.svm_peer</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.svm_peer_permission" href="svm_peer_permission.html">netapp_ontap.resources.svm_peer_permission</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.svm_ssh_server" href="svm_ssh_server.html">netapp_ontap.resources.svm_ssh_server</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.switch" href="switch.html">netapp_ontap.resources.switch</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.switch_port" href="switch_port.html">netapp_ontap.resources.switch_port</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.tape_device" href="tape_device.html">netapp_ontap.resources.tape_device</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.token" href="token.html">netapp_ontap.resources.token</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.top_metrics_client" href="top_metrics_client.html">netapp_ontap.resources.top_metrics_client</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.top_metrics_directory" href="top_metrics_directory.html">netapp_ontap.resources.top_metrics_directory</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.top_metrics_file" href="top_metrics_file.html">netapp_ontap.resources.top_metrics_file</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.top_metrics_svm_client" href="top_metrics_svm_client.html">netapp_ontap.resources.top_metrics_svm_client</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.top_metrics_svm_directory" href="top_metrics_svm_directory.html">netapp_ontap.resources.top_metrics_svm_directory</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.top_metrics_svm_file" href="top_metrics_svm_file.html">netapp_ontap.resources.top_metrics_svm_file</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.top_metrics_svm_user" href="top_metrics_svm_user.html">netapp_ontap.resources.top_metrics_svm_user</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.top_metrics_user" href="top_metrics_user.html">netapp_ontap.resources.top_metrics_user</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.totp" href="totp.html">netapp_ontap.resources.totp</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.unix_group" href="unix_group.html">netapp_ontap.resources.unix_group</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.unix_group_settings" href="unix_group_settings.html">netapp_ontap.resources.unix_group_settings</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.unix_group_users" href="unix_group_users.html">netapp_ontap.resources.unix_group_users</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.unix_user" href="unix_user.html">netapp_ontap.resources.unix_user</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.unix_user_settings" href="unix_user_settings.html">netapp_ontap.resources.unix_user_settings</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.user_group_privileges" href="user_group_privileges.html">netapp_ontap.resources.user_group_privileges</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.volume" href="volume.html">netapp_ontap.resources.volume</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.volume_efficiency_policy" href="volume_efficiency_policy.html">netapp_ontap.resources.volume_efficiency_policy</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.volume_metrics" href="volume_metrics.html">netapp_ontap.resources.volume_metrics</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.vscan" href="vscan.html">netapp_ontap.resources.vscan</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.vscan_event" href="vscan_event.html">netapp_ontap.resources.vscan_event</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.vscan_on_access" href="vscan_on_access.html">netapp_ontap.resources.vscan_on_access</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.vscan_on_demand" href="vscan_on_demand.html">netapp_ontap.resources.vscan_on_demand</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.vscan_scanner_pool" href="vscan_scanner_pool.html">netapp_ontap.resources.vscan_scanner_pool</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.vscan_server_status" href="vscan_server_status.html">netapp_ontap.resources.vscan_server_status</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.vvol_binding" href="vvol_binding.html">netapp_ontap.resources.vvol_binding</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.web" href="web.html">netapp_ontap.resources.web</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.web_svm" href="web_svm.html">netapp_ontap.resources.web_svm</a>
+</code></li>
+<li class="None"><code>
+<span></span>
+<a title="netapp_ontap.resources.wwpn_alias" href="wwpn_alias.html">netapp_ontap.resources.wwpn_alias</a>
+</code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+hljs.initHighlightingOnLoad();
+// unless a language is specified, no guessing/highlighting will be done
+hljs.configure({languages: []});
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+fastapi
+passlib
+pydantic
+python_jose
+SQLAlchemy
+uvicorn
+psycopg2
+pydantic[email]
+bcrypt
+python-multipart
+netapp-ontap==9.13.1.0
+smbprotocol

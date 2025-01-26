@@ -19,7 +19,7 @@ from auth import ALGORITHM, SECRET_KEY, create_access_token, get_current_user
 
 def create_admin_user(db: Session):
     admin_email = "admin@gamil.com"
-    admin_password = "Adminpassword" 
+    admin_password = "Adminpassword"
 
     existing_admin = db.query(User).filter(User.email == admin_email).first()
     if not existing_admin:
@@ -36,6 +36,7 @@ def create_admin_user(db: Session):
         print(f"Admin user created with email: {admin_email}")
     else:
         print("Admin user already exists.")
+
 
 Base.metadata.create_all(bind=engine)
 
