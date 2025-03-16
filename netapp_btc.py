@@ -3,8 +3,6 @@ from netapp_ontap import HostConnection
 from netapp_ontap.resources import Svm, IpInterface, CifsShare
 import os
 import smbclient
-import tempfile
-import shutil
 import os
 from datetime import datetime
 
@@ -169,7 +167,6 @@ def scan_volume(volume):
         if not ip_address:
             return files
 
-        # Access each CIFS share
         for share in volume.get('volumes', []):
             share_path, share_name = access_CIFS_share(share, ip_address)
             if not share_name or not share_path:
@@ -178,26 +175,27 @@ def scan_volume(volume):
             files[share_name] = []
 
             try:
-                # Recursively walk the share
                 for dirpath, _, filenames in smbclient.walk(share_path):
                     for file in filenames:
-                        if file:
-                            full_path = os.path.join(dirpath, file)
-                            creation_time = datetime.fromtimestamp(os.path.getctime(full_path)).strftime('%Y-%m-%d %H:%M:%S')
-                            last_access_time = datetime.fromtimestamp(os.path.getatime(full_path)).strftime('%Y-%m-%d %H:%M:%S')
-                            last_modified_time = datetime.fromtimestamp(os.path.getmtime(full_path)).strftime('%Y-%m-%d %H:%M:%S')
-                            file_size = os.path.getsize(full_path)
-                            files[share_name].append({
-                                'full_path': full_path,
-                                'creation_time': creation_time,
-                                'last_access_time': last_access_time,
-                                'last_modified_time': last_modified_time,
-                                'file_size': file_size
-                            })
+                        if file.endswith("_shortcut.bat"):
+                            continue
+                        full_path = os.path.join(dirpath, file)
+                        creation_time = datetime.fromtimestamp(os.path.getctime(full_path)).strftime('%Y-%m-%d %H:%M:%S')
+                        last_access_time = datetime.fromtimestamp(os.path.getatime(full_path)).strftime('%Y-%m-%d %H:%M:%S')
+                        last_modified_time = datetime.fromtimestamp(os.path.getmtime(full_path)).strftime('%Y-%m-%d %H:%M:%S')
+                        file_size = os.path.getsize(full_path)
+                        files[share_name].append({
+                            'full_path': full_path,
+                            'creation_time': creation_time,
+                            'last_access_time': last_access_time,
+                            'last_modified_time': last_modified_time,
+                            'file_size': file_size
+                        })
             except OSError as e:
                 print(f"Error accessing share {share_path}: {e}")
 
         return files
+
 
 
 filter_parameters = {"blacklist", "creation_time_start", "creation_time_end", "last_access_time_start", "last_access_time_end", "last_modified_time_start", "last_modified_time_end", "file_size_min", "file_size_max"}
@@ -258,6 +256,8 @@ def filter_files(files, filters, blacklist, share_name):
 
             for file_info in file_list:
                 if is_blacklisted(file_info['full_path'], blacklist):
+                    continue
+                if file_info['full_path'].endswith("_shortcut.bat"):
                     continue
                 if not filter_by_type(file_info, filters.get('file_type')):
                     continue
@@ -326,101 +326,6 @@ def save_metadata(dest_folder, filename, original_path):
     return True
 
 
-def move_file(file_info):
-    src_path = normalize_path(file_info['full_path'])
-    dest_folder = normalize_path(get_archive_path(src_path))
-
-    print(f"DEBUG: Attempting to move file")
-    print(f"  Source: {src_path}")
-    print(f"  Destination Folder: {dest_folder}")
-
-    if not dest_folder:
-        print(f"Skipping file {src_path} (Invalid archive destination)")
-        return False
-
-    try:
-        smbclient.stat(src_path)  
-        print("File is accessible, proceeding with move...")
-
-        filename = os.path.basename(src_path)
-        dest_path = f"{dest_folder}\\{filename}"
-        dest_path = normalize_path(dest_path)
-
-        print(f"Final Destination Path: {dest_path}")
-
-        # ✅ Ensure metadata is set before moving
-        if not save_metadata(dest_folder, filename, src_path):
-            print(f"ERROR: Failed to save metadata for {filename}. Aborting move.")
-            return False
-
-        # ✅ Download file to local temp
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            temp_file_path = temp_file.name
-            with open(temp_file_path, "wb") as f:
-                with smbclient.open_file(src_path, mode="rb") as remote_file:
-                    shutil.copyfileobj(remote_file, f)
-
-        print(f"Successfully downloaded file to local temp: {temp_file_path}")
-
-        # ✅ Upload file to archive
-        with open(temp_file_path, "rb") as f:
-            with smbclient.open_file(dest_path, mode="wb") as remote_file:
-                shutil.copyfileobj(f, remote_file)
-
-        print(f"Uploaded file to archive: {dest_path}")
-
-        # ✅ Verify the file before deleting the original
-        try:
-            smbclient.stat(dest_path)
-            smbclient.remove(src_path)
-            print(f"Deleted original file: {src_path}")
-        except FileNotFoundError:
-            print(f"Failed to verify copied file at {dest_path}. Not deleting original.")
-            return False
-
-        # ✅ Restore timestamps
-        os.utime(dest_path, (datetime.strptime(file_info["last_access_time"], '%Y-%m-%d %H:%M:%S').timestamp(),
-                             datetime.strptime(file_info["last_modified_time"], '%Y-%m-%d %H:%M:%S').timestamp()))
-
-        # ✅ Create shortcut in the original location
-        create_shortcut(src_path, dest_path)
-
-        # ✅ Remove temp file
-        os.remove(temp_file_path)
-
-        return dest_path
-
-    except FileNotFoundError:
-        print(f"File not found: {src_path}")
-        return False
-    except PermissionError:
-        print(f"Permission denied: {src_path}")
-        return False
-    except Exception as e:
-        print(f"Failed to move {src_path}: {e}")
-        return False
-
-
-def create_shortcut(original_path, archive_path):
-    shortcut_path = original_path + "_shortcut.bat"  # Create a .bat file instead of .lnk
-    
-    try:
-        with open(shortcut_path, 'w') as shortcut:
-            shortcut.write(f'@echo off\nstart "" "{archive_path}"\n')  # Opens the file when double-clicked
-        
-        print(f"Shortcut created: {shortcut_path} → {archive_path}")
-        return True
-    except Exception as e:
-        print(f"Failed to create shortcut for {original_path}: {e}")
-        return False
-
-
-def process_files_for_archival(files):
-    for file_list in files.values():
-        for file_info in file_list:
-            archive_path = move_file(file_info)
-            if archive_path:
-                create_shortcut(file_info['full_path'], archive_path)
 
 
 
@@ -433,110 +338,3 @@ def load_metadata(dest_folder):
     except (FileNotFoundError, json.JSONDecodeError):
         print(f"No metadata file found at {metadata_file}")
         return {}
-
-def restore_file(archive_folder, filename):
-    metadata = load_metadata(archive_folder)
-
-    if filename not in metadata:
-        print(f"Original location not found for {filename}")
-        return False
-
-    original_path = metadata[filename]
-    archive_path = os.path.join(archive_folder, filename)
-
-    print(f"Restoring {filename}")
-    print(f"  Source (Archive): {archive_path}")
-    print(f"  Destination (Original): {original_path}")
-
-    try:
-        # Download from archive to local temp
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            temp_file_path = temp_file.name
-            with open(temp_file_path, "wb") as f:
-                with smbclient.open_file(archive_path, mode="rb") as remote_file:
-                    shutil.copyfileobj(remote_file, f)
-
-        print(f"Downloaded file from archive to local temp: {temp_file_path}")
-
-        # Upload file back to original location
-        with open(temp_file_path, "rb") as f:
-            with smbclient.open_file(original_path, mode="wb") as remote_file:
-                shutil.copyfileobj(f, remote_file)
-
-        print(f"Restored file to: {original_path}")
-
-        # Verify and delete from archive
-        try:
-            smbclient.stat(original_path)
-            smbclient.remove(archive_path)
-            print(f"Deleted file from archive: {archive_path}")
-        except FileNotFoundError:
-            print(f"Failed to verify file at {original_path}. Not deleting archive copy.")
-            return False
-
-        # Restore timestamps
-        os.utime(original_path, (datetime.strptime(metadata["last_access_time"], '%Y-%m-%d %H:%M:%S').timestamp(),
-                                 datetime.strptime(metadata["last_modified_time"], '%Y-%m-%d %H:%M:%S').timestamp()))
-
-        # Remove shortcut from original path
-        shortcut_path = original_path + ".lnk"
-        if os.path.exists(shortcut_path):
-            os.remove(shortcut_path)
-            print(f"Removed shortcut: {shortcut_path}")
-
-        return original_path
-
-    except FileNotFoundError:
-        print(f"File not found in archive: {archive_path}")
-        return False
-    except PermissionError:
-        print(f"Permission denied: {archive_path}")
-        return False
-    except Exception as e:
-        print(f"Failed to restore {filename}: {e}")
-        return False
-
-
-#    print(scan_volume(get_svm_data_volumes()))
-#    print(get_svm_data_volumes())
-
-
-
-# Example usage:
-filters = {
-    'file_type': '.txt',
-    'date_filters': {  # Allows independent date filters for different types
-        'creation_time': {'start_date': '2023-01-01 00:00:00', 'end_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')},
-        'last_access_time': {'start_date': None, 'end_date': None},  # If None, this filter is ignored
-        'last_modified_time': {'start_date': None, 'end_date': None},
-    },
-    'min_size': 100,  # Minimum file size in bytes
-    'max_size': 50000  # Maximum file size in bytes
-}
-blacklist = ['6Uh24TE', '3liOYfQA']
-
-# Scan and filter files
-#filtered_files = filter_files(scan_volume(get_svm_data_volumes()), filters, blacklist)
-#print(filtered_files)
-
-file1 = {
-    "data2": [
-    {
-        'full_path': "\\\\192.168.16.14\\data2\\t12vnFc8\\cmBsxD3W\\UK7vuCi6\\YY5dETB0.txt",
-        'creation_time': '2025-01-12 07:15:49',
-        'last_access_time': '2024-08-25 15:15:49',
-        'last_modified_time': '2024-08-25 15:15:49',
-        'file_size': 32166
-    }
-    ]
-}
-
-file_path = "\\\\192.168.16.14\\data2\\t12vnFc8\\cmBsxD3W\\UK7vuCi6\\YY5dETB0.txt"
-
-try:
-    smbclient.stat(file_path)
-    print("File exists and is accessible.")
-except FileNotFoundError:
-    print("File does not exist or cannot be accessed.")
-
-process_files_for_archival(file1)
