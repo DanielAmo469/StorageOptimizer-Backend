@@ -7,6 +7,8 @@ from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.openapi.docs import get_swagger_ui_html
+
 
 
 
@@ -18,7 +20,7 @@ from services import get_user_id_by_username, verify_manager
 from auth import ALGORITHM, SECRET_KEY, create_access_token, get_current_user
 
 def create_admin_user(db: Session):
-    admin_email = "admin@gamil.com"
+    admin_email = "admin@gmail.com"
     admin_password = "Adminpassword"
 
     existing_admin = db.query(User).filter(User.email == admin_email).first()
@@ -46,20 +48,28 @@ try:
 finally:
     db.close()
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
     return get_swagger_ui_html(
-        openapi_url=app.openapi_url,
-        title=app.title + " - Swagger UI",
-        oauth2_redirect_url=app.swagger_ui_oauth2_redirect_url,
-        swagger_js_url="/static/swagger-ui-bundle.js",
-        swagger_css_url="/static/swagger-ui.css",
+        openapi_url="/openapi.json",
+        title="Storage Optimizer - Swagger UI",
+        swagger_js_url="/static/swagger-ui-bundle.js",  # ✅ local path
+        swagger_css_url="/static/swagger-ui.css",        # ✅ local path
+    )
+
+@app.get("/openapi.json", include_in_schema=False)
+async def custom_openapi():
+    return JSONResponse(
+        get_openapi(
+            title="Storage Optimizer",
+            version="1.0.0",
+            routes=app.routes
+        )
     )
 
 

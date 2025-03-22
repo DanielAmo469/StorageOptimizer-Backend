@@ -4,9 +4,22 @@ import os
 import tempfile
 import smbclient
 import shutil
+from sqlalchemy.orm import Session
 
+
+from models import FileMovement, ActionType
 from netapp_btc import filter_files, get_archive_path, get_svm_data_volumes, load_metadata, normalize_path, save_metadata, scan_volume
 
+
+def log_file_movement(db: Session, filename, original_path, destination_path, action_type):
+    file_movement = FileMovement(
+        filename=filename,
+        original_path=original_path,
+        destination_path=destination_path,
+        action_type=action_type
+    )
+    db.add(file_movement)
+    db.commit()
 
 def move_file(file_info):
     src_path = normalize_path(file_info['full_path'])
@@ -69,6 +82,9 @@ def move_file(file_info):
 
         # ✅ Remove temp file
         os.remove(temp_file_path)
+        
+        log_file_movement(db, filename, src_path, dest_path, ActionType.moved_to_archive)
+
 
         return dest_path
 
@@ -169,6 +185,9 @@ def restore_file(archive_folder, filename):
             print(f"Updated metadata.json: Removed entry for {filename}")
         except Exception as e:
             print(f"ERROR: Failed to update metadata.json: {e}")
+
+        log_file_movement(db, filename, archive_path, original_path, ActionType.restored_from_archive)
+
 
         return original_path
 

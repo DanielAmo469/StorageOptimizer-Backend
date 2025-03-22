@@ -8,6 +8,12 @@ class Role(enum.Enum):
     manager = "manager"
     viewonly = "viewonly"
 
+
+class ActionType(enum.Enum):
+    moved_to_archive = "moved_to_archive"
+    restored_from_archive = "restored_from_archive"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -27,3 +33,14 @@ class PendingUser(Base):
     hashed_password = Column(String)
     registration_request_description = Column(String)
     date_created = Column(DateTime, default=datetime.utcnow)
+
+
+class FileMovement(Base):
+    __tablename__ = "file_movements"
+
+    id = Column(Integer, primary_key=True, index=True)
+    filename = Column(String, index=True)
+    original_path = Column(String)
+    destination_path = Column(String)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    action_type = Column(Enum(ActionType), nullable=False)
