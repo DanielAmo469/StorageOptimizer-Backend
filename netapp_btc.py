@@ -80,7 +80,7 @@ def get_svm_archive_volumes():
 
 def get_archive_path(file_path):
     archive_volumes = get_svm_archive_volumes()  
-    archive_ip = "192.168.16.15"  # ✅ Manually set the correct archive IP
+    archive_ip = "192.168.16.15"
 
     if not archive_volumes or "volumes" not in archive_volumes:
         print("Error: No valid archive volumes found.")
@@ -94,20 +94,17 @@ def get_archive_path(file_path):
         elif "archive2" in share_name.lower():
             archive_map["data2"] = f"\\\\{archive_ip}\\{share_name}"
 
-    print(f"DEBUG: Updated Archive Map: {archive_map}")
+    print(f"DEBUG: Archive Map: {archive_map}")
 
     if "\\\\192.168.16.14\\data1\\" in file_path:
-        archive_path = archive_map.get("data1", f"\\\\{archive_ip}\\archive1")
-        print(f"DEBUG: Resolved archive path for data1: {archive_path}")
-        return archive_path
+        return archive_map.get("data1")
 
     elif "\\\\192.168.16.14\\data2\\" in file_path:
-        archive_path = archive_map.get("data2", f"\\\\{archive_ip}\\archive2")
-        print(f"DEBUG: Resolved archive path for data2: {archive_path}")
-        return archive_path
+        return archive_map.get("data2")
 
-    print(f"Error: No matching archive path found for {file_path}")
+    print(f"❌ Invalid source path: {file_path} (must be under data1 or data2)")
     return None
+
 
 
 
@@ -248,27 +245,34 @@ def filter_by_size(file_info, min_size, max_size):
     return True
 
 def filter_files(files, filters, blacklist, share_name):
+    """
+    Filters files by type, dates, size, and blacklist, limited to a single share (data1 or data2).
+    """
     with HostConnection('192.168.16.4', 'admin', 'Netapp1!', verify=False):
-        filtered_files = {}
+        if share_name not in files:
+            print(f"⚠️ Share '{share_name}' not found in scanned results.")
+            return {}
 
-        for share_name, file_list in files.items():
-            filtered_files[share_name] = []
+        filtered_files = {share_name: []}
 
-            for file_info in file_list:
-                if is_blacklisted(file_info['full_path'], blacklist):
-                    continue
-                if file_info['full_path'].endswith("_shortcut.bat"):
-                    continue
-                if not filter_by_type(file_info, filters.get('file_type')):
-                    continue
-                if not filter_by_dates(file_info, filters.get('date_filters', {})):  # Checks multiple date filters
-                    continue
-                if not filter_by_size(file_info, filters.get('min_size'), filters.get('max_size')):
-                    continue
+        for file_info in files[share_name]:
+            if is_blacklisted(file_info['full_path'], blacklist):
+                print(f"⛔ Skipped (blacklist): {file_info['full_path']}")
+                continue
+            if file_info['full_path'].endswith("_shortcut.bat"):
+                print(f"⛔ Skipped (shortcut): {file_info['full_path']}")
+                continue
+            if not filter_by_type(file_info, filters.get('file_type')):
+                continue
+            if not filter_by_dates(file_info, filters.get('date_filters', {})):
+                continue
+            if not filter_by_size(file_info, filters.get('min_size'), filters.get('max_size')):
+                continue
 
-                filtered_files[share_name].append(file_info)
+            filtered_files[share_name].append(file_info)
 
-        return {k: v for k, v in filtered_files.items() if v}
+        return {share_name: filtered_files[share_name]} if filtered_files[share_name] else {}
+
 
 
 def normalize_path(file_path):
@@ -278,63 +282,3 @@ def normalize_path(file_path):
     return file_path
 
 
-def save_metadata(dest_folder, filename, original_path):
-    metadata_file = os.path.join(dest_folder, "metadata.json")
-
-    # ✅ Ensure archive folder exists
-    try:
-        smbclient.stat(dest_folder)  # Check if folder exists
-    except FileNotFoundError:
-        print(f"WARNING: Archive folder {dest_folder} does not exist. Creating it.")
-        try:
-            smbclient.makedirs(dest_folder)
-        except Exception as e:
-            print(f"ERROR: Failed to create archive folder {dest_folder}: {e}")
-            return False
-
-    # ✅ Ensure metadata.json exists before opening
-    try:
-        smbclient.stat(metadata_file)  # Check if metadata.json exists
-    except FileNotFoundError:
-        print(f"WARNING: metadata.json not found, creating a new one at {metadata_file}")
-        try:
-            with smbclient.open_file(metadata_file, mode="w") as f:
-                f.write("{}")  # ✅ Create an empty JSON file
-        except Exception as e:
-            print(f"ERROR: Failed to create metadata.json: {e}")
-            return False
-
-    # ✅ Load existing metadata
-    try:
-        with smbclient.open_file(metadata_file, mode="r") as f:
-            metadata = json.load(f)
-    except (json.JSONDecodeError, FileNotFoundError):
-        print(f"WARNING: metadata.json is corrupted or missing. Resetting it.")
-        metadata = {}
-
-    # ✅ Save new metadata entry
-    metadata[filename] = original_path
-
-    try:
-        with smbclient.open_file(metadata_file, mode="w") as f:
-            json.dump(metadata, f, indent=4)
-        print(f"Updated metadata.json: {metadata_file}")
-    except Exception as e:
-        print(f"ERROR: Failed to write metadata.json: {e}")
-        return False
-
-    return True
-
-
-
-
-
-def load_metadata(dest_folder):
-    metadata_file = os.path.join(dest_folder, "metadata.json")
-
-    try:
-        with smbclient.open_file(metadata_file, mode="r") as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        print(f"No metadata file found at {metadata_file}")
-        return {}

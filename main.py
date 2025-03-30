@@ -1,6 +1,8 @@
-from typing import Dict, List
+from io import BytesIO
+from typing import Dict, List, Optional
 from datetime import timedelta
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, Request, status
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from passlib.hash import bcrypt
 from jose import JWTError, jwt
@@ -13,11 +15,16 @@ from fastapi.openapi.docs import get_swagger_ui_html
 
 
 
+
 from database import SessionLocal, engine, Base, get_db
 from models import PendingUser, Role, User
-from schemas import BaseResponse, RegistrationRequests, UserCreate, UserValues
+from netapp_interfaces import archive_filtered_files, move_file, restore_file
+from schemas import ArchiveFilterRequest, BaseResponse, FileInfo, RegistrationRequests, RestoreRequest, UserCreate, UserValues
 from services import get_user_id_by_username, verify_manager
 from auth import ALGORITHM, SECRET_KEY, create_access_token, get_current_user
+
+
+
 
 def create_admin_user(db: Session):
     admin_email = "admin@gmail.com"
@@ -53,13 +60,14 @@ app = FastAPI(docs_url=None, redoc_url=None)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
     return get_swagger_ui_html(
         openapi_url="/openapi.json",
         title="Storage Optimizer - Swagger UI",
-        swagger_js_url="/static/swagger-ui-bundle.js",  # ✅ local path
-        swagger_css_url="/static/swagger-ui.css",        # ✅ local path
+        swagger_js_url="/static/swagger-ui-bundle.js",
+        swagger_css_url="/static/swagger-ui.css",       
     )
 
 @app.get("/openapi.json", include_in_schema=False)
@@ -85,6 +93,7 @@ async def redoc_html():
         title=app.title + " - ReDoc",
         redoc_js_url="/static/redoc.standalone.js",
     )
+
 
 
 @app.post("/register", response_model=BaseResponse)
@@ -273,6 +282,64 @@ def downgrade_user_to_viewonly(
 
     return {"message": f"User '{username}' downgraded to viewonly", "user_id": user_to_downgrade.id}
 
+@app.post("/archive-file", response_model=dict)
+def archive_file(
+    file_info: FileInfo,
+    request: Request,
+    current_user: User = Depends(verify_manager)
+):
+    try:
+        result = move_file(file_info.dict())
+        if not result:
+            raise ValueError("move_file returned False. File may not exist, be accessible, or metadata failed.")
+        return {"message": "File archived successfully", "archived_path": result}
+
+    except Exception as e:
+        print(f"[ERROR] /archive-file failed\n  Path: {file_info.full_path}\n  Reason: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Archive failed: {str(e)}")
+
+
+@app.post("/restore-file", response_model=dict)
+def restore_archived_file(
+    restore_request: RestoreRequest,
+    request: Request,
+    current_user: User = Depends(verify_manager)
+):
+    try:
+        result = restore_file(
+            archive_folder=restore_request.archive_folder,
+            filename=restore_request.filename
+        )
+        if not result:
+            raise ValueError(f"restore_file returned False. File '{restore_request.filename}' may not exist in metadata or restoration failed.")
+        return {"message": "File restored successfully", "restored_path": result}
+
+    except Exception as e:
+        print(f"[ERROR] /restore-file failed\n  Archive Folder: {restore_request.archive_folder}\n  Filename: {restore_request.filename}\n  Reason: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Restore failed: {str(e)}")
+
+
+
+@app.post("/archive-filtered-files", response_model=dict)
+def archive_filtered_files_endpoint(
+    filter_request: ArchiveFilterRequest,
+    current_user: User = Depends(verify_manager)
+):
+    filters = {
+        "file_type": filter_request.file_type,
+        "date_filters": filter_request.date_filters.dict() if filter_request.date_filters else {},
+        "min_size": filter_request.min_size,
+        "max_size": filter_request.max_size,
+    }
+
+    result = archive_filtered_files(
+        filters=filters,
+        blacklist=filter_request.blacklist or [],
+        share_name=filter_request.share_name
+    )
+
+    return result
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],  # React app running on port 3000
@@ -280,8 +347,4 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
 

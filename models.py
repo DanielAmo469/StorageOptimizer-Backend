@@ -39,8 +39,11 @@ class FileMovement(Base):
     __tablename__ = "file_movements"
 
     id = Column(Integer, primary_key=True, index=True)
-    filename = Column(String, index=True)
-    original_path = Column(String)
+    full_path = Column(String, index=True)
     destination_path = Column(String)
+    creation_time = Column(DateTime)
+    last_access_time = Column(DateTime)
+    last_modified_time = Column(DateTime)
+    file_size = Column(Integer)
     timestamp = Column(DateTime, default=datetime.utcnow)
     action_type = Column(Enum(ActionType), nullable=False)
