@@ -1,0 +1,5 @@
+{
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "evenBetterToml.formatter.allowedBlankLines": 10,
+    "evenBetterToml.formatter.columnWidth": 100
+}
