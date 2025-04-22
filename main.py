@@ -18,9 +18,10 @@ from fastapi.openapi.docs import get_swagger_ui_html
 
 from database import SessionLocal, engine, Base, get_db
 from models import PendingUser, Role, User
-from netapp_interfaces import archive_filtered_files, move_file, restore_file
-from schemas import ArchiveFilterRequest, BaseResponse, FileInfo, RegistrationRequests, RestoreRequest, UserCreate, UserValues
-from services import get_user_id_by_username, verify_manager
+from netapp_btc import filter_files, get_svm_data_volumes, scan_volume
+from netapp_interfaces import archive_filtered_files, move_file, move_files_and_commit, restore_file
+from schemas import ArchiveFilterRequest, BaseResponse, BlacklistUpdate, FileInfo, RegistrationRequests, RestoreRequest, UserCreate, UserValues
+from services import get_user_id_by_username, load_blacklist, save_blacklist, verify_manager
 from auth import ALGORITHM, SECRET_KEY, create_access_token, get_current_user
 
 
@@ -289,14 +290,21 @@ def archive_file(
     current_user: User = Depends(verify_manager)
 ):
     try:
-        result = move_file(file_info.dict())
-        if not result:
-            raise ValueError("move_file returned False. File may not exist, be accessible, or metadata failed.")
-        return {"message": "File archived successfully", "archived_path": result}
+        moved_files, failed_files = move_files_and_commit([file_info.dict()])
+
+        if not moved_files:
+            raise ValueError("No files were moved successfully.")
+
+        return {
+            "message": "File archived successfully",
+            "archived_path": moved_files[0]
+        }
 
     except Exception as e:
         print(f"[ERROR] /archive-file failed\n  Path: {file_info.full_path}\n  Reason: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Archive failed: {str(e)}")
+
+
 
 
 @app.post("/restore-file", response_model=dict)
@@ -311,13 +319,62 @@ def restore_archived_file(
             filename=restore_request.filename
         )
         if not result:
-            raise ValueError(f"restore_file returned False. File '{restore_request.filename}' may not exist in metadata or restoration failed.")
+            raise ValueError(f"restore_file returned False. File '{restore_request.filename}' may not exist or restoration failed.")
         return {"message": "File restored successfully", "restored_path": result}
-
     except Exception as e:
         print(f"[ERROR] /restore-file failed\n  Archive Folder: {restore_request.archive_folder}\n  Filename: {restore_request.filename}\n  Reason: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Restore failed: {str(e)}")
+    
 
+from typing import List
+from fastapi import APIRouter
+
+@app.post("/restore-multiple", response_model=dict)
+def restore_multiple_files(
+    restore_requests: List[RestoreRequest],
+    current_user: User = Depends(verify_manager)
+):
+    restored = []
+    failed = []
+
+    for request in restore_requests:
+        result = restore_file(request.archive_folder, request.filename)
+        if result:
+            restored.append(request.filename)
+        else:
+            failed.append(request.filename)
+
+    return {
+        "restored_files": restored,
+        "failed_files": failed
+    }
+
+@app.post("/preview-filtered-files", response_model=dict)
+def preview_filtered_files(
+    filter_request: ArchiveFilterRequest,
+    current_user: User = Depends(verify_manager)
+):
+    filters = {
+        "file_type": filter_request.file_type,
+        "date_filters": filter_request.date_filters.dict() if filter_request.date_filters else {},
+        "min_size": filter_request.min_size,
+        "max_size": filter_request.max_size,
+    }
+
+    volume = get_svm_data_volumes()
+    all_files = scan_volume(filter_request.share_name, volume, filter_request.blacklist or [])
+    if not all_files:
+        return {"status": "no_files", "reason": f"No files found in {filter_request.share_name}"}
+
+    scanned_dict = {filter_request.share_name: all_files}
+    filtered = filter_files(scanned_dict, filters, filter_request.blacklist or [], filter_request.share_name)
+
+    matching_files = filtered.get(filter_request.share_name, [])
+    return {
+        "status": "success" if matching_files else "no_matches",
+        "match_count": len(matching_files),
+        "files": matching_files
+    }
 
 
 @app.post("/archive-filtered-files", response_model=dict)
@@ -332,13 +389,27 @@ def archive_filtered_files_endpoint(
         "max_size": filter_request.max_size,
     }
 
+    # Get current volume config
+    volume = get_svm_data_volumes()
+
     result = archive_filtered_files(
         filters=filters,
         blacklist=filter_request.blacklist or [],
-        share_name=filter_request.share_name
+        share_name=filter_request.share_name,
+        volume=volume
     )
 
     return result
+
+
+@app.get("/blacklist")
+def get_blacklist():
+    return {"blacklist": load_blacklist()}
+
+@app.post("/blacklist")
+def update_blacklist(data: BlacklistUpdate):
+    updated = save_blacklist(data.blacklist)
+    return {"message": "Blacklist updated", "data": updated}
 
 app.add_middleware(
     CORSMiddleware,

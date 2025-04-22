@@ -1,3 +1,5 @@
+import json
+import os
 from fastapi import Depends, HTTPException, status
 from auth import get_current_user
 from database import SessionLocal, get_db
@@ -36,3 +38,18 @@ def verify_viewonly(user:User =  Depends(get_current_user)):
             detail="Access forbidden: View and Managers only"
         )
     return user
+
+SETTINGS_FILE = "settings.json"
+
+def load_blacklist():
+    if not os.path.exists(SETTINGS_FILE):
+        return []
+    with open(SETTINGS_FILE, "r") as f:
+        data = json.load(f)
+    return data.get("blacklist", [])
+
+def save_blacklist(blacklist: list[str]):
+    data = {"blacklist": blacklist}
+    with open(SETTINGS_FILE, "w") as f:
+        json.dump(data, f, indent=2)
+    return data

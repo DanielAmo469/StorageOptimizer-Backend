@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey
+from sqlalchemy import JSON, Boolean, Column, Integer, String, DateTime, Enum, ForeignKey
 from sqlalchemy.orm import relationship, Session
 from database import Base
 from datetime import datetime
@@ -47,3 +47,17 @@ class FileMovement(Base):
     file_size = Column(Integer)
     timestamp = Column(DateTime, default=datetime.utcnow)
     action_type = Column(Enum(ActionType), nullable=False)
+
+
+class VolumeScanLog(Base):
+    __tablename__ = "volume_scan_log"
+
+    id = Column(Integer, primary_key=True, index=True)
+    share_name = Column(String, index=True)
+    volume_name = Column(String, index=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    triggered_by_user = Column(Boolean, default=False)
+    files_scanned = Column(Integer, default=0)
+    files_archived = Column(Integer, default=0)
+    files_restored = Column(Integer, default=0)
+    filters_used = Column(JSON, nullable=True)

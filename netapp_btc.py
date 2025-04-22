@@ -1,6 +1,6 @@
 import json
 from netapp_ontap import HostConnection
-from netapp_ontap.resources import Svm, IpInterface, CifsShare
+from netapp_ontap.resources import Svm, IpInterface, CifsShare, Volume
 import os
 import smbclient
 import os
@@ -156,42 +156,52 @@ def get_files_by_type(file_type):
 
         return files
 
-
-def scan_volume(volume):
+#Scan a single share (volume) and return list of file metadata
+def scan_volume(share_name: str, volume: dict, blacklist: list[str]) -> list[dict]:
     with HostConnection('192.168.16.4', 'admin', 'Netapp1!', verify=False):
-        files = {}
         ip_address = get_first_ip_address(volume)
         if not ip_address:
-            return files
+            return []
 
-        for share in volume.get('volumes', []):
-            share_path, share_name = access_CIFS_share(share, ip_address)
-            if not share_name or not share_path:
-                continue
+        share_path, confirmed_share_name = access_CIFS_share({"share_name": share_name}, ip_address)
+        if confirmed_share_name != share_name or not share_path:
+            print(f"Share '{share_name}' not found in volume config.")
+            return []
 
-            files[share_name] = []
+        scanned_files = []
 
-            try:
-                for dirpath, _, filenames in smbclient.walk(share_path):
-                    for file in filenames:
-                        if file.endswith("_shortcut.bat"):
-                            continue
-                        full_path = os.path.join(dirpath, file)
+        try:
+            for dirpath, dirnames, filenames in smbclient.walk(share_path):
+                # Skip folders that match blacklist keywords
+                if any(b.lower() in dirpath.lower() for b in blacklist):
+                    continue
+
+                for file in filenames:
+                    if file.endswith(".bat"):
+                        continue
+
+                    full_path = os.path.join(dirpath, file)
+
+                    try:
                         creation_time = datetime.fromtimestamp(os.path.getctime(full_path)).strftime('%Y-%m-%d %H:%M:%S')
                         last_access_time = datetime.fromtimestamp(os.path.getatime(full_path)).strftime('%Y-%m-%d %H:%M:%S')
                         last_modified_time = datetime.fromtimestamp(os.path.getmtime(full_path)).strftime('%Y-%m-%d %H:%M:%S')
                         file_size = os.path.getsize(full_path)
-                        files[share_name].append({
-                            'full_path': full_path,
-                            'creation_time': creation_time,
-                            'last_access_time': last_access_time,
-                            'last_modified_time': last_modified_time,
-                            'file_size': file_size
-                        })
-            except OSError as e:
-                print(f"Error accessing share {share_path}: {e}")
+                    except Exception as e:
+                        print(f"Skipping unreadable file: {full_path} → {e}")
+                        continue
 
-        return files
+                    scanned_files.append({
+                        'full_path': full_path,
+                        'creation_time': creation_time,
+                        'last_access_time': last_access_time,
+                        'last_modified_time': last_modified_time,
+                        'file_size': file_size
+                    })
+        except Exception as e:
+            print(f"Error walking share {share_path}: {e}")
+
+        return scanned_files
 
 
 
@@ -216,7 +226,11 @@ def is_blacklisted(file_path, blacklist):
     return any(blacklisted in file_path for blacklisted in blacklist)
 
 def filter_by_type(file_info, file_type):
-    return file_info['full_path'].endswith(file_type) if file_type else True
+    if not file_type:
+        return True
+    if isinstance(file_type, list):
+        return file_info['full_path'].lower().endswith(tuple(ft.lower() for ft in file_type))
+    return file_info['full_path'].lower().endswith(file_type.lower())
 
 def filter_by_dates(file_info, date_filters):
     for date_type, date_range in date_filters.items():
@@ -245,22 +259,19 @@ def filter_by_size(file_info, min_size, max_size):
     return True
 
 def filter_files(files, filters, blacklist, share_name):
-    """
-    Filters files by type, dates, size, and blacklist, limited to a single share (data1 or data2).
-    """
     with HostConnection('192.168.16.4', 'admin', 'Netapp1!', verify=False):
         if share_name not in files:
-            print(f"⚠️ Share '{share_name}' not found in scanned results.")
+            print(f"Share '{share_name}' not found in scanned results.")
             return {}
 
         filtered_files = {share_name: []}
 
         for file_info in files[share_name]:
             if is_blacklisted(file_info['full_path'], blacklist):
-                print(f"⛔ Skipped (blacklist): {file_info['full_path']}")
+                print(f"Skipped (blacklist): {file_info['full_path']}")
                 continue
             if file_info['full_path'].endswith("_shortcut.bat"):
-                print(f"⛔ Skipped (shortcut): {file_info['full_path']}")
+                print(f"Skipped (shortcut): {file_info['full_path']}")
                 continue
             if not filter_by_type(file_info, filters.get('file_type')):
                 continue
@@ -275,6 +286,7 @@ def filter_files(files, filters, blacklist, share_name):
 
 
 
+
 def normalize_path(file_path):
     file_path = file_path.replace("/", "\\")  
     if not file_path.startswith("\\\\"):
@@ -282,3 +294,25 @@ def normalize_path(file_path):
     return file_path
 
 
+def get_volume_name_by_share(share_name: str) -> str | None:
+    svm_data = get_svm_data_volumes()
+    for entry in svm_data.get("volumes", []):
+        if entry["share_name"].lower() == share_name.lower():
+            return entry["volume"]
+    return None
+
+
+def get_vol_uuid(vol_name):
+    with HostConnection('192.168.16.4', 'admin', 'Netapp1!', verify=False):
+        volumes = Volume.get_collection(name=vol_name, fields="uuid,name")
+        for vol in volumes:
+            return vol.uuid
+        return None 
+    
+def get_svm_uuid(svm_name):
+    with HostConnection('192.168.16.4', 'admin', 'Netapp1!', verify=False):
+        svms = Svm.get_collection(name= svm_name, fields ="uuid,name")
+        for svm in svms:
+            return svm.uuid
+        return None
+    

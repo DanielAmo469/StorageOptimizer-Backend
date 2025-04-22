@@ -62,8 +62,11 @@ class DateFilters(BaseModel):
 
 class ArchiveFilterRequest(BaseModel):
     share_name: Literal["data1", "data2"] = Field(..., description="The share to archive from (data1 or data2 only)")
-    file_type: Optional[str] = None
+    file_type: Optional[List[str]] = None
     date_filters: Optional[DateFilters] = None
     min_size: Optional[int] = None
     max_size: Optional[int] = None
     blacklist: Optional[List[str]] = []
+
+class BlacklistUpdate(BaseModel):
+    blacklist: list[str]
