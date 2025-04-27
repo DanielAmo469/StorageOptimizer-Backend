@@ -1,25 +1,35 @@
-from typing import Dict, List
+from io import BytesIO
+from typing import Dict, List, Optional
 from datetime import timedelta
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, Request, status
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from passlib.hash import bcrypt
 from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.openapi.docs import get_swagger_ui_html
+
+
 
 
 
 
 from database import SessionLocal, engine, Base, get_db
 from models import PendingUser, Role, User
-from schemas import BaseResponse, RegistrationRequests, UserCreate, UserValues
-from services import get_user_id_by_username, verify_manager
+from netapp_btc import filter_files, get_svm_data_volumes, scan_volume
+from netapp_interfaces import archive_filtered_files, bulk_restore_files, move_file, bulk_move_files, restore_file
+from schemas import ArchiveFilterRequest, BaseResponse, BlacklistUpdate, FileInfo, RegistrationRequests, RestoreRequest, UserCreate, UserValues
+from services import build_filters_from_request, get_user_id_by_username, verify_manager
 from auth import ALGORITHM, SECRET_KEY, create_access_token, get_current_user
 
+
+
+
 def create_admin_user(db: Session):
-    admin_email = "admin@gamil.com"
-    admin_password = "Adminpassword" 
+    admin_email = "admin@gmail.com"
+    admin_password = "Adminpassword"
 
     existing_admin = db.query(User).filter(User.email == admin_email).first()
     if not existing_admin:
@@ -37,6 +47,7 @@ def create_admin_user(db: Session):
     else:
         print("Admin user already exists.")
 
+
 Base.metadata.create_all(bind=engine)
 
 db = SessionLocal()
@@ -45,7 +56,7 @@ try:
 finally:
     db.close()
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -54,11 +65,20 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
     return get_swagger_ui_html(
-        openapi_url=app.openapi_url,
-        title=app.title + " - Swagger UI",
-        oauth2_redirect_url=app.swagger_ui_oauth2_redirect_url,
+        openapi_url="/openapi.json",
+        title="Storage Optimizer - Swagger UI",
         swagger_js_url="/static/swagger-ui-bundle.js",
-        swagger_css_url="/static/swagger-ui.css",
+        swagger_css_url="/static/swagger-ui.css",       
+    )
+
+@app.get("/openapi.json", include_in_schema=False)
+async def custom_openapi():
+    return JSONResponse(
+        get_openapi(
+            title="Storage Optimizer",
+            version="1.0.0",
+            routes=app.routes
+        )
     )
 
 
@@ -74,6 +94,7 @@ async def redoc_html():
         title=app.title + " - ReDoc",
         redoc_js_url="/static/redoc.standalone.js",
     )
+
 
 
 @app.post("/register", response_model=BaseResponse)
@@ -262,6 +283,157 @@ def downgrade_user_to_viewonly(
 
     return {"message": f"User '{username}' downgraded to viewonly", "user_id": user_to_downgrade.id}
 
+# Archive a single file
+@app.post("/archive-file", response_model=dict)
+def archive_file(
+    file_info: FileInfo,
+    request: Request,
+    current_user: User = Depends(verify_manager)
+):
+    try:
+        dest_path, movement = move_file(file_info.dict())
+
+        if not dest_path:
+            raise ValueError("Failed to move the file.")
+
+        db_gen = get_db()
+        db = next(db_gen)
+
+        db.add(movement)
+        db.commit()
+
+        db_gen.close()
+
+        return {
+            "message": "File archived successfully",
+            "archived_path": dest_path
+        }
+
+    except Exception as e:
+        print(f"Archive failed for {file_info.full_path}: {e}")
+        raise HTTPException(status_code=500, detail=f"Archive failed: {str(e)}")
+
+
+
+
+@app.post("/restore-file", response_model=dict)
+def restore_archived_file(
+    restore_request: RestoreRequest,
+    request: Request,
+    current_user: User = Depends(verify_manager)
+):
+    try:
+        result = restore_file(
+            archive_folder=restore_request.archive_folder,
+            filename=restore_request.filename
+        )
+        if not result:
+            raise ValueError(f"restore_file returned False. File '{restore_request.filename}' may not exist or restoration failed.")
+        return {"message": "File restored successfully", "restored_path": result}
+    except Exception as e:
+        print(f"[ERROR] /restore-file failed\n  Archive Folder: {restore_request.archive_folder}\n  Filename: {restore_request.filename}\n  Reason: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Restore failed: {str(e)}")
+    
+
+@app.post("/restore-multiple", response_model=dict)
+def restore_multiple_files(
+    restore_requests: List[RestoreRequest],
+    current_user: dict = Depends(verify_manager)
+):
+    db = SessionLocal()
+
+    try:
+        # Prepare list of archived file paths to restore
+        archived_paths = [req.archived_path for req in restore_requests]
+
+        if not archived_paths:
+            return {"restored": [], "skipped": []}
+
+        # Perform bulk restore
+        result = bulk_restore_files(archived_paths, db)
+
+        return {
+            "restored": result.get("restored", []),
+            "skipped": result.get("skipped", [])
+        }
+
+    except Exception as e:
+        print(f"Error in restore_multiple_files: {e}")
+        return {
+            "restored": [],
+            "skipped": [{"error": str(e)}]
+        }
+    finally:
+        db.close()
+
+
+
+@app.post("/preview-filtered-files", response_model=dict)
+def preview_filtered_files(
+    filter_request: ArchiveFilterRequest,
+    current_user: User = Depends(verify_manager)
+):
+    filters = {
+        "file_type": filter_request.file_type or [],
+        "date_filters": filter_request.date_filters.dict() if filter_request.date_filters else {},
+        "min_size": filter_request.min_size,
+        "max_size": filter_request.max_size,
+    }
+
+    try:
+        volume = get_svm_data_volumes()
+        all_files = scan_volume(filter_request.share_name, volume, filter_request.blacklist or [])
+    except Exception as e:
+        return {"status": "error", "reason": f"Failed to scan volume: {str(e)}"}
+
+    if not all_files:
+        return {"status": "no_files", "reason": f"No files found in {filter_request.share_name}"}
+
+    scanned_dict = {filter_request.share_name: all_files}
+
+    try:
+        filtered = filter_files(scanned_dict, filters, filter_request.blacklist or [], filter_request.share_name)
+    except Exception as e:
+        return {"status": "error", "reason": f"Failed to filter files: {str(e)}"}
+
+    matching_files = filtered.get(filter_request.share_name, [])
+
+    return {
+        "status": "success" if matching_files else "no_matches",
+        "match_count": len(matching_files),
+        "files": matching_files
+    }
+
+
+# Archive filtered files endpoint
+@app.post("/archive-filtered-files", response_model=dict)
+def archive_filtered_files_endpoint(
+    filter_request: ArchiveFilterRequest,
+    current_user: User = Depends(verify_manager)
+):
+    try:
+        print(f"Starting archive process for filtered files on share: {filter_request.share_name}")
+
+        filters = build_filters_from_request(filter_request)
+        volume = get_svm_data_volumes()
+
+        result = archive_filtered_files(
+            filters=filters,
+            blacklist=filter_request.blacklist or [],
+            share_name=filter_request.share_name,
+            volume=volume
+        )
+
+        return result
+
+    except ValueError as ve:
+        print(f"ValueError during archive: {ve}")
+        return {"status": "error", "reason": str(ve)}
+    except Exception as e:
+        print(f"Unexpected error during archive: {e}")
+        return {"status": "error", "reason": f"Failed to archive files: {str(e)}"}
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],  # React app running on port 3000
@@ -269,8 +441,4 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
 
