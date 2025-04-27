@@ -86,7 +86,7 @@ def get_archive_path(file_path):
         print("Error: No valid archive volumes found.")
         return None
 
-    archive_map = {}  
+    archive_map = {}
     for archive in archive_volumes['volumes']:
         share_name = archive['share_name']
         if "archive1" in share_name.lower():
@@ -94,15 +94,14 @@ def get_archive_path(file_path):
         elif "archive2" in share_name.lower():
             archive_map["data2"] = f"\\\\{archive_ip}\\{share_name}"
 
-    print(f"DEBUG: Archive Map: {archive_map}")
+    file_path_lower = file_path.lower()
 
-    if "\\\\192.168.16.14\\data1\\" in file_path:
+    if "\\\\192.168.16.14\\data1\\" in file_path_lower:
         return archive_map.get("data1")
-
-    elif "\\\\192.168.16.14\\data2\\" in file_path:
+    elif "\\\\192.168.16.14\\data2\\" in file_path_lower:
         return archive_map.get("data2")
 
-    print(f"❌ Invalid source path: {file_path} (must be under data1 or data2)")
+    print(f"Invalid source path for archive mapping: {file_path}")
     return None
 
 
@@ -144,33 +143,28 @@ def access_CIFS_share(share, ip_address):
 #Scan a single share (volume) and return list of file metadata
 def scan_volume(share_name: str, volume: dict, blacklist: list[str]) -> list[dict]:
     with HostConnection('192.168.16.4', 'admin', 'Netapp1!', verify=False):
-        #Add fake nas_server if missing
-        if "nas_server" not in volume:
-            volume["nas_server"] = {
-                "interfaces": [{"ip": "192.168.16.14"}]
-            }
+        if "nas_server" not in volume or not volume["nas_server"].get("interfaces"):
+            volume["nas_server"] = {"interfaces": [{"ip": "192.168.16.14"}]}
 
         ip_address = get_first_ip_address(volume)
         if not ip_address:
+            print(f"Failed to get IP address for volume: {volume}")
             return []
 
         share_path, confirmed_share_name = access_CIFS_share({"share_name": share_name}, ip_address)
         if confirmed_share_name != share_name or not share_path:
-            print(f"Share '{share_name}' not found in volume config.")
+            print(f"Share '{share_name}' not found correctly in volume config.")
             return []
 
         scanned_files = []
 
         try:
             for dirpath, dirnames, filenames in smbclient.walk(share_path):
-                # Skip folders that match blacklist keywords
                 if any(b.lower() in dirpath.lower() for b in blacklist):
                     continue
-
                 for file in filenames:
                     if file.endswith(".bat"):
                         continue
-
                     full_path = os.path.join(dirpath, file)
 
                     try:
@@ -179,7 +173,7 @@ def scan_volume(share_name: str, volume: dict, blacklist: list[str]) -> list[dic
                         last_modified_time = datetime.fromtimestamp(os.path.getmtime(full_path)).strftime('%Y-%m-%d %H:%M:%S')
                         file_size = os.path.getsize(full_path)
                     except Exception as e:
-                        print(f"Skipping unreadable file: {full_path} → {e}")
+                        print(f"Skipping unreadable file metadata: {full_path} → {e}")
                         continue
 
                     scanned_files.append({
@@ -196,8 +190,8 @@ def scan_volume(share_name: str, volume: dict, blacklist: list[str]) -> list[dic
 
 
 
-filter_parameters = {"blacklist", "creation_time_start", "creation_time_end", "last_access_time_start", "last_access_time_end", "last_modified_time_start", "last_modified_time_end", "file_size_min", "file_size_max"}
 
+filter_parameters = {"blacklist", "creation_time_start", "creation_time_end", "last_access_time_start", "last_access_time_end", "last_modified_time_start", "last_modified_time_end", "file_size_min", "file_size_max"}
 
 
 
@@ -208,13 +202,18 @@ def convert_to_datetime(date_input):
         try:
             return datetime.strptime(date_input, '%Y-%m-%d %H:%M:%S')
         except ValueError:
-            return None
+            try:
+                return datetime.strptime(date_input, '%Y-%m-%d')
+            except ValueError:
+                print(f"Invalid datetime format: {date_input}")
+                return None
     return None
 
 
-
 def is_blacklisted(file_path, blacklist):
-    return any(blacklisted in file_path for blacklisted in blacklist)
+    file_path_lower = file_path.lower()
+    return any(blacklisted.lower() in file_path_lower for blacklisted in blacklist)
+
 
 def filter_by_type(file_info, file_type):
     if not file_type:
@@ -242,38 +241,42 @@ def filter_by_dates(file_info, date_filters):
 
 
 def filter_by_size(file_info, min_size, max_size):
-    file_size = file_info['file_size']
+    file_size = file_info.get('file_size')
+
     if min_size is not None and file_size < min_size:
         return False
-    if max_size is not None and file_size > max_size:
+    if max_size is not None and max_size > 0 and file_size > max_size:
         return False
     return True
 
+
+
 def filter_files(files, filters, blacklist, share_name):
-    with HostConnection('192.168.16.4', 'admin', 'Netapp1!', verify=False):
-        if share_name not in files:
-            print(f"Share '{share_name}' not found in scanned results.")
-            return {}
+    if share_name not in files:
+        print(f"Share '{share_name}' not found in scanned results.")
+        return {}
 
-        filtered_files = {share_name: []}
+    filtered_files = {share_name: []}
+    min_size = filters.get('min_size')
+    max_size = filters.get('max_size')
+    file_type = filters.get('file_type')
+    date_filters = filters.get('date_filters', {})
 
-        for file_info in files[share_name]:
-            if is_blacklisted(file_info['full_path'], blacklist):
-                print(f"Skipped (blacklist): {file_info['full_path']}")
-                continue
-            if file_info['full_path'].endswith("_shortcut.bat"):
-                print(f"Skipped (shortcut): {file_info['full_path']}")
-                continue
-            if not filter_by_type(file_info, filters.get('file_type')):
-                continue
-            if not filter_by_dates(file_info, filters.get('date_filters', {})):
-                continue
-            if not filter_by_size(file_info, filters.get('min_size'), filters.get('max_size')):
-                continue
+    for file_info in files[share_name]:
+        if is_blacklisted(file_info['full_path'], blacklist):
+            continue
+        if file_info['full_path'].endswith("_shortcut.bat"):
+            continue
+        if not filter_by_type(file_info, file_type):
+            continue
+        if not filter_by_dates(file_info, date_filters):
+            continue
+        if not filter_by_size(file_info, min_size, max_size):
+            continue
 
-            filtered_files[share_name].append(file_info)
+        filtered_files[share_name].append(file_info)
 
-        return {share_name: filtered_files[share_name]} if filtered_files[share_name] else {}
+    return {share_name: filtered_files[share_name]} if filtered_files[share_name] else {}
 
 
 

@@ -19,9 +19,9 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from database import SessionLocal, engine, Base, get_db
 from models import PendingUser, Role, User
 from netapp_btc import filter_files, get_svm_data_volumes, scan_volume
-from netapp_interfaces import archive_filtered_files, bulk_restore_files, move_file, move_files_and_commit, restore_file
+from netapp_interfaces import archive_filtered_files, bulk_restore_files, move_file, bulk_move_files, restore_file
 from schemas import ArchiveFilterRequest, BaseResponse, BlacklistUpdate, FileInfo, RegistrationRequests, RestoreRequest, UserCreate, UserValues
-from services import get_user_id_by_username, verify_manager
+from services import build_filters_from_request, get_user_id_by_username, verify_manager
 from auth import ALGORITHM, SECRET_KEY, create_access_token, get_current_user
 
 
@@ -283,6 +283,7 @@ def downgrade_user_to_viewonly(
 
     return {"message": f"User '{username}' downgraded to viewonly", "user_id": user_to_downgrade.id}
 
+# Archive a single file
 @app.post("/archive-file", response_model=dict)
 def archive_file(
     file_info: FileInfo,
@@ -290,18 +291,26 @@ def archive_file(
     current_user: User = Depends(verify_manager)
 ):
     try:
-        moved_files, failed_files = move_files_and_commit([file_info.dict()])
+        dest_path, movement = move_file(file_info.dict())
 
-        if not moved_files:
-            raise ValueError("No files were moved successfully.")
+        if not dest_path:
+            raise ValueError("Failed to move the file.")
+
+        db_gen = get_db()
+        db = next(db_gen)
+
+        db.add(movement)
+        db.commit()
+
+        db_gen.close()
 
         return {
             "message": "File archived successfully",
-            "archived_path": moved_files[0]
+            "archived_path": dest_path
         }
 
     except Exception as e:
-        print(f"[ERROR] /archive-file failed\n  Path: {file_info.full_path}\n  Reason: {str(e)}")
+        print(f"Archive failed for {file_info.full_path}: {e}")
         raise HTTPException(status_code=500, detail=f"Archive failed: {str(e)}")
 
 
@@ -365,21 +374,30 @@ def preview_filtered_files(
     current_user: User = Depends(verify_manager)
 ):
     filters = {
-        "file_type": filter_request.file_type,
+        "file_type": filter_request.file_type or [],
         "date_filters": filter_request.date_filters.dict() if filter_request.date_filters else {},
         "min_size": filter_request.min_size,
         "max_size": filter_request.max_size,
     }
 
-    volume = get_svm_data_volumes()
-    all_files = scan_volume(filter_request.share_name, volume, filter_request.blacklist or [])
+    try:
+        volume = get_svm_data_volumes()
+        all_files = scan_volume(filter_request.share_name, volume, filter_request.blacklist or [])
+    except Exception as e:
+        return {"status": "error", "reason": f"Failed to scan volume: {str(e)}"}
+
     if not all_files:
         return {"status": "no_files", "reason": f"No files found in {filter_request.share_name}"}
 
     scanned_dict = {filter_request.share_name: all_files}
-    filtered = filter_files(scanned_dict, filters, filter_request.blacklist or [], filter_request.share_name)
+
+    try:
+        filtered = filter_files(scanned_dict, filters, filter_request.blacklist or [], filter_request.share_name)
+    except Exception as e:
+        return {"status": "error", "reason": f"Failed to filter files: {str(e)}"}
 
     matching_files = filtered.get(filter_request.share_name, [])
+
     return {
         "status": "success" if matching_files else "no_matches",
         "match_count": len(matching_files),
@@ -387,29 +405,33 @@ def preview_filtered_files(
     }
 
 
+# Archive filtered files endpoint
 @app.post("/archive-filtered-files", response_model=dict)
 def archive_filtered_files_endpoint(
     filter_request: ArchiveFilterRequest,
     current_user: User = Depends(verify_manager)
 ):
-    filters = {
-        "file_type": filter_request.file_type,
-        "date_filters": filter_request.date_filters.dict() if filter_request.date_filters else {},
-        "min_size": filter_request.min_size,
-        "max_size": filter_request.max_size,
-    }
+    try:
+        print(f"Starting archive process for filtered files on share: {filter_request.share_name}")
 
-    # Get current volume config
-    volume = get_svm_data_volumes()
+        filters = build_filters_from_request(filter_request)
+        volume = get_svm_data_volumes()
 
-    result = archive_filtered_files(
-        filters=filters,
-        blacklist=filter_request.blacklist or [],
-        share_name=filter_request.share_name,
-        volume=volume
-    )
+        result = archive_filtered_files(
+            filters=filters,
+            blacklist=filter_request.blacklist or [],
+            share_name=filter_request.share_name,
+            volume=volume
+        )
 
-    return result
+        return result
+
+    except ValueError as ve:
+        print(f"ValueError during archive: {ve}")
+        return {"status": "error", "reason": str(ve)}
+    except Exception as e:
+        print(f"Unexpected error during archive: {e}")
+        return {"status": "error", "reason": f"Failed to archive files: {str(e)}"}
 
 
 app.add_middleware(

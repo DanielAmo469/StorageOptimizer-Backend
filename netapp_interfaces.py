@@ -51,10 +51,19 @@ def move_file(file_info: dict) -> tuple[str, FileMovement] | tuple[None, None]:
             print(f"Skipping file {src_path} (Invalid archive destination)")
             return None, None
 
-        print(f"Normalized Source: {src_path}")
-        print(f"Normalized Destination Folder: {dest_folder}")
+        # Pre-check: permissions and size
+        try:
+            with smbclient.open_file(src_path, mode="rb") as f:
+                f.read(1)
+            file_stat = smbclient.stat(src_path)
+            if file_stat.st_size == 0:
+                print(f"Skipped: Zero size file {src_path}")
+                return None, None
+        except Exception as e:
+            print(f"Permission or access check failed for {src_path}: {e}")
+            return None, None
 
-        # Capture metadata BEFORE moving
+        # Capture metadata
         creation_time = datetime.strptime(file_info["creation_time"], '%Y-%m-%d %H:%M:%S')
         access_time = datetime.strptime(file_info["last_access_time"], '%Y-%m-%d %H:%M:%S')
         modified_time = datetime.strptime(file_info["last_modified_time"], '%Y-%m-%d %H:%M:%S')
@@ -63,40 +72,38 @@ def move_file(file_info: dict) -> tuple[str, FileMovement] | tuple[None, None]:
         filename = os.path.basename(src_path)
         dest_path = normalize_path(f"{dest_folder}\\{filename}")
 
-        # Copy file from source to destination via temp file
+        # Move via temp file
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
             try:
-                with open(temp_file_path, "wb") as f:
+                with open(temp_file_path, "wb") as local_file:
                     with smbclient.open_file(src_path, mode="rb") as remote_file:
-                        shutil.copyfileobj(remote_file, f)
+                        shutil.copyfileobj(remote_file, local_file)
             except Exception as e:
-                print(f"Failed to download file from {src_path}: {e}")
+                print(f"Failed to download {src_path}: {e}")
                 return None, None
 
         try:
-            with open(temp_file_path, "rb") as f:
+            with open(temp_file_path, "rb") as local_file:
                 with smbclient.open_file(dest_path, mode="wb") as remote_file:
-                    shutil.copyfileobj(f, remote_file)
+                    shutil.copyfileobj(local_file, remote_file)
         except Exception as e:
-            print(f"Failed to upload file to archive: {dest_path} → {e}")
+            print(f"Failed to upload {dest_path}: {e}")
             return None, None
 
         try:
             smbclient.remove(src_path)
         except Exception as e:
-            print(f"Failed to delete original file: {src_path} → {e}")
+            print(f"Failed to delete {src_path}: {e}")
             return None, None
 
         os.utime(temp_file_path, (access_time.timestamp(), modified_time.timestamp()))
 
-        # Try creating shortcut (using original src path)
+        # Create shortcut (ignore failure)
         try:
-            created = create_shortcut(src_path, dest_path)
-            if not created:
-                print(f"Shortcut creation failed for: {src_path}")
+            create_shortcut(src_path, dest_path)
         except Exception as e:
-            print(f"Shortcut exception: {src_path} → {e}")
+            print(f"Shortcut error for {src_path}: {e}")
 
         os.remove(temp_file_path)
 
@@ -111,12 +118,13 @@ def move_file(file_info: dict) -> tuple[str, FileMovement] | tuple[None, None]:
             action_type=ActionType.moved_to_archive
         )
 
-        print(f"Successfully moved file: {src_path}")
+        print(f"Moved: {src_path} → {dest_path}")
         return dest_path, file_movement
 
     except Exception as e:
-        print(f"FATAL error in move_file for {file_info.get('full_path')}: {e}")
+        print(f"FATAL error in move_file: {file_info.get('full_path')} → {e}")
         return None, None
+
 
 
 
@@ -234,32 +242,33 @@ def restore_file(archive_folder, filename):
     finally:
         db_gen.close()
 
-
+#Restore multiple files from archive back to original location
 def bulk_restore_files(file_paths: list[str], db_session: Session) -> dict:
     restored_files = []
     skipped_files = []
 
     for archived_path in file_paths:
         try:
+            # Find metadata by destination_path (where it was archived)
             metadata = db_session.query(FileMovement).filter(
-                FileMovement.full_path == archived_path,
-                FileMovement.action_type == ActionType.archive
+                FileMovement.destination_path == archived_path,
+                FileMovement.action_type == ActionType.moved_to_archive
             ).order_by(FileMovement.id.desc()).first()
 
             if not metadata:
-                raise Exception(f"Metadata not found in database for: {archived_path}")
+                raise Exception(f"Metadata not found for archive path: {archived_path}")
 
-            # Extract metadata
-            original_dest_path = metadata.destination_path
+            # Metadata fields
+            original_full_path = metadata.full_path
             creation_time = metadata.creation_time
             last_access_time = metadata.last_access_time
             last_modified_time = metadata.last_modified_time
             file_size = metadata.file_size
 
-            if not original_dest_path:
-                raise Exception(f"Missing destination path in DB for: {archived_path}")
+            if not original_full_path:
+                raise Exception(f"Original path missing for: {archived_path}")
 
-            # Download the archived file into a local temp file
+            # Download archived file to temp
             temp_fd, temp_path = tempfile.mkstemp()
             os.close(temp_fd)
 
@@ -269,54 +278,57 @@ def bulk_restore_files(file_paths: list[str], db_session: Session) -> dict:
                         shutil.copyfileobj(src_file, dst_file)
             except Exception:
                 os.remove(temp_path)
-                raise Exception(f"Failed to download file from archive: {archived_path}")
+                raise Exception(f"Failed to download archived file: {archived_path}")
 
-            # Upload the file to its original destination
+            # Upload to original location
             try:
-                with smbclient.open_file(original_dest_path, mode="wb") as dest_file:
+                with smbclient.open_file(original_full_path, mode="wb") as dest_file:
                     with open(temp_path, mode="rb") as src_temp:
                         shutil.copyfileobj(src_temp, dest_file)
             except Exception:
                 os.remove(temp_path)
-                raise Exception(f"Failed to restore file to original path: {original_dest_path}")
+                raise Exception(f"Failed to upload to original path: {original_full_path}")
 
-            os.remove(temp_path)  # Cleanup local temp
+            os.remove(temp_path)  # Clean up temp
 
-            # Restore timestamps remotely (optional)
+            # Attempt to restore timestamps (optional)
             try:
-                with smbclient.open_file(original_dest_path, mode="rb+") as f:
+                with smbclient.open_file(original_full_path, mode="rb+") as f:
                     f.set_times(
                         created=creation_time,
                         accessed=last_access_time,
                         modified=last_modified_time
                     )
             except Exception:
-                pass  # Ignore if unable to set times
+                pass
 
-            # Delete archive copy
+            # Delete archive file
             try:
                 os.remove(archived_path)
             except Exception:
-                pass  # If already deleted, no issue
+                pass
 
             # Delete shortcut if exists
-            shortcut_path = original_dest_path + "_shortcut.bat"
+            shortcut_path = original_full_path + "_shortcut.bat"
             try:
                 os.remove(shortcut_path)
             except Exception:
                 pass
 
+            # Log restoration
             restored_files.append(
                 FileMovement(
                     full_path=archived_path,
-                    destination_path=original_dest_path,
+                    destination_path=original_full_path,
                     file_size=file_size,
                     creation_time=creation_time,
                     last_access_time=last_access_time,
                     last_modified_time=last_modified_time,
-                    action_type=ActionType.restore
+                    action_type=ActionType.restored_from_archive
                 )
             )
+
+            print(f"Restored: {archived_path} -> {original_full_path}")
 
         except Exception as e:
             skipped_files.append({
@@ -334,8 +346,15 @@ def bulk_restore_files(file_paths: list[str], db_session: Session) -> dict:
         "skipped": skipped_files
     }
 
-def move_files_and_commit(files: List[Dict]) -> Tuple[List[str], List[Dict]]:
-    successful_moves = []
+
+# Bulk move and archive a list of files
+# - Moves files from source to archive destination
+# - Creates shortcuts at original locations
+# - Collects successful movements and commits them to database
+# - Prints moved and failed files with reasons
+
+def bulk_move_files(files: list[dict]) -> tuple[list[str], list[dict]]:
+    successful_movements = []
     failed_files = []
 
     db_gen = get_db()
@@ -343,30 +362,129 @@ def move_files_and_commit(files: List[Dict]) -> Tuple[List[str], List[Dict]]:
 
     try:
         for file_info in files:
-            result = move_file(file_info)
-            if result and result[0] and result[1]:
-                archive_path, movement = result
-                successful_moves.append(movement)
-                print(f"Moved: {movement.full_path} to {movement.destination_path}")
-            else:
-                failed_files.append(file_info)
-                print(f"Failed to move: {file_info['full_path']}")
+            try:
+                src_path = normalize_path(file_info['full_path'])
+                dest_folder = normalize_path(get_archive_path(src_path))
 
-        if successful_moves:
-            db.bulk_save_objects(successful_moves)
+                if src_path.endswith("_shortcut.bat") or src_path.endswith(".bat"):
+                    print(f"Skipped shortcut or batch file: {src_path}")
+                    continue
+
+                if not dest_folder:
+                    print(f"Invalid archive destination for {src_path}")
+                    continue
+
+                # Precheck permission and ensure non-zero size
+                try:
+                    with smbclient.open_file(src_path, mode="rb") as f:
+                        f.read(1)
+                    file_stat = smbclient.stat(src_path)
+                    if file_stat.st_size == 0:
+                        print(f"Skipped zero-size file: {src_path}")
+                        continue
+                except Exception as e:
+                    reason = f"Permission check or stat failed: {e}"
+                    print(f"{reason} - {src_path}")
+                    failed_files.append({"file": file_info, "reason": reason})
+                    continue
+
+                filename = os.path.basename(src_path)
+                dest_path = normalize_path(f"{dest_folder}\\{filename}")
+
+                creation_time = datetime.strptime(file_info["creation_time"], '%Y-%m-%d %H:%M:%S')
+                access_time = datetime.strptime(file_info["last_access_time"], '%Y-%m-%d %H:%M:%S')
+                modified_time = datetime.strptime(file_info["last_modified_time"], '%Y-%m-%d %H:%M:%S')
+                file_size = file_info["file_size"]
+
+                # Download the source file to a temporary local file
+                with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                    temp_file_path = temp_file.name
+                    try:
+                        with open(temp_file_path, "wb") as local_file:
+                            with smbclient.open_file(src_path, mode="rb") as remote_file:
+                                shutil.copyfileobj(remote_file, local_file)
+                    except Exception as e:
+                        reason = f"Failed to download: {e}"
+                        print(f"{reason} - {src_path}")
+                        failed_files.append({"file": file_info, "reason": reason})
+                        continue
+
+                # Upload the temporary file to archive destination
+                try:
+                    with open(temp_file_path, "rb") as local_file:
+                        with smbclient.open_file(dest_path, mode="wb") as remote_file:
+                            shutil.copyfileobj(local_file, remote_file)
+                except Exception as e:
+                    reason = f"Failed to upload: {e}"
+                    print(f"{reason} - {dest_path}")
+                    failed_files.append({"file": file_info, "reason": reason})
+                    continue
+
+                # Delete the original source file
+                try:
+                    smbclient.remove(src_path)
+                except Exception as e:
+                    reason = f"Failed to delete source file: {e}"
+                    print(f"{reason} - {src_path}")
+                    failed_files.append({"file": file_info, "reason": reason})
+                    continue
+
+                os.utime(temp_file_path, (access_time.timestamp(), modified_time.timestamp()))
+
+                # Create a shortcut at original path
+                try:
+                    create_shortcut(src_path, dest_path)
+                except Exception as e:
+                    print(f"Shortcut creation failed for {src_path}: {e}")
+
+                os.remove(temp_file_path)
+
+                # Log successful movement
+                movement = FileMovement(
+                    full_path=src_path,
+                    destination_path=dest_path,
+                    creation_time=creation_time,
+                    last_access_time=access_time,
+                    last_modified_time=modified_time,
+                    file_size=file_size,
+                    action_type=ActionType.moved_to_archive
+                )
+                successful_movements.append(movement)
+
+                print(f"Moved successfully: {src_path} -> {dest_path}")
+
+            except Exception as e:
+                reason = f"Fatal error during move: {e}"
+                print(f"{reason} - {file_info.get('full_path')}")
+                failed_files.append({"file": file_info, "reason": reason})
+
+        # Commit all successful movements at once
+        if successful_movements:
+            db.bulk_save_objects(successful_movements)
             db.commit()
-            print(f"Committed {len(successful_moves)} file movements to the database.")
+            print(f"Committed {len(successful_movements)} file movements to database.")
         else:
-            print("No successful file moves to commit.")
+            print("No file movements to commit.")
 
     except Exception as e:
         db.rollback()
-        print(f"Database error occurred: {e}")
+        print(f"Database commit error: {e}")
 
     finally:
         db_gen.close()
 
-    return [m.full_path for m in successful_moves], failed_files
+    # Print summary
+    print("\nSummary of bulk move operation:")
+    print(f"Successfully moved files: {len(successful_movements)}")
+    for m in successful_movements:
+        print(f"  - {m.full_path} -> {m.destination_path}")
+
+    print(f"Failed to move files: {len(failed_files)}")
+    for f in failed_files:
+        print(f"  - {f['file']['full_path']} (Reason: {f['reason']})")
+
+    return [m.full_path for m in successful_movements], failed_files
+
 
 
 
@@ -375,25 +493,32 @@ def move_files_and_commit(files: List[Dict]) -> Tuple[List[str], List[Dict]]:
 def archive_filtered_files(filters: dict, blacklist: list, share_name: str, volume: dict):
     print(f"Starting archive process for share: {share_name}")
 
+    #Fresh scan of volume
     all_files = scan_volume(share_name, volume, blacklist)
     if not all_files:
         return {"status": "no_files", "reason": f"No files found in {share_name}"}
 
+    #Filter files
     scanned_dict = {share_name: all_files}
     filtered = filter_files(scanned_dict, filters, blacklist, share_name)
 
-    if not filtered or not filtered.get(share_name):
-        return {"status": "no_matches"}
+    matching_files = filtered.get(share_name, [])
+    if not matching_files:
+        return {"status": "no_matches", "reason": "No files matched filters"}
 
-    # Move files and commit in one go
-    moved_files, failed_files = move_files_and_commit(filtered.get(share_name, []))
+    print(f"Found {len(matching_files)} files to archive...")
+
+    # Step 3: Move files safely, one by one, with retries
+    moved_files, failed_files = bulk_move_files(matching_files)
 
     return {
         "status": "success" if moved_files else "no_matches",
         "archived_count": len(moved_files),
-        "moved_files": moved_files,
-        "failed_files": [f['full_path'] for f in failed_files]
+        "moved_files": [{"full_path": path} for path in moved_files],
+        "failed_files": [{"full_path": file['full_path'], "reason": file['reason']} for file in failed_files]
     }
+
+
 
 # def test_filter_files_direct():
 #     filters = {

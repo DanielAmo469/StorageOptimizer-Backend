@@ -6,6 +6,8 @@ from database import SessionLocal, get_db
 from models import Role, User
 from sqlalchemy.orm import Session
 
+from schemas import ArchiveFilterRequest
+
 
 
 def get_user_id_by_username(username: str, db: Session) -> int:
@@ -38,6 +40,15 @@ def verify_viewonly(user:User =  Depends(get_current_user)):
             detail="Access forbidden: View and Managers only"
         )
     return user
+
+# Build filter dictionary from request
+def build_filters_from_request(filter_request: ArchiveFilterRequest) -> dict:
+    return {
+        "file_type": filter_request.file_type or [],
+        "date_filters": filter_request.date_filters.dict() if filter_request.date_filters else {},
+        "min_size": filter_request.min_size,
+        "max_size": filter_request.max_size,
+    }
 
 def load_settings():
     with open("settings.json", "r") as f:
