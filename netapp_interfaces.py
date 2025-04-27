@@ -235,6 +235,105 @@ def restore_file(archive_folder, filename):
         db_gen.close()
 
 
+def bulk_restore_files(file_paths: list[str], db_session: Session) -> dict:
+    restored_files = []
+    skipped_files = []
+
+    for archived_path in file_paths:
+        try:
+            metadata = db_session.query(FileMovement).filter(
+                FileMovement.full_path == archived_path,
+                FileMovement.action_type == ActionType.archive
+            ).order_by(FileMovement.id.desc()).first()
+
+            if not metadata:
+                raise Exception(f"Metadata not found in database for: {archived_path}")
+
+            # Extract metadata
+            original_dest_path = metadata.destination_path
+            creation_time = metadata.creation_time
+            last_access_time = metadata.last_access_time
+            last_modified_time = metadata.last_modified_time
+            file_size = metadata.file_size
+
+            if not original_dest_path:
+                raise Exception(f"Missing destination path in DB for: {archived_path}")
+
+            # Download the archived file into a local temp file
+            temp_fd, temp_path = tempfile.mkstemp()
+            os.close(temp_fd)
+
+            try:
+                with smbclient.open_file(archived_path, mode="rb") as src_file:
+                    with open(temp_path, mode="wb") as dst_file:
+                        shutil.copyfileobj(src_file, dst_file)
+            except Exception:
+                os.remove(temp_path)
+                raise Exception(f"Failed to download file from archive: {archived_path}")
+
+            # Upload the file to its original destination
+            try:
+                with smbclient.open_file(original_dest_path, mode="wb") as dest_file:
+                    with open(temp_path, mode="rb") as src_temp:
+                        shutil.copyfileobj(src_temp, dest_file)
+            except Exception:
+                os.remove(temp_path)
+                raise Exception(f"Failed to restore file to original path: {original_dest_path}")
+
+            os.remove(temp_path)  # Cleanup local temp
+
+            # Restore timestamps remotely (optional)
+            try:
+                with smbclient.open_file(original_dest_path, mode="rb+") as f:
+                    f.set_times(
+                        created=creation_time,
+                        accessed=last_access_time,
+                        modified=last_modified_time
+                    )
+            except Exception:
+                pass  # Ignore if unable to set times
+
+            # Delete archive copy
+            try:
+                os.remove(archived_path)
+            except Exception:
+                pass  # If already deleted, no issue
+
+            # Delete shortcut if exists
+            shortcut_path = original_dest_path + "_shortcut.bat"
+            try:
+                os.remove(shortcut_path)
+            except Exception:
+                pass
+
+            restored_files.append(
+                FileMovement(
+                    full_path=archived_path,
+                    destination_path=original_dest_path,
+                    file_size=file_size,
+                    creation_time=creation_time,
+                    last_access_time=last_access_time,
+                    last_modified_time=last_modified_time,
+                    action_type=ActionType.restore
+                )
+            )
+
+        except Exception as e:
+            skipped_files.append({
+                "path": archived_path,
+                "error": str(e)
+            })
+            print(f"Skipping {archived_path}: {e}")
+
+    if restored_files:
+        db_session.bulk_save_objects(restored_files)
+        db_session.commit()
+
+    return {
+        "restored": [r.destination_path for r in restored_files],
+        "skipped": skipped_files
+    }
+
 def move_files_and_commit(files: List[Dict]) -> Tuple[List[str], List[Dict]]:
     successful_moves = []
     failed_files = []
@@ -295,6 +394,79 @@ def archive_filtered_files(filters: dict, blacklist: list, share_name: str, volu
         "moved_files": moved_files,
         "failed_files": [f['full_path'] for f in failed_files]
     }
+
+# def test_filter_files_direct():
+#     filters = {
+#         "file_type": [".pdf"],
+#         "date_filters": {
+#             "creation_time": {
+#                 "start_date": None,
+#                 "end_date": None
+#             },
+#             "last_modified_time": {
+#                 "start_date": None,
+#                 "end_date": None
+#             },
+#             "last_access_time": {
+#                 "start_date": None,
+#                 "end_date": None
+#             }
+#         },
+#         "min_size": 0,
+#         "max_size": 500414
+#     }
+
+#     blacklist = ["KZvbbIYi", "Ep7Dw5zn", "aNgc8Dds", "6JKm3t54"]
+
+#     # Step 1: Get volume config
+#     data = get_svm_data_volumes()
+#     volumes = data.get("volumes", [])
+#     if not volumes:
+#         print("❌ No volumes found.")
+#         return
+
+#     # Step 2: Pick first available volume
+#     first_volume = volumes[0]
+
+#     # Step 3: Extract share_name
+#     share_name = first_volume.get("share_name")
+#     if not share_name:
+#         print("❌ No share_name found in volume.")
+#         return
+
+#     # 🚀 PATCH: Add fake nas_server if missing
+#     if "nas_server" not in first_volume:
+#         print("⚠️ Adding fake nas_server info for testing.")
+#         first_volume["nas_server"] = {
+#             "interfaces": [{"ip": "192.168.16.14"}]
+#         }
+
+#     # Step 4: Scan
+#     scanned = scan_volume(share_name, first_volume, blacklist)
+#     if not scanned:
+#         print(f"❌ No files scanned in share {share_name}.")
+#         return
+
+#     # Step 5: Prepare dict for filtering
+#     scanned_dict = {share_name: scanned}
+
+#     # Step 6: Filter
+#     filtered = filter_files(
+#         scanned_dict,
+#         filters,
+#         blacklist,
+#         share_name
+#     )
+
+#     print(f"\n✅ Filtered files in {share_name}:")
+#     if not filtered or not filtered.get(share_name):
+#         print("❌ No matching files found after filtering.")
+#     else:
+#         for file_info in filtered.get(share_name, []):
+#             print(f"- {file_info['full_path']}, size: {file_info['file_size']} bytes")
+
+# if __name__ == "__main__":
+#     test_filter_files_direct()
 
 
 #    print(get_svm_data_volumes())

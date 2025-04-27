@@ -106,13 +106,29 @@ def get_archive_path(file_path):
     return None
 
 
+def get_first_ip_address(volume: dict) -> str | None:
+    try:
+        nas_server = volume.get('nas_server')
+        if not nas_server:
+            print("No 'nas_server' found in volume")
+            return None
 
+        interfaces = nas_server.get('interfaces')
+        if not interfaces or not isinstance(interfaces, list) or len(interfaces) == 0:
+            print("No 'interfaces' found in 'nas_server'")
+            return None
 
-def get_first_ip_address(svm_dict):
-    ip_address = svm_dict.get('ip_addresses', [])[0]  # Use the first IP address
-    if not ip_address:
-        print("No IP address found in the SVM data.")
-    return ip_address
+        first_interface = interfaces[0]
+        ip = first_interface.get('ip')
+        if not ip:
+            print("No 'ip' found in first interface")
+            return None
+
+        return ip
+    except Exception as e:
+        print(f"Error in get_first_ip_address: {e}")
+        return None
+
 
 def access_CIFS_share(share, ip_address):
 
@@ -123,42 +139,17 @@ def access_CIFS_share(share, ip_address):
     share_path = f"\\\\{ip_address}\\{share_name}"
     return share_path, share_name
 
-def get_files_by_type(file_type):
-    with HostConnection('192.168.16.4', 'admin', 'Netapp1!', verify=False):
 
-
-        # Retrieve the SVM dictionary
-        svm_dict = get_svm_data_volumes()
-        print(svm_dict)
-        
-        files = {}
-        ip_address = get_first_ip_address(svm_dict)
-        if not ip_address:
-            return files
-
-        # Access each CIFS share
-        for share in svm_dict.get('volumes', []):
-            share_path, share_name = access_CIFS_share(share, ip_address)
-            if not share_name or not share_path:
-                continue
-
-            files[share_name] = []
-
-            try:
-                # Recursively walk the share
-                for dirpath, _, filenames in smbclient.walk(share_path):
-                    for file in filenames:
-                        if file.endswith(file_type):
-                            full_path = os.path.join(dirpath, file)
-                            files[share_name].append(full_path)
-            except OSError as e:
-                print(f"Error accessing share {share_path}: {e}")
-
-        return files
 
 #Scan a single share (volume) and return list of file metadata
 def scan_volume(share_name: str, volume: dict, blacklist: list[str]) -> list[dict]:
     with HostConnection('192.168.16.4', 'admin', 'Netapp1!', verify=False):
+        #Add fake nas_server if missing
+        if "nas_server" not in volume:
+            volume["nas_server"] = {
+                "interfaces": [{"ip": "192.168.16.14"}]
+            }
+
         ip_address = get_first_ip_address(volume)
         if not ip_address:
             return []

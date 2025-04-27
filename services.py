@@ -39,17 +39,21 @@ def verify_viewonly(user:User =  Depends(get_current_user)):
         )
     return user
 
-SETTINGS_FILE = "settings.json"
+def load_settings():
+    with open("settings.json", "r") as f:
+        return json.load(f)
+    
+def get_settings_for_mode(mode: str = "default") -> dict:
+    settings_path = os.path.join(os.path.dirname(__file__), "settings.json")
 
-def load_blacklist():
-    if not os.path.exists(SETTINGS_FILE):
-        return []
-    with open(SETTINGS_FILE, "r") as f:
-        data = json.load(f)
-    return data.get("blacklist", [])
+    with open(settings_path, "r") as f:
+        settings = json.load(f)
 
-def save_blacklist(blacklist: list[str]):
-    data = {"blacklist": blacklist}
-    with open(SETTINGS_FILE, "w") as f:
-        json.dump(data, f, indent=2)
-    return data
+    all_modes = settings.get("modes", {})
+    mode_config = all_modes.get(mode)
+
+    if not mode_config:
+        print(f"Mode '{mode}' not found in settings.json. Falling back to 'default'.")
+        mode_config = all_modes.get("default", {})
+
+    return mode_config

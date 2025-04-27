@@ -19,9 +19,9 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from database import SessionLocal, engine, Base, get_db
 from models import PendingUser, Role, User
 from netapp_btc import filter_files, get_svm_data_volumes, scan_volume
-from netapp_interfaces import archive_filtered_files, move_file, move_files_and_commit, restore_file
+from netapp_interfaces import archive_filtered_files, bulk_restore_files, move_file, move_files_and_commit, restore_file
 from schemas import ArchiveFilterRequest, BaseResponse, BlacklistUpdate, FileInfo, RegistrationRequests, RestoreRequest, UserCreate, UserValues
-from services import get_user_id_by_username, load_blacklist, save_blacklist, verify_manager
+from services import get_user_id_by_username, verify_manager
 from auth import ALGORITHM, SECRET_KEY, create_access_token, get_current_user
 
 
@@ -326,28 +326,38 @@ def restore_archived_file(
         raise HTTPException(status_code=500, detail=f"Restore failed: {str(e)}")
     
 
-from typing import List
-from fastapi import APIRouter
-
 @app.post("/restore-multiple", response_model=dict)
 def restore_multiple_files(
     restore_requests: List[RestoreRequest],
-    current_user: User = Depends(verify_manager)
+    current_user: dict = Depends(verify_manager)
 ):
-    restored = []
-    failed = []
+    db = SessionLocal()
 
-    for request in restore_requests:
-        result = restore_file(request.archive_folder, request.filename)
-        if result:
-            restored.append(request.filename)
-        else:
-            failed.append(request.filename)
+    try:
+        # Prepare list of archived file paths to restore
+        archived_paths = [req.archived_path for req in restore_requests]
 
-    return {
-        "restored_files": restored,
-        "failed_files": failed
-    }
+        if not archived_paths:
+            return {"restored": [], "skipped": []}
+
+        # Perform bulk restore
+        result = bulk_restore_files(archived_paths, db)
+
+        return {
+            "restored": result.get("restored", []),
+            "skipped": result.get("skipped", [])
+        }
+
+    except Exception as e:
+        print(f"Error in restore_multiple_files: {e}")
+        return {
+            "restored": [],
+            "skipped": [{"error": str(e)}]
+        }
+    finally:
+        db.close()
+
+
 
 @app.post("/preview-filtered-files", response_model=dict)
 def preview_filtered_files(
@@ -401,15 +411,6 @@ def archive_filtered_files_endpoint(
 
     return result
 
-
-@app.get("/blacklist")
-def get_blacklist():
-    return {"blacklist": load_blacklist()}
-
-@app.post("/blacklist")
-def update_blacklist(data: BlacklistUpdate):
-    updated = save_blacklist(data.blacklist)
-    return {"message": "Blacklist updated", "data": updated}
 
 app.add_middleware(
     CORSMiddleware,

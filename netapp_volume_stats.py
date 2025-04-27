@@ -1,13 +1,17 @@
+import os
 from netapp_ontap.resources import Volume, PerformanceCifsMetric, VolumeMetrics
+import smbclient
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from netapp_ontap import HostConnection
 
 from database import SessionLocal
 from models import FileMovement, ActionType, VolumeScanLog
-from netapp_btc import filter_files, get_svm_data_volumes, get_svm_uuid, get_vol_uuid, get_volume_name_by_share, scan_volume
+from netapp_btc import access_CIFS_share, get_first_ip_address, get_svm_data_volumes, get_svm_uuid, get_vol_uuid, get_volume_name_by_share
 from datetime import datetime, timedelta, timezone
 import json
+
+from services import load_settings
 
 min_archive_ratio_pct = 10.0
 
@@ -88,42 +92,195 @@ def get_total_archived_files_from_logs(db: Session, share_name: str):
         .filter(VolumeScanLog.share_name == share_name)\
         .scalar() or 0
 
-def is_in_cooldown(last_scan_time: datetime | None, cooldown_hours: int = 6) -> bool:
+def is_in_cooldown(db: Session, share_name: str, cooldown_hours: int) -> bool:
+    last_scan_time = get_last_scan_time(db, share_name)
     if not last_scan_time:
         return False
+    if isinstance(last_scan_time, str):
+        last_scan_time = datetime.strptime(last_scan_time, "%Y-%m-%d %H:%M:%S")
+        last_scan_time = last_scan_time.replace(tzinfo=timezone.utc)
+
     return datetime.now(timezone.utc) - last_scan_time < timedelta(hours=cooldown_hours)
 
+#Dynamically fetch cold and old days, supporting both per-mode or global settings
+def get_cold_old_days(settings: dict, mode: str) -> tuple[int, int]:
+    cold_days = settings.get("cold_file_age_days", 100)
+    old_days = settings.get("old_file_age_days", 500)
 
-def count_old_files(files: list, days_threshold: int = 180) -> int:
-    count = 0
-    cutoff = datetime.now(timezone.utc) - timedelta(days=days_threshold)
+    if isinstance(cold_days, dict):
+        min_cold_file_age_days = cold_days.get(mode, 100)
+    else:
+        min_cold_file_age_days = cold_days
 
-    for file in files:
-        last_access = datetime.strptime(file["last_access_time"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
-        last_modified = datetime.strptime(file["last_modified_time"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+    if isinstance(old_days, dict):
+        min_old_file_age_days = old_days.get(mode, 500)
+    else:
+        min_old_file_age_days = old_days
 
-
-        if last_access < cutoff and last_modified < cutoff:
-            count += 1
-
-    return count
+    return min_cold_file_age_days, min_old_file_age_days
 
 
-def count_files_and_total_size(files: list) -> tuple[int, int]:
-    count = len(files)
-    total_size = sum(file.get("file_size", 0) for file in files)
-    return count, total_size
+# Scan a share and collect detailed statistics:
+# - Cold and old file detection based on settings
+# - Count blacklisted folders and their file counts
+# - Return full list of files with metadata, cold files, and summary stats
+def scan_volume_with_stats(share_name: str, volume: dict, blacklist: list[str], settings: dict) -> dict:
+    print(f"Entered scan_volume_with_stats for: {share_name}")
 
-def is_blacklisted(full_path: str, blacklist: list[str]) -> bool:
-    return any(bad.lower() in full_path.lower() for bad in blacklist)
+    with HostConnection('192.168.16.4', 'admin', 'Netapp1!', verify=False):
+        print(f"Volume received: {volume}")
 
-def get_blacklist_from_file(filepath="settings.json") -> list[str]:
-    try:
-        with open(filepath, "r") as f:
-            config = json.load(f)
-            return config.get("blacklist", [])
-    except FileNotFoundError:
-        return []
+        volume["nas_server"] = {
+            "interfaces": [{"ip": "192.168.16.14"}]
+        }
+
+        ip_address = get_first_ip_address(volume)
+        if not ip_address:
+            print(f"No IP address found for volume: {volume}")
+            return {}
+
+        print(f"IP address: {ip_address}")
+
+        share_path, confirmed_share_name = access_CIFS_share({"share_name": share_name}, ip_address)
+        if not share_path or confirmed_share_name != share_name:
+            print(f"Share '{share_name}' not found or path invalid.")
+            return {}
+
+        print(f"Resolved path: {share_path}")
+        print(f"Confirmed share name: {confirmed_share_name}")
+
+        files = []
+        cold_files = []
+        old_file_count = 0
+        blacklisted_folders_hit = 0
+        blacklisted_file_total = 0
+
+        now = datetime.now(timezone.utc)
+
+        mode = settings.get("mode", "default")
+        min_cold_file_age_days, min_old_file_age_days = get_cold_old_days(settings, mode)
+
+        cold_cutoff = now - timedelta(days=min_cold_file_age_days)
+        old_cutoff = now - timedelta(days=min_old_file_age_days)
+
+        try:
+            for walk_result in smbclient.walk(share_path):
+                if not isinstance(walk_result, (list, tuple)) or len(walk_result) != 3:
+                    print(f"Unexpected walk result for {share_name}: {walk_result}")
+                    break
+
+                dirpath, dirnames, filenames = walk_result
+
+                if any(bad.lower() in dirpath.lower() for bad in blacklist):
+                    blacklisted_folders_hit += 1
+                    blacklisted_file_total += len(filenames)
+                    continue
+
+                for file in filenames:
+                    if file.endswith(".bat"):
+                        continue
+
+                    full_path = os.path.join(dirpath, file)
+
+                    try:
+                        ctime = os.path.getctime(full_path)
+                        atime = os.path.getatime(full_path)
+                        mtime = os.path.getmtime(full_path)
+
+                        creation_time = datetime.fromtimestamp(ctime, tz=timezone.utc)
+                        last_access_time = datetime.fromtimestamp(atime, tz=timezone.utc)
+                        last_modified_time = datetime.fromtimestamp(mtime, tz=timezone.utc)
+                        file_size = os.path.getsize(full_path)
+                    except Exception as e:
+                        print(f"Skipping unreadable file: {full_path} → {e}")
+                        continue
+
+                    file_info = {
+                        'full_path': full_path,
+                        'creation_time': creation_time.strftime('%Y-%m-%d %H:%M:%S'),
+                        'last_access_time': last_access_time.strftime('%Y-%m-%d %H:%M:%S'),
+                        'last_modified_time': last_modified_time.strftime('%Y-%m-%d %H:%M:%S'),
+                        'file_size': file_size
+                    }
+
+                    files.append(file_info)
+
+                    if last_access_time < cold_cutoff:
+                        cold_files.append(file_info)
+
+                    if last_access_time < old_cutoff and last_modified_time < old_cutoff:
+                        old_file_count += 1
+
+        except Exception as e:
+            print(f"Error walking share {share_path}: {e}")
+            return {}
+
+        total_size = sum(f['file_size'] for f in files)
+
+
+    total_files_including_blacklisted = blacklisted_file_total + len(files)
+
+    blacklist_ratio = (blacklisted_file_total / total_files_including_blacklisted) if total_files_including_blacklisted else 0
+    blacklist_ratio *= 100
+
+    return {
+        "all_files": files,
+        "cold_files": cold_files,
+        "old_file_count": old_file_count,
+        "total_file_count": len(files),
+        "total_file_size": total_size,
+        "blacklisted_folders_hit": blacklisted_folders_hit,
+        "blacklisted_file_total": blacklisted_file_total,
+        "blacklist_ratio": blacklist_ratio,
+        "fullness_percent": (total_size / (1024 ** 3)) * 100 * 100 # Estimate based on size in GB, to set percentage not a unitInterval
+    }
+
+
+
+
+# Scan an archive volume, sort files by last access time, and return metadata of recently accessed files to consider for restoration.
+# If the file's creation time equals last accessed time, fallback to the DB 'file_movements' table for the true last accessed timestamp.
+def get_recently_accessed_archive_files(archive_path: str, db_session, settings: dict) -> list[dict]:
+    recent_files = []
+
+    mode = settings.get("mode", "default")
+    min_cold_file_age_days, _ = get_cold_old_days(settings, mode)
+
+    cold_cutoff = datetime.now(timezone.utc) - timedelta(days=min_cold_file_age_days)
+
+    for root, _, files in os.walk(archive_path):
+        for name in files:
+            full_path = os.path.join(root, name)
+
+            try:
+                stat = os.stat(full_path)
+                creation_time = datetime.fromtimestamp(stat.st_ctime, tz=timezone.utc)
+                last_access_time = datetime.fromtimestamp(stat.st_atime, tz=timezone.utc)
+            except Exception:
+                continue
+
+            if creation_time == last_access_time:
+                record = (
+                    db_session.query(FileMovement)
+                    .filter(FileMovement.dest_path == full_path)
+                    .order_by(FileMovement.id.desc())
+                    .first()
+                )
+                if record and record.last_accessed_time:
+                    last_access_time = record.last_accessed_time
+
+            if last_access_time > cold_cutoff:
+                recent_files.append({
+                    "path": full_path,
+                    "file_size": os.path.getsize(full_path),
+                    "last_accessed": last_access_time,
+                    "creation_time": creation_time
+                })
+
+    recent_files.sort(key=lambda x: x["last_accessed"], reverse=True)
+    return recent_files
+
+
 
 def log_scan_result(
     db: Session,
@@ -148,112 +305,80 @@ def log_scan_result(
     db.commit()
 
 
-def generate_scan_metrics(
-    db: Session,
-    share_name: str,
-    all_files: list,
-    filtered_files: list,
-    old_file_days: int = 180
-) -> dict:
-    volume_name = get_volume_name_by_share(share_name)
-    space = get_volume_space_metrics(volume_name)
 
-    # Time-based threshold for cold files
-    old_file_count = count_old_files(filtered_files, days_threshold=old_file_days)
+def test_scan_volume_with_stats():
+    settings = load_settings()
+    blacklist = settings.get("blacklist", [])
 
-    # General file stats (from full list)
-    total_files, total_size = count_files_and_total_size(all_files)
+    data = get_svm_data_volumes()
+    volumes = data.get("volumes", [])
+    if not volumes:
+        print("❌ No volumes found.")
+        return
 
-    # Historical archive count
-    archive_count = get_total_unique_archived_files(db, share_name)
+    first_volume = volumes[0]
 
-    return {
-        "percent_used": space["percent_used"],
-        "old_file_count": old_file_count,
-        "total_files": total_files,
-        "total_size_bytes": total_size,
-        "archived_file_count": archive_count
-    }
-
-
-#This function decides whether a volume should be scanned by checking if it's overused, out of cooldown, contains many old files, or has a history of archived files, and returns reasons and metrics for that decision.
-def should_scan_volume(
-    db: Session,
-    share_name: str,
-    all_files: list[dict],
-    filtered_files: list[dict],
-    last_scan_time: datetime | None,
-    min_fullness_pct: float = 85.0,
-    cooldown_hours: int = 6,
-    old_file_days: int = 180,
-    min_old_file_count: int = 10
-) -> dict:
-    if is_in_cooldown(last_scan_time, cooldown_hours):
-        return {
-            "should_scan": False,
-            "reasons": ["Recently scanned"],
-            "metrics": {},
-            "stats": {}
+    if "nas_server" not in first_volume or "interfaces" not in first_volume.get("nas_server", {}):
+        first_volume["nas_server"] = {
+            "interfaces": [{"ip": "192.168.16.4"}]
         }
 
-    stats = generate_scan_metrics(db, share_name, all_files, filtered_files, old_file_days)
-    reasons = []
+    share_name = first_volume["share_name"]
 
-    if stats["percent_used"] >= min_fullness_pct:
-        reasons.append("High volume usage")
-    if stats["old_file_count"] >= min_old_file_count:
-        reasons.append("Many old files detected")
-    archive_ratio = (stats["archived_file_count"] / stats["total_files"]) * 100 if stats["total_files"] > 0 else 0
-    if archive_ratio >= min_archive_ratio_pct:
-        reasons.append(f"High archive history ({archive_ratio:.1f}%)")
+    print(f"🔎 Testing scan_volume_with_stats on: {share_name}")
+
+    try:
+        result = scan_volume_with_stats(
+            share_name=share_name,
+            volume=first_volume,
+            blacklist=blacklist,
+            settings=settings
+        )
+
+        print("\n✅ scan_volume_with_stats SUCCESS\n")
+        print("Returned keys:", list(result.keys()))
+        print("Total files scanned:", result.get("total_file_count", 0))
+        print("Total cold files:", len(result.get("cold_files", [])))
+        print("Old files count:", result.get("old_file_count", 0))
+        print("Blacklisted folders hit:", result.get("blacklisted_folders_hit", 0))
+        print("Blacklisted files total:", result.get("blacklisted_file_total", 0))
+        print("Total scanned size (bytes):", result.get("total_file_size", 0))
+        print("Blacklisted ratio percantege:", result.get("blacklist_ratio", 0))
+        print("Fullness porcantege :", result.get("fullness_percent", 0))
 
 
-    return {
-        "should_scan": bool(reasons),
-        "reasons": reasons or ["No scan triggers met"],
-        "metrics": {
-            "percent_used": stats["percent_used"],
-            "old_file_count": stats["old_file_count"],
-            "archived_file_count": stats["archived_file_count"]
-        },
-        "stats": stats  # full metrics for visualization or export
-    }
+
+    except Exception as e:
+        print(f"\n❌ scan_volume_with_stats failed: {e}")
 
 
+def test_get_recently_accessed_archive_files():
+    settings = load_settings()
+
+    # Example archive path (you need to make sure this path exists locally or on network)
+    archive_path = r"\\192.168.16.14\archive_data1"
+
+    # Create database session
+    db_session = SessionLocal()
+
+    try:
+        recent_files = get_recently_accessed_archive_files(
+            archive_path=archive_path,
+            db_session=db_session,
+            settings=settings
+        )
+
+        print("\n✅ get_recently_accessed_archive_files SUCCESS\n")
+        print(f"Total recently accessed files: {len(recent_files)}")
+        
+        for file_info in recent_files:
+            print(f"- {file_info['path']}, size: {file_info['file_size']} bytes, last accessed: {file_info['last_accessed']}")
+
+    except Exception as e:
+        print(f"\n❌ get_recently_accessed_archive_files failed: {e}")
+
+    finally:
+        db_session.close()
 
 if __name__ == "__main__":
-    svm_data = get_svm_data_volumes()
-    all_files = scan_volume(svm_data)
-
-    share_name = "data2"
-    if share_name not in all_files:
-        print(f"No files found under share '{share_name}'.")
-        exit()
-
-    #Apply blacklist filters
-    blacklist = get_blacklist_from_file()
-    filters = {
-        "file_type": None,  # No extension filtering
-        "date_filters": {},  # No date filtering
-        "min_size": None,
-        "max_size": None
-    }
-
-    filtered_result = filter_files(all_files, filters, blacklist, share_name)
-    filtered_files = filtered_result.get(share_name, [])
-
-    #Load DB and last scan info
-    db = SessionLocal()
-    last_scan = get_last_scan_time(db, share_name)
-
-    #Decide whether to scan
-    result = should_scan_volume(db, share_name, all_files[share_name], filtered_files, last_scan)
-
-    #Display
-    print("\nSCAN DECISION REPORT for 'data2'")
-    print("Should Scan:", result["should_scan"])
-    print("Reasons:", result["reasons"])
-    print("Metrics:", result["metrics"])
-    print("Full Stats:", result["stats"])
-
-    db.close()
+    test_scan_volume_with_stats()

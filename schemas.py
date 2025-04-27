@@ -45,9 +45,7 @@ class FileInfo(BaseModel):
 
 
 class RestoreRequest(BaseModel):
-    archive_folder: str
-    filename: str
-    
+    archived_path: str
 
 class DateRange(BaseModel):
     start_date: Optional[str] = None
