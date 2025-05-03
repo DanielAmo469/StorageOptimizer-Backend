@@ -46,6 +46,16 @@ class FileInfo(BaseModel):
 
 class RestoreRequest(BaseModel):
     archived_path: str
+    original_path: str
+    creation_time: str  # format: 'YYYY-MM-DD HH:MM:SS'
+    last_access_time: str
+    last_modified_time: str
+    file_size: int
+
+
+class ArchiveRestoreRequest(BaseModel):
+    archive_candidates: List[dict]
+    restore_candidates: List[dict]
 
 class DateRange(BaseModel):
     start_date: Optional[str] = None
@@ -68,3 +78,4 @@ class ArchiveFilterRequest(BaseModel):
 
 class BlacklistUpdate(BaseModel):
     blacklist: list[str]
+

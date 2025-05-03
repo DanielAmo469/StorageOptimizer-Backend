@@ -1,7 +1,7 @@
 
 
 from netapp_btc import get_svm_data_volumes, get_volume_name_by_share
-from netapp_volume_stats import get_cold_old_days, get_recently_accessed_archive_files, get_total_archived_files_from_logs, get_total_unique_archived_files, get_volume_performance_by_share, get_volume_space_metrics, is_in_cooldown, scan_volume_with_stats
+from netapp_volume_stats import get_cold_old_days, get_recently_accessed_archive_files, get_total_archived_files_from_logs, get_total_unique_archived_files, get_volume_performance_by_share, get_volume_space_metrics, is_in_cooldown, log_volume_evaluation, scan_volume_with_stats
 from services import get_settings_for_mode, load_settings
 from sqlalchemy.orm import Session
 
@@ -77,19 +77,42 @@ def build_feature_vector(stats: dict, mode: str = "default") -> dict:
     }
 
 
-
-
-# Decide whether a volume should be scanned based on its feature vector score
-# - Loads settings for the active mode
-# - Uses feature vector score and threshold to decide
-# - Returns a structured decision (True/False with explanation)
-# Evaluate whether a volume should be scanned based on all metrics and mode weights
-def should_scan_volume(share_name: str, volume: dict, settings: dict, blacklist: list[str], db: Session, override_mode: str = None):
+# Decide whether a volume should be scanned based on feature vector analysis
+# - Evaluates cooldown window
+# - Runs scan_volume_with_stats to get cold files
+# - Retrieves NetApp IOPS and latency
+# - Retrieves archive history counts
+# - Retrieves recently accessed archive files
+# - Builds feature vector and compares to threshold
+# - Returns decision and supporting data
+def should_scan_volume(
+    share_name: str,
+    volume: dict,
+    settings: dict,
+    blacklist: list[str],
+    db: Session,
+    override_mode: str = None
+):
+    # Mode selection (override if provided)
     mode = override_mode or settings["mode"]
     thresholds = settings["modes"][mode]["thresholds"]
 
+    # Cooldown check
     cooldown_hours = thresholds.get("min_hours_between_scans", 6)
     if is_in_cooldown(db, share_name, cooldown_hours):
+        log_volume_evaluation(
+            db=db,
+            share_name=share_name,
+            volume_name=volume.get("name", "unknown"),
+            mode=mode,
+            should_scan=False,
+            score=0.0,
+            reason="In cooldown window",
+            raw_scores={},
+            weighted_scores={},
+            cold_files=0,
+            restored_files=0
+        )
         return {
             "should_scan": False,
             "reason": "In cooldown window",
@@ -113,7 +136,7 @@ def should_scan_volume(share_name: str, volume: dict, settings: dict, blacklist:
             "score": 0.0
         }
 
-    # NetApp metrics
+    # NetApp performance metrics
     perf = get_volume_performance_by_share(share_name)
     if isinstance(perf, list) and perf:
         perf = perf[0]
@@ -127,107 +150,53 @@ def should_scan_volume(share_name: str, volume: dict, settings: dict, blacklist:
     scan_stats["archived_total"] = get_total_archived_files_from_logs(db, share_name)
     scan_stats["archived_unique"] = get_total_unique_archived_files(db, share_name)
 
-    # Recently accessed files
-    archive_volume = volume.get("archive")
-    if archive_volume:
-        recently_accessed = get_recently_accessed_archive_files(archive_volume, db, settings)
-        scan_stats["restorable_file_count"] = len(recently_accessed)
+    # Recently accessed files and full archive contents
+    archive_volume_path = volume.get("archive")
+    if archive_volume_path:
+        archive_analysis = get_recently_accessed_archive_files(archive_volume_path, db, settings)
+        restorable_files = archive_analysis["restorable_files"]
+        existing_archive_files = archive_analysis["existing_archive_files"]
+        scan_stats["restorable_file_count"] = len(restorable_files)
     else:
-        recently_accessed = []
+        restorable_files = []
+        existing_archive_files = []
         scan_stats["restorable_file_count"] = 0
 
-    # Feature vector
+    # Feature vector scoring
     vector_result = build_feature_vector(scan_stats, mode)
     score = vector_result["score"]
     threshold = thresholds.get("scan_score_threshold", 0.5)
 
+    volume_name = get_volume_name_by_share(share_name)
+    should_scan = score >= threshold
+
+    # Always log evaluation
+    log_volume_evaluation(
+        db=db,
+        share_name=share_name,
+        volume_name=volume_name,
+        mode=mode,
+        should_scan=should_scan,
+        score=score,
+        reason="Feature vector analysis",
+        raw_scores=vector_result.get("raw_scores", {}),
+        weighted_scores=vector_result.get("weighted_scores", {}),
+        cold_files=len(scan_stats.get("cold_files", [])),
+        restored_files=len(restorable_files)
+    )
+
+    cold_files = scan_stats.get("cold_files") or []
+    restorable_files = restorable_files or []
+    existing_archive_files = existing_archive_files or []
+
+    # Return full decision
     return {
-        "should_scan": score >= threshold,
+        "should_scan": should_scan,
         "score": score,
         "vector_details_raw": vector_result.get("raw_scores", {}),
         "vector_details_weighted": vector_result.get("weighted_scores", {}),
-        "cold_files": scan_stats.get("cold_files", []), #Return also all the cold files for archiving if the desicion is true
-        "recently_accessed_files": recently_accessed #Return also all the files that needs to be restored if the decision is true
+        "cold_files": cold_files,
+        "restorable_files": restorable_files,
+        "existing_archive_files": existing_archive_files
     }
 
-from database import SessionLocal
-
-
-def check():
-    settings = load_settings()
-    print("Loaded settings:", settings)
-    blacklist = settings.get("blacklist", [])
-    modes = settings.get("modes", {})
-
-    print(f"System Mode: {settings['mode']}")
-    print("Starting scan decision test...\n")
-
-    data = get_svm_data_volumes()
-    volumes = data.get("volumes", [])
-
-    if not volumes:
-        print("No volumes found from get_svm_data_volumes().")
-        return
-
-    print("Volumes detected:")
-    for v in volumes:
-        print(f" - {v.get('share_name')} | volume: {v.get('volume')}")
-
-    first_volume = volumes[0]
-    share_name = first_volume["share_name"]
-    print(f"\nRunning scan decision test on: {share_name}\n")
-
-    db = SessionLocal()
-
-    # Save results first
-    results_by_mode = {}
-
-    for mode_name in ["default", "eco", "super"]:
-        if mode_name not in modes:
-            print(f"Mode '{mode_name}' not found in settings.json.\n")
-            continue
-
-        try:
-            fresh_settings = load_settings()
-            fresh_settings["mode"] = mode_name
-
-            result = should_scan_volume(
-                share_name=share_name,
-                volume=first_volume,
-                settings=fresh_settings,
-                blacklist=blacklist,
-                db=db,
-                override_mode=mode_name
-            )
-
-            # Save the result for later printing
-            results_by_mode[mode_name] = result
-
-        except Exception as e:
-            print(f"Error in mode {mode_name}: {e}")
-            import traceback
-            traceback.print_exc()
-
-    db.close()
-
-    for mode_name, result in results_by_mode.items():
-        print(f"=== Mode: {mode_name.upper()} ===")
-        print(f"Should Scan: {result['should_scan']}")
-        print(f"Score: {result['score']}")
-        print(f"Reason: {result.get('reason', 'Feature vector analysis')}\n")
-
-        print("Raw Feature Scores:")
-        for k, v in result.get("vector_details_raw", {}).items():
-            print(f"  {k}: {v}")
-
-        print("\nWeighted Feature Scores:")
-        for k, v in result.get("vector_details_weighted", {}).items():
-            print(f"  {k}: {v}")
-
-        print(f"\nCold files to archive: {len(result.get('cold_files', []))}")
-        print(f"Files to restore: {len(result.get('recently_accessed_files', []))}")
-        print("\n" + "-" * 60 + "\n")
-
-
-if __name__ == "__main__":
-    check()

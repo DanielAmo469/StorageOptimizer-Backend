@@ -1,18 +1,8 @@
 {
   "mode": "default",
   
-  "blacklist": ["archive", "System Volume Information"],
-  
-  "cold_file_age_days": {
-      "default": 100,
-      "eco": 180,
-      "super": 30
-  },
-  "old_file_age_days": {
-      "default": 500,
-      "eco": 700,
-      "super": 100
-  },
+  "blacklist": [ "RGQXmeqc", "r34GCMKf", "U9KAvCAn", "wIP7w3TT"],
+  "min_hours_between_scans": 6,
 
   "modes": {
     "default": {
@@ -20,8 +10,8 @@
         "small_volume_threshold_gb": 1.0,
         "iops_idle_threshold": 10,
         "latency_idle_threshold_ms": 5,
-        "min_cold_file_age_days": 100,
-        "min_old_file_age_days": 500,
+        "min_cold_file_age_days": 500,
+        "min_old_file_age_days": 600,
         "restore_size_access_ratio_threshold": 0.15
       },
       "weights": {
@@ -30,10 +20,10 @@
         "latency_weight": -0.3,
         "fullness_weight": 0.7,
         "archived_file_ratio_weight": 0.8,
-        "cold_file_ratio_weight": 1.2,
+        "cold_file_ratio_weight": 2.25,
         "old_file_ratio_weight": 0.3,
-        "blacklist_file_ratio_weight": -4.0,
-        "cooldown_weight": -1.0,
+        "blacklist_file_ratio_weight": -3.0,
+        "cooldown_weight": -5.0,
         "scan_frequency_weight": -0.2,
         "file_count_weight": 0.4,
         "size_access_ratio_weight": 0.4
@@ -44,8 +34,8 @@
         "small_volume_threshold_gb": 1.0,
         "iops_idle_threshold": 10,
         "latency_idle_threshold_ms": 5,
-        "min_cold_file_age_days": 75,
-        "min_old_file_age_days": 300,
+        "min_cold_file_age_days": 300,
+        "min_old_file_age_days": 600,
         "restore_size_access_ratio_threshold": 0.12
       },
       "weights": {
@@ -54,10 +44,10 @@
         "latency_weight": -0.2,
         "fullness_weight": 0.9,
         "archived_file_ratio_weight": 1.0,
-        "cold_file_ratio_weight": 1.5,
+        "cold_file_ratio_weight": 2.5,
         "old_file_ratio_weight": 0.4,
-        "blacklist_file_ratio_weight": -4.0,
-        "cooldown_weight": -1.0,
+        "blacklist_file_ratio_weight": -3.0,
+        "cooldown_weight": -5.0,
         "scan_frequency_weight": -0.2,
         "file_count_weight": 0.5,
         "size_access_ratio_weight": 0.6
@@ -68,8 +58,8 @@
         "small_volume_threshold_gb": 1.0,
         "iops_idle_threshold": 10,
         "latency_idle_threshold_ms": 5,
-        "min_cold_file_age_days": 250,
-        "min_old_file_age_days": 750,
+        "min_cold_file_age_days": 750,
+        "min_old_file_age_days": 700,
         "restore_size_access_ratio_threshold": 0.25
       },
       "weights": {
@@ -78,10 +68,10 @@
         "latency_weight": -0.5,
         "fullness_weight": 0.4,
         "archived_file_ratio_weight": 0.5,
-        "cold_file_ratio_weight": 1.0,
+        "cold_file_ratio_weight": 2.0,
         "old_file_ratio_weight": 0.2,
-        "blacklist_file_ratio_weight": -4.0,
-        "cooldown_weight": -1.0,
+        "blacklist_file_ratio_weight": -3.0,
+        "cooldown_weight": -5.0,
         "scan_frequency_weight": -0.2,
         "file_count_weight": 0.3,
         "size_access_ratio_weight": 0.2

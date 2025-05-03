@@ -4,7 +4,11 @@ from netapp_ontap.resources import Svm, IpInterface, CifsShare, Volume
 import os
 import smbclient
 import os
-from datetime import datetime
+from datetime import datetime, timezone
+
+from database import SessionLocal
+from models import ActionType, FileMovement
+from services import normalize_path
 
 
 
@@ -188,6 +192,112 @@ def scan_volume(share_name: str, volume: dict, blacklist: list[str]) -> list[dic
 
         return scanned_files
 
+# Scan an archive volume and return all files with corrected metadata
+# - Use database to get original path and correct timestamps
+# - Use archive file system for file size and real last access/modified times
+# - If real access/modified times equal creation time, use DB values instead
+# - Return unified list of files (with original and archived paths, and datetime objects)
+# - If archive is empty or missing folders, return empty list safely
+def scan_archive_volume_corrected(archive_share_name: str) -> list:
+    archive_data = get_svm_archive_volumes()
+    volumes = archive_data.get("volumes", [])
+    archive_info = next((v for v in volumes if v.get('share_name') == archive_share_name), None)
+
+    if not archive_info:
+        print(f"Archive share '{archive_share_name}' not found.")
+        return []
+
+    # Use data share name based on archive name for correct path mapping
+    data_share_name = archive_share_name.replace("archive", "data")
+    archive_path = get_archive_path(f"\\\\192.168.16.14\\{data_share_name}\\fake.txt")
+    if not archive_path:
+        print(f"Failed to resolve archive UNC path for share: {archive_share_name}")
+        return []
+
+    try:
+        ip_address = archive_path.split("\\")[2]
+    except IndexError:
+        print(f"Failed to extract IP from archive path: {archive_path}")
+        return []
+
+    share_path, confirmed_share_name = access_CIFS_share({"share_name": archive_share_name}, ip_address)
+    if not share_path:
+        print(f"Could not resolve share path for '{archive_share_name}'.")
+        return []
+
+    corrected_files = []
+    db = SessionLocal()
+
+    try:
+        print(f"DEBUG: archive share_path = {share_path}")
+
+        try:
+            smbclient.listdir(share_path)
+        except Exception as e:
+            print(f"Archive share root not listable: {e}")
+            return []
+
+        for root, _, files in smbclient.walk(share_path):
+            for name in files:
+                full_path = normalize_path(os.path.join(root, name))
+
+                try:
+                    stat = smbclient.stat(full_path)
+                    real_ctime = datetime.fromtimestamp(stat.st_ctime, tz=timezone.utc)
+                    real_atime = datetime.fromtimestamp(stat.st_atime, tz=timezone.utc)
+                    real_mtime = datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc)
+                    file_size = stat.st_size
+
+                    creation_time = real_ctime
+                    last_access_time = real_atime
+                    last_modified_time = real_mtime
+                    original_path = None
+
+                    record = db.query(FileMovement).filter(
+                        FileMovement.destination_path == full_path,
+                        FileMovement.action_type == ActionType.moved_to_archive
+                    ).order_by(FileMovement.id.desc()).first()
+
+                    if record:
+                        original_path = record.full_path
+                        creation_time = record.creation_time
+
+                        if real_ctime == real_atime and record.last_access_time:
+                            last_access_time = record.last_access_time
+                        else:
+                            last_access_time = real_atime
+
+                        if real_ctime == real_mtime and record.last_modified_time:
+                            last_modified_time = record.last_modified_time
+                        else:
+                            last_modified_time = real_mtime
+
+                    if not original_path:
+                        original_path = "UNKNOWN"
+
+                    corrected_files.append({
+                        "full_path": full_path,
+                        "destination_path": original_path,
+                        "creation_time": creation_time,
+                        "last_access_time": last_access_time,
+                        "last_modified_time": last_modified_time,
+                        "file_size": file_size
+                    })
+
+                except Exception as e:
+                    print(f"Skipping file {full_path} due to stat/read error: {e}")
+                    continue
+
+    except Exception as walk_error:
+        print(f"Warning: Archive share '{archive_share_name}' appears empty or inaccessible: {walk_error}")
+        return []
+
+    finally:
+        db.close()
+
+    return corrected_files
+
+
 
 
 
@@ -277,15 +387,6 @@ def filter_files(files, filters, blacklist, share_name):
         filtered_files[share_name].append(file_info)
 
     return {share_name: filtered_files[share_name]} if filtered_files[share_name] else {}
-
-
-
-
-def normalize_path(file_path):
-    file_path = file_path.replace("/", "\\")  
-    if not file_path.startswith("\\\\"):
-        file_path = "\\\\" + file_path.lstrip("\\")
-    return file_path
 
 
 def get_volume_name_by_share(share_name: str) -> str | None:

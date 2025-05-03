@@ -1,6 +1,9 @@
+from datetime import datetime, timezone
 import json
 import os
+from typing import Any
 from fastapi import Depends, HTTPException, status
+from pydantic import create_model
 from auth import get_current_user
 from database import SessionLocal, get_db
 from models import Role, User
@@ -8,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from schemas import ArchiveFilterRequest
 
+SETTINGS_FILE = "settings.json"
 
 
 def get_user_id_by_username(username: str, db: Session) -> int:
@@ -41,6 +45,19 @@ def verify_viewonly(user:User =  Depends(get_current_user)):
         )
     return user
 
+
+def normalize_path(file_path):
+    file_path = file_path.replace("/", "\\")  
+    if not file_path.startswith("\\\\"):
+        file_path = "\\\\" + file_path.lstrip("\\")
+    return file_path
+
+def parse_datetime_safe(date_str):
+    try:
+        return datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+    except Exception:
+        return datetime.now(timezone.utc)
+
 # Build filter dictionary from request
 def build_filters_from_request(filter_request: ArchiveFilterRequest) -> dict:
     return {
@@ -68,3 +85,28 @@ def get_settings_for_mode(mode: str = "default") -> dict:
         mode_config = all_modes.get("default", {})
 
     return mode_config
+
+
+def get_field_type(value):
+    if isinstance(value, str):
+        return (str, ...)
+    elif isinstance(value, int):
+        return (int, ...)
+    elif isinstance(value, float):
+        return (float, ...)
+    elif isinstance(value, bool):
+        return (bool, ...)
+    elif isinstance(value, list):
+        return (list, ...)
+    elif isinstance(value, dict):
+        return (dict, ...)
+    else:
+        return (Any, ...)
+
+def get_dynamic_settings_model():
+    with open(SETTINGS_FILE, "r") as f:
+        current_settings = json.load(f)
+
+    fields = {key: get_field_type(value) for key, value in current_settings.items()}
+    DynamicSettingsModel = create_model("DynamicSettingsModel", **fields)
+    return DynamicSettingsModel

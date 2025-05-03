@@ -1,4 +1,5 @@
 import os
+from typing import Dict
 from netapp_ontap.resources import Volume, PerformanceCifsMetric, VolumeMetrics
 import smbclient
 from sqlalchemy import func
@@ -6,14 +7,10 @@ from sqlalchemy.orm import Session
 from netapp_ontap import HostConnection
 
 from database import SessionLocal
-from models import FileMovement, ActionType, VolumeScanLog
+from models import EvaluationMode, FileMovement, ActionType, ArchivedScannedLog, VolumeScanDecisionLog
 from netapp_btc import access_CIFS_share, get_first_ip_address, get_svm_data_volumes, get_svm_uuid, get_vol_uuid, get_volume_name_by_share
 from datetime import datetime, timedelta, timezone
-import json
-
-from services import load_settings
-
-min_archive_ratio_pct = 10.0
+from services import load_settings, normalize_path
 
 
 def get_svm_performance_metric(svm_name):
@@ -57,6 +54,33 @@ def get_volume_space_metrics(volume_name: str):
             return {"size": size, "used": used, "percent_used": percent_used}
         return None
 
+def get_archive_volume_free_space(share_name: str) -> float:
+    archive_volume_mapping = {
+        "data1": "vol_archive1",
+        "data2": "vol_archive2"
+    }
+
+    archive_volume_name = archive_volume_mapping.get(share_name.lower())
+    if not archive_volume_name:
+        print(f"Unknown share_name '{share_name}' for archive volume mapping.")
+        return 0.0
+
+    metrics = get_volume_space_metrics(archive_volume_name)
+    if not metrics:
+        print(f"Failed to get space metrics for archive volume '{archive_volume_name}'")
+        return 0.0
+
+    size_bytes = metrics.get("size", 0)
+    used_bytes = metrics.get("used", 0)
+
+    if size_bytes == 0:
+        return 0.0, archive_volume_name
+
+    free_bytes = max(size_bytes - used_bytes, 0)
+    free_gb = free_bytes / (1024 ** 3)
+
+    return round(free_gb, 2), archive_volume_name
+
 
 def get_total_unique_archived_files(db: Session, share_name: str) -> int:
     svm_data = get_svm_data_volumes()
@@ -80,44 +104,51 @@ def get_total_unique_archived_files(db: Session, share_name: str) -> int:
 
 
 def get_last_scan_time(db: Session, share_name: str):
-    result = db.query(VolumeScanLog.timestamp)\
-        .filter(VolumeScanLog.share_name == share_name)\
-        .order_by(VolumeScanLog.timestamp.desc())\
+    result = db.query(ArchivedScannedLog.timestamp)\
+        .filter(ArchivedScannedLog.share_name == share_name)\
+        .order_by(ArchivedScannedLog.timestamp.desc())\
         .first()
     return result[0] if result else None
 
 
 def get_total_archived_files_from_logs(db: Session, share_name: str):
-    return db.query(func.sum(VolumeScanLog.files_archived))\
-        .filter(VolumeScanLog.share_name == share_name)\
+    return db.query(func.sum(ArchivedScannedLog.files_archived))\
+        .filter(ArchivedScannedLog.share_name == share_name)\
         .scalar() or 0
+
+
 
 def is_in_cooldown(db: Session, share_name: str, cooldown_hours: int) -> bool:
     last_scan_time = get_last_scan_time(db, share_name)
     if not last_scan_time:
         return False
+
     if isinstance(last_scan_time, str):
         last_scan_time = datetime.strptime(last_scan_time, "%Y-%m-%d %H:%M:%S")
+    
+    if last_scan_time.tzinfo is None:
         last_scan_time = last_scan_time.replace(tzinfo=timezone.utc)
-
+    
     return datetime.now(timezone.utc) - last_scan_time < timedelta(hours=cooldown_hours)
+
+
+
 
 #Dynamically fetch cold and old days, supporting both per-mode or global settings
 def get_cold_old_days(settings: dict, mode: str) -> tuple[int, int]:
-    cold_days = settings.get("cold_file_age_days", 100)
-    old_days = settings.get("old_file_age_days", 500)
+    try:
+        thresholds = settings.get("modes", {}).get(mode, {}).get("thresholds", {})
+        min_cold = thresholds.get("min_cold_file_age_days")
+        min_old = thresholds.get("min_old_file_age_days")
 
-    if isinstance(cold_days, dict):
-        min_cold_file_age_days = cold_days.get(mode, 100)
-    else:
-        min_cold_file_age_days = cold_days
+        if min_cold is not None and min_old is not None:
+            return min_cold, min_old
 
-    if isinstance(old_days, dict):
-        min_old_file_age_days = old_days.get(mode, 500)
-    else:
-        min_old_file_age_days = old_days
+    except Exception as e:
+        print(f"[WARNING] Failed to fetch cold/old thresholds for mode '{mode}': {e}")
 
-    return min_cold_file_age_days, min_old_file_age_days
+    # Fallback if not found
+    return 500, 1000
 
 
 # Scan a share and collect detailed statistics:
@@ -239,46 +270,80 @@ def scan_volume_with_stats(share_name: str, volume: dict, blacklist: list[str], 
 
 
 # Scan an archive volume, sort files by last access time, and return metadata of recently accessed files to consider for restoration.
-# If the file's creation time equals last accessed time, fallback to the DB 'file_movements' table for the true last accessed timestamp.
-def get_recently_accessed_archive_files(archive_path: str, db_session, settings: dict) -> list[dict]:
-    recent_files = []
+# - Use DB records to correct creation/access/modified times if needed
+# - Tag each file with full metadata + original destination path
+# - Returns: restorable files + all valid archive file metadata
+def get_recently_accessed_archive_files(archive_path: str, db_session, settings: dict) -> Dict[str, list]:
+    restorable_files = []
+    existing_archive_files = []
 
     mode = settings.get("mode", "default")
     min_cold_file_age_days, _ = get_cold_old_days(settings, mode)
-
     cold_cutoff = datetime.now(timezone.utc) - timedelta(days=min_cold_file_age_days)
 
     for root, _, files in os.walk(archive_path):
         for name in files:
-            full_path = os.path.join(root, name)
+            full_path = normalize_path(os.path.join(root, name))
 
             try:
                 stat = os.stat(full_path)
-                creation_time = datetime.fromtimestamp(stat.st_ctime, tz=timezone.utc)
-                last_access_time = datetime.fromtimestamp(stat.st_atime, tz=timezone.utc)
-            except Exception:
+                real_creation_time = datetime.fromtimestamp(stat.st_ctime, tz=timezone.utc)
+                real_last_access_time = datetime.fromtimestamp(stat.st_atime, tz=timezone.utc)
+                real_last_modified_time = datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc)
+                file_size = stat.st_size
+
+                # Defaults
+                creation_time = real_creation_time
+                last_access_time = real_last_access_time
+                last_modified_time = real_last_modified_time
+                original_path = None
+
+                # DB lookup for true path + access info
+                record = db_session.query(FileMovement).filter(
+                    FileMovement.destination_path == full_path,
+                    FileMovement.action_type == ActionType.moved_to_archive
+                ).order_by(FileMovement.id.desc()).first()
+
+                if record:
+                    original_path = record.full_path
+                    creation_time = record.creation_time
+
+                    if real_creation_time == real_last_access_time and record.last_access_time:
+                        last_access_time = record.last_access_time
+                    else:
+                        last_access_time = real_last_access_time
+
+                    if real_creation_time == real_last_modified_time and record.last_modified_time:
+                        last_modified_time = record.last_modified_time
+                    else:
+                        last_modified_time = real_last_modified_time
+
+                if not original_path:
+                    original_path = "UNKNOWN"
+
+                metadata = {
+                    "archived_path": full_path,  # archive UNC path
+                    "original_path": original_path,  # data UNC path
+                    "creation_time": creation_time.strftime('%Y-%m-%d %H:%M:%S'),
+                    "last_access_time": last_access_time.strftime('%Y-%m-%d %H:%M:%S'),
+                    "last_modified_time": last_modified_time.strftime('%Y-%m-%d %H:%M:%S'),
+                    "file_size": file_size
+                }
+
+                existing_archive_files.append(metadata)
+
+                # Add to restorable if recently accessed
+                if last_access_time > cold_cutoff:
+                    restorable_files.append(metadata)
+
+            except Exception as e:
+                print(f"Skipping archive file {full_path} due to error: {e}")
                 continue
 
-            if creation_time == last_access_time:
-                record = (
-                    db_session.query(FileMovement)
-                    .filter(FileMovement.dest_path == full_path)
-                    .order_by(FileMovement.id.desc())
-                    .first()
-                )
-                if record and record.last_accessed_time:
-                    last_access_time = record.last_accessed_time
-
-            if last_access_time > cold_cutoff:
-                recent_files.append({
-                    "path": full_path,
-                    "file_size": os.path.getsize(full_path),
-                    "last_accessed": last_access_time,
-                    "creation_time": creation_time
-                })
-
-    recent_files.sort(key=lambda x: x["last_accessed"], reverse=True)
-    return recent_files
+    return {
+        "restorable_files": restorable_files,
+        "existing_archive_files": existing_archive_files
+    }
 
 
 
@@ -292,7 +357,7 @@ def log_scan_result(
     filters_used: dict,
     triggered_by_user: bool = False
 ):
-    entry = VolumeScanLog(
+    entry = ArchivedScannedLog(
         share_name=share_name,
         volume_name=volume_name,
         files_scanned=files_scanned,
@@ -304,81 +369,35 @@ def log_scan_result(
     db.add(entry)
     db.commit()
 
-
-
-def test_scan_volume_with_stats():
-    settings = load_settings()
-    blacklist = settings.get("blacklist", [])
-
-    data = get_svm_data_volumes()
-    volumes = data.get("volumes", [])
-    if not volumes:
-        print("❌ No volumes found.")
-        return
-
-    first_volume = volumes[0]
-
-    if "nas_server" not in first_volume or "interfaces" not in first_volume.get("nas_server", {}):
-        first_volume["nas_server"] = {
-            "interfaces": [{"ip": "192.168.16.4"}]
-        }
-
-    share_name = first_volume["share_name"]
-
-    print(f"🔎 Testing scan_volume_with_stats on: {share_name}")
-
+def log_volume_evaluation(
+    db: Session,
+    share_name: str,
+    volume_name: str,
+    mode: str,
+    should_scan: bool,
+    score: float,
+    reason: str,
+    raw_scores: dict,
+    weighted_scores: dict,
+    cold_files: int,
+    restored_files: int
+):
     try:
-        result = scan_volume_with_stats(
+        log = VolumeScanDecisionLog(
             share_name=share_name,
-            volume=first_volume,
-            blacklist=blacklist,
-            settings=settings
+            volume_name=volume_name,
+            timestamp=datetime.utcnow(),
+            mode=EvaluationMode(mode),
+            should_scan=should_scan,
+            scan_score=score,
+            reason=reason,
+            raw_scores=raw_scores,
+            weighted_scores=weighted_scores,
+            cold_file_count=cold_files,
+            restore_file_count=restored_files
         )
-
-        print("\n✅ scan_volume_with_stats SUCCESS\n")
-        print("Returned keys:", list(result.keys()))
-        print("Total files scanned:", result.get("total_file_count", 0))
-        print("Total cold files:", len(result.get("cold_files", [])))
-        print("Old files count:", result.get("old_file_count", 0))
-        print("Blacklisted folders hit:", result.get("blacklisted_folders_hit", 0))
-        print("Blacklisted files total:", result.get("blacklisted_file_total", 0))
-        print("Total scanned size (bytes):", result.get("total_file_size", 0))
-        print("Blacklisted ratio percantege:", result.get("blacklist_ratio", 0))
-        print("Fullness porcantege :", result.get("fullness_percent", 0))
-
-
-
+        db.add(log)
+        db.commit()
     except Exception as e:
-        print(f"\n❌ scan_volume_with_stats failed: {e}")
+        print(f"Failed to log evaluation for {share_name}: {e}")
 
-
-def test_get_recently_accessed_archive_files():
-    settings = load_settings()
-
-    # Example archive path (you need to make sure this path exists locally or on network)
-    archive_path = r"\\192.168.16.14\archive_data1"
-
-    # Create database session
-    db_session = SessionLocal()
-
-    try:
-        recent_files = get_recently_accessed_archive_files(
-            archive_path=archive_path,
-            db_session=db_session,
-            settings=settings
-        )
-
-        print("\n✅ get_recently_accessed_archive_files SUCCESS\n")
-        print(f"Total recently accessed files: {len(recent_files)}")
-        
-        for file_info in recent_files:
-            print(f"- {file_info['path']}, size: {file_info['file_size']} bytes, last accessed: {file_info['last_accessed']}")
-
-    except Exception as e:
-        print(f"\n❌ get_recently_accessed_archive_files failed: {e}")
-
-    finally:
-        db_session.close()
-
-if __name__ == "__main__":
-    test_scan_volume_with_stats()
