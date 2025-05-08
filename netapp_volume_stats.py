@@ -401,3 +401,80 @@ def log_volume_evaluation(
     except Exception as e:
         print(f"Failed to log evaluation for {share_name}: {e}")
 
+
+def test_scan_volume_with_stats():
+    settings = load_settings()
+    blacklist = settings.get("blacklist", [])
+
+    data = get_svm_data_volumes()
+    volumes = data.get("volumes", [])
+    if not volumes:
+        print("❌ No volumes found.")
+        return
+
+    first_volume = volumes[0]
+
+    if "nas_server" not in first_volume or "interfaces" not in first_volume.get("nas_server", {}):
+        first_volume["nas_server"] = {
+            "interfaces": [{"ip": "192.168.16.4"}]
+        }
+
+    share_name = first_volume["share_name"]
+
+    print(f"🔎 Testing scan_volume_with_stats on: {share_name}")
+
+    try:
+        result = scan_volume_with_stats(
+            share_name=share_name,
+            volume=first_volume,
+            blacklist=blacklist,
+            settings=settings
+        )
+
+        print("\n✅ scan_volume_with_stats SUCCESS\n")
+        print("Returned keys:", list(result.keys()))
+        print("Total files scanned:", result.get("total_file_count", 0))
+        print("Total cold files:", len(result.get("cold_files", [])))
+        print("Old files count:", result.get("old_file_count", 0))
+        print("Blacklisted folders hit:", result.get("blacklisted_folders_hit", 0))
+        print("Blacklisted files total:", result.get("blacklisted_file_total", 0))
+        print("Total scanned size (bytes):", result.get("total_file_size", 0))
+        print("Blacklisted ratio percantege:", result.get("blacklist_ratio", 0))
+        print("Fullness porcantege :", result.get("fullness_percent", 0))
+
+
+
+    except Exception as e:
+        print(f"\n❌ scan_volume_with_stats failed: {e}")
+
+
+def test_get_recently_accessed_archive_files():
+    settings = load_settings()
+
+    # Example archive path (you need to make sure this path exists locally or on network)
+    archive_path = r"\\192.168.16.14\archive_data1"
+
+    # Create database session
+    db_session = SessionLocal()
+
+    try:
+        recent_files = get_recently_accessed_archive_files(
+            archive_path=archive_path,
+            db_session=db_session,
+            settings=settings
+        )
+
+        print("\n✅ get_recently_accessed_archive_files SUCCESS\n")
+        print(f"Total recently accessed files: {len(recent_files)}")
+        
+        for file_info in recent_files:
+            print(f"- {file_info['path']}, size: {file_info['file_size']} bytes, last accessed: {file_info['last_accessed']}")
+
+    except Exception as e:
+        print(f"\n❌ get_recently_accessed_archive_files failed: {e}")
+
+    finally:
+        db_session.close()
+
+if __name__ == "__main__":
+    test_scan_volume_with_stats()

@@ -229,7 +229,6 @@ def scan_archive_volume_corrected(archive_share_name: str) -> list:
     db = SessionLocal()
 
     try:
-        print(f"DEBUG: archive share_path = {share_path}")
 
         try:
             smbclient.listdir(share_path)

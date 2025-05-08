@@ -273,7 +273,7 @@ def bulk_restore_files(files_to_restore: list, db_session: Session) -> dict:
                 try:
                     return datetime.strptime(ts, '%Y-%m-%d %H:%M:%S')
                 except Exception:
-                    print(f"⚠️ Warning: Invalid timestamp '{ts}', using now() instead")
+                    print(f"Warning: Invalid timestamp '{ts}', using now() instead")
                     return datetime.now()
 
             creation_time = safe_parse(file_info['creation_time'])
@@ -509,6 +509,93 @@ def restore_multiple_files(restore_requests: List[dict]) -> dict:
             "restored": [],
             "skipped": [{"error": str(e)}]
         }
+    finally:
+        db.close()
+
+def process_mixed_file_paths(file_paths: list[str]) -> dict:
+    archive_files = []
+    data_files = []
+    restored_results = {}
+    archived_results = {}
+
+    db = SessionLocal()
+
+    try:
+        for path in file_paths:
+            norm_path = normalize_path(path)
+
+            if "\\archive" in norm_path.lower():
+                movement = db.query(FileMovement).filter(
+                    FileMovement.destination_path == norm_path,
+                    FileMovement.action_type == ActionType.moved_to_archive
+                ).order_by(FileMovement.id.desc()).first()
+
+                if movement:
+                    archive_files.append({
+                        "archived_path": movement.destination_path,
+                        "original_path": movement.full_path,
+                        "creation_time": movement.creation_time.strftime('%Y-%m-%d %H:%M:%S'),
+                        "last_access_time": movement.last_access_time.strftime('%Y-%m-%d %H:%M:%S'),
+                        "last_modified_time": movement.last_modified_time.strftime('%Y-%m-%d %H:%M:%S'),
+                        "file_size": movement.file_size
+                    })
+                    print(f"Found archive metadata for {norm_path}")
+                else:
+                    print(f"Warning: No archive metadata found in DB for {norm_path}")
+
+            else:
+                # check if this data file was already archived
+                archived_movement = db.query(FileMovement).filter(
+                    FileMovement.full_path == norm_path,
+                    FileMovement.action_type == ActionType.moved_to_archive
+                ).order_by(FileMovement.id.desc()).first()
+
+                if archived_movement:
+                    print(f"Skipping {norm_path} → already archived as {archived_movement.destination_path}")
+                    continue  # skip adding to data_files → already archived
+
+                archive_dest = get_archive_path(norm_path)
+                if not archive_dest:
+                    print(f"Invalid archive destination for {norm_path}")
+                    continue
+
+                try:
+                    stat = smbclient.stat(norm_path)
+                    data_files.append({
+                        "full_path": norm_path,
+                        "creation_time": datetime.fromtimestamp(stat.st_ctime).strftime('%Y-%m-%d %H:%M:%S'),
+                        "last_access_time": datetime.fromtimestamp(stat.st_atime).strftime('%Y-%m-%d %H:%M:%S'),
+                        "last_modified_time": datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M:%S'),
+                        "file_size": stat.st_size
+                    })
+                    print(f"Prepared data file for archiving: {norm_path}")
+                except Exception as e:
+                    print(f"Error accessing file info for {norm_path}: {e}")
+
+        if archive_files:
+            print(f"Starting restore for {len(archive_files)} archived files...")
+            restored_results = bulk_restore_files(archive_files, db)
+
+        if data_files:
+            print(f"Starting archive for {len(data_files)} data files...")
+            moved, failed = bulk_move_files(data_files)
+            archived_results = {
+                "archived": moved,
+                "skipped": failed
+            }
+
+        return {
+            "status": "complete",
+            "restored_files": restored_results.get("restored", []),
+            "skipped_restores": restored_results.get("skipped", []),
+            "archived_files": archived_results.get("archived", []),
+            "skipped_archives": archived_results.get("skipped", [])
+        }
+
+    except Exception as e:
+        print(f"Error in process_mixed_file_paths: {e}")
+        return {"status": "error", "reason": str(e)}
+
     finally:
         db.close()
 

@@ -36,7 +36,6 @@ def process_archive_restore_decision(share_name: str, cold_files: list, restorab
     merged_sorted = sorted(merged, key=safe_time)
 
     available_gb, _ = get_archive_volume_free_space(share_name)
-    print(f"=== DEBUG === Available archive GB: {available_gb}")
     available_bytes = available_gb * 1024 ** 3
 
     total_bytes = 0
@@ -69,9 +68,7 @@ def process_archive_restore_decision(share_name: str, cold_files: list, restorab
                     "file_size": file["file_size"]
                 })
 
-    print(f"=== DEBUG === Final archive count (new cold files): {len(archive_candidates)}")
-    print(f"=== DEBUG === Final stay-in-archive count: {len(stay_in_archive)}")
-    print(f"=== DEBUG === Final restore count: {len(restore_candidates)}")
+
 
     return {
         "archive_candidates": archive_candidates,
@@ -83,6 +80,10 @@ def scan_all_volumes_and_process():
     settings = load_settings()
     blacklist = settings.get("blacklist", [])
     db = SessionLocal()
+    archive_summary = {"moved": [], "failed": []}
+    restore_summary = {"restored": [], "skipped": []}
+    decision_log = []
+
 
     volumes = get_svm_data_volumes().get("volumes", [])
     if not volumes:
@@ -114,15 +115,25 @@ def scan_all_volumes_and_process():
             print("------------------------------------------------------------")
 
             if not result["should_scan"]:
+                decision_log.append({
+                "volume": share_name,
+                "should_scan": result["should_scan"],
+                "score": result["score"],
+                "reason": result.get("reason", "Feature vector analysis"),
+                "archive_success": len(archive_summary.get("moved", [])),
+                "archive_failed": len(archive_summary.get("failed", [])),
+                "restore_success": len(restore_summary.get("restored", [])),
+                "restore_failed": len(restore_summary.get("skipped", [])),
+                "archive_files": archive_summary.get("moved", []),
+                "restore_files": restore_summary.get("restored", []),
+                })
                 continue
 
             cold_files = result.get("cold_files") or []
             recently_accessed = result.get("restorable_files") or []
             existing_archive = result.get("existing_archive_files") or []
 
-            print(f"=== DEBUG === Cold files count: {len(cold_files)}")
-            print(f"=== DEBUG === Restorable files count: {len(recently_accessed)}")
-            print(f"=== DEBUG === Existing archive files count: {len(existing_archive)}")
+
 
             decision_result = process_archive_restore_decision(
                 share_name=share_name,
@@ -134,15 +145,11 @@ def scan_all_volumes_and_process():
             archive_candidates = decision_result["archive_candidates"]
             restore_candidates = decision_result["restore_candidates"]
 
-            print(f"=== DEBUG === Archive candidates count: {len(archive_candidates)}")
-            print(f"=== DEBUG === Restore candidates count: {len(restore_candidates)}")
 
-            restore_summary = {}
             if restore_candidates:
                 print(f"Restoring {len(restore_candidates)} files for {share_name}...")
                 restore_summary = bulk_restore_files(restore_candidates, db)
 
-            archive_summary = {}
             if archive_candidates:
                 print(f"Archiving {len(archive_candidates)} files for {share_name}...")
                 moved_files, failed_files = bulk_move_files(archive_candidates)
@@ -157,6 +164,18 @@ def scan_all_volumes_and_process():
                 "archive_failed": len(archive_summary.get("failed", [])),
                 "restore_success": len(restore_summary.get("restored", [])),
                 "restore_failed": len(restore_summary.get("skipped", [])),
+            })
+            decision_log.append({
+            "volume": share_name,
+            "should_scan": result["should_scan"],
+            "score": result["score"],
+            "reason": result.get("reason", "Feature vector analysis"),
+            "archive_success": len(archive_summary.get("moved", [])),
+            "archive_failed": len(archive_summary.get("failed", [])),
+            "restore_success": len(restore_summary.get("restored", [])),
+            "restore_failed": len(restore_summary.get("skipped", [])),
+            "archive_files": archive_summary.get("moved", []),
+            "restore_files": restore_summary.get("restored", []),
             })
 
         except Exception as e:
@@ -190,3 +209,129 @@ def scan_all_volumes_and_process():
         print(f"Failed to log scan summaries to DB: {log_error}")
 
     db.close()
+    return decision_log
+
+
+
+
+def scan_single_volume_and_process(volume_name_to_scan):
+    settings = load_settings()
+    blacklist = settings.get("blacklist", [])
+    db = SessionLocal()
+    archive_summary = {"moved": [], "failed": []}
+    restore_summary = {"restored": [], "skipped": []}
+    decision_log = []
+
+    volumes = get_svm_data_volumes().get("volumes", [])
+    if not volumes:
+        print("No volumes available.")
+        return []
+
+    volume_info = next((v for v in volumes if v.get("share_name") == volume_name_to_scan), None)
+
+    if not volume_info:
+        print(f"Volume {volume_name_to_scan} not found.")
+        return [{"error": f"Volume {volume_name_to_scan} not found"}]
+
+    share_name = volume_info.get("share_name")
+
+    try:
+        result = should_scan_volume(
+            share_name=share_name,
+            volume=volume_info,
+            settings=settings,
+            blacklist=blacklist,
+            db=db
+        )
+
+        print(f"=== Evaluating Volume: {share_name} ===")
+        print(f"Should Scan: {result['should_scan']}")
+        print(f"Score: {result['score']}")
+        print(f"Reason: {result.get('reason', 'Feature vector analysis')}")
+        print("------------------------------------------------------------")
+
+        if not result["should_scan"]:
+            decision_log.append({
+                "volume": share_name,
+                "should_scan": result["should_scan"],
+                "score": result["score"],
+                "reason": result.get("reason", "Feature vector analysis"),
+                "archive_success": 0,
+                "archive_failed": 0,
+                "restore_success": 0,
+                "restore_failed": 0,
+                "archive_files": [],
+                "restore_files": [],
+            })
+            db.close()
+            return decision_log
+
+        cold_files = result.get("cold_files") or []
+        recently_accessed = result.get("restorable_files") or []
+        existing_archive = result.get("existing_archive_files") or []
+
+        print(f"=== DEBUG === Cold files count: {len(cold_files)}")
+        print(f"=== DEBUG === Restorable files count: {len(recently_accessed)}")
+        print(f"=== DEBUG === Existing archive files count: {len(existing_archive)}")
+
+        decision_result = process_archive_restore_decision(
+            share_name=share_name,
+            cold_files=cold_files,
+            restorable_files=recently_accessed,
+            existing_archive_files=existing_archive
+        )
+
+        archive_candidates = decision_result["archive_candidates"]
+        restore_candidates = decision_result["restore_candidates"]
+
+
+        if restore_candidates:
+            print(f"Restoring {len(restore_candidates)} files for {share_name}...")
+            restore_summary = bulk_restore_files(restore_candidates, db)
+
+        if archive_candidates:
+            print(f"Archiving {len(archive_candidates)} files for {share_name}...")
+            moved_files, failed_files = bulk_move_files(archive_candidates)
+            archive_summary = {
+                "moved": moved_files,
+                "failed": failed_files
+            }
+
+        decision_log.append({
+            "volume": share_name,
+            "should_scan": result["should_scan"],
+            "score": result["score"],
+            "reason": result.get("reason", "Feature vector analysis"),
+            "archive_success": len(archive_summary.get("moved", [])),
+            "archive_failed": len(archive_summary.get("failed", [])),
+            "restore_success": len(restore_summary.get("restored", [])),
+            "restore_failed": len(restore_summary.get("skipped", [])),
+            "archive_files": archive_summary.get("moved", []),
+            "restore_files": restore_summary.get("restored", []),
+        })
+
+    except Exception as e:
+        import traceback
+        print(f"Error processing volume {share_name}: {e}")
+        traceback.print_exc()
+        decision_log.append({"volume": share_name, "error": str(e)})
+
+    try:
+        db_log_entry = ArchivedScannedLog(
+            share_name=share_name,
+            files_scanned=len(archive_summary.get("moved", [])) + len(archive_summary.get("failed", [])) + len(restore_summary.get("restored", [])) + len(restore_summary.get("skipped", [])),
+            files_archived=len(archive_summary.get("moved", [])),
+            files_restored=len(restore_summary.get("restored", [])),
+            triggered_by_user=False
+        )
+        db.add(db_log_entry)
+        db.commit()
+        print("Logged scan summary to DB")
+    except Exception as log_error:
+        db.rollback()
+        print(f"Failed to log scan summary: {log_error}")
+
+    db.close()
+    return decision_log
+
+

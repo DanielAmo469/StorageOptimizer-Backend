@@ -2,8 +2,9 @@ from io import BytesIO
 import json
 from typing import Any, Dict, List, Optional
 from datetime import timedelta
-from fastapi import Body, FastAPI, Depends, HTTPException, Request, status
+from fastapi import Body, FastAPI, Depends, HTTPException, Query, Request, status
 from fastapi.responses import StreamingResponse
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from passlib.hash import bcrypt
 from jose import JWTError, jwt
@@ -15,12 +16,12 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 
 from database import SessionLocal, engine, Base, get_db
-from models import PendingUser, Role, User
+from models import ArchivedScannedLog, PendingUser, Role, User
 from netapp_btc import filter_files, get_svm_data_volumes, scan_volume
-from netapp_interfaces import analyze_volume_for_archive_and_restore, archive_filtered_files, bulk_restore_files, move_file, bulk_move_files, restore_file, restore_multiple_files
-from scan_manager import scan_all_volumes_and_process
+from netapp_interfaces import analyze_volume_for_archive_and_restore, archive_filtered_files, bulk_restore_files, move_file, bulk_move_files, process_mixed_file_paths, restore_file, restore_multiple_files
+from scan_manager import scan_all_volumes_and_process, scan_single_volume_and_process
 from schemas import ArchiveFilterRequest, ArchiveRestoreRequest, BaseResponse, BlacklistUpdate, FileInfo, RegistrationRequests, RestoreRequest, UserCreate, UserValues
-from services import SETTINGS_FILE, build_filters_from_request, get_dynamic_settings_model, get_user_id_by_username, verify_manager
+from services import SETTINGS_FILE, build_filters_from_request, get_dynamic_settings_model, get_file_movement_stats, get_recent_archived_scans, get_recent_file_movements, get_recent_volume_scan_decisions, get_scan_stats, get_time_range, get_user_id_by_username, get_volume_scan_stats, verify_manager
 from auth import ALGORITHM, SECRET_KEY, create_access_token, get_current_user
 
 
@@ -64,9 +65,8 @@ DynamicSettingsModel = get_dynamic_settings_model()
 
 def scheduled_volume_scan():
     print("[SCHEDULED SCAN] Running scan_all_volumes_and_process...")
-    scan_all_volumes_and_process()  # You need to implement or import this function
+    scan_all_volumes_and_process()
 
-# Add this in app startup:
 @app.on_event("startup")
 def start_scheduler():
     scheduler.add_job(scheduled_volume_scan, 'interval', days=1)
@@ -163,7 +163,8 @@ def get_user_info(current_user=Depends(get_current_user)):
         "user_id": current_user.id,
         "username": current_user.username,
         "email": current_user.email,
-        "date_created": current_user.date_created
+        "date_created": current_user.date_created,
+        "role": current_user.role
     }
 
 
@@ -177,7 +178,8 @@ def get_registration_requests(
         RegistrationRequests(
             user_id=pending_user.id,
             username=pending_user.username,
-            registration_request_description=pending_user.registration_request_description
+            registration_request_description=pending_user.registration_request_description,
+            date_created= pending_user.date_created
         )
         for pending_user in pending_users
     ]
@@ -293,11 +295,61 @@ def downgrade_user_to_viewonly(
 
     return {"message": f"User '{username}' downgraded to viewonly", "user_id": user_to_downgrade.id}
 
+@app.get("/users", response_model=list[dict])
+def get_all_users(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    users = db.query(User).all()
+    return [
+        {
+            "user_id": user.id, 
+            "username": user.username,
+            "email": user.email,
+            "role": user.role,
+            "date_created": user.date_created
+        }
+        for user in users
+    ]
+
+@app.delete("/remove_viewonly/{username}", response_model=dict)
+def remove_viewonly_user(
+    username: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(verify_manager)
+):
+    user_to_remove = db.query(User).filter(User.username == username).first()
+
+    if not user_to_remove:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    if user_to_remove.role != Role.viewonly:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Can only remove viewonly users"
+        )
+
+    db.delete(user_to_remove)
+    db.commit()
+
+    return {"message": f"User '{username}' removed successfully"}
+
 @app.post("/manual-scan")
 def manual_scan(current_user: User = Depends(verify_manager)):
     try:
-        scan_all_volumes_and_process()
-        return {"status": "success", "message": "Manual scan executed successfully."}
+        scan_results = scan_all_volumes_and_process()
+        return {"status": "success", "results": scan_results}
+    except Exception as e:
+        return {"status": "error", "reason": str(e)}
+
+@app.post("/manual-scan/{volume_name}")
+def manual_scan_volume(volume_name: str, current_user: User = Depends(verify_manager)):
+    try:
+        result = scan_single_volume_and_process(volume_name)
+        return {"status": "success", "result": result}
     except Exception as e:
         return {"status": "error", "reason": str(e)}
 
@@ -353,9 +405,16 @@ def restore_multiple_files_endpoint(
         print(f"Unexpected error during restore: {e}")
         return {"status": "error", "reason": f"Failed to restore files: {str(e)}"}
 
+#Restore or Archive depends on the file path 
+@app.post("/process-file-paths", response_model=dict)
+def process_file_paths_endpoint(
+    paths: List[str],
+    current_user: User = Depends(verify_manager)
+):
+    return process_mixed_file_paths(paths)
 
 @app.get("/admin/get-settings")
-def get_settings(current_user: User = Depends(verify_manager)):
+def get_settings(current_user: User = Depends(get_current_user)):
     try:
         with open(SETTINGS_FILE, "r") as f:
             settings = json.load(f)
@@ -383,6 +442,29 @@ def update_settings(
 
     return {"status": "success", "settings": settings}
 
+@app.get("/stats/files")
+def stats_files(filter: str = Query("all_time"), db: Session = Depends(get_db)):
+    return get_file_movement_stats(db, filter)
+
+@app.get("/stats/volumes")
+def stats_volumes(filter: str = Query("all_time"), db: Session = Depends(get_db)):
+    return get_volume_scan_stats(db, filter)
+
+@app.get("/stats/scans")
+def stats_scans(filter: str = Query("all_time"), db: Session = Depends(get_db)):
+    return get_scan_stats(db, filter)
+
+@app.get("/stats/recent-scans")
+def recent_scans(db: Session = Depends(get_db)):
+    return get_recent_archived_scans(db)
+
+@app.get("/stats/recent-movements")
+def recent_movements(db: Session = Depends(get_db)):
+    return get_recent_file_movements(db)
+
+@app.get("/stats/recent-decisions")
+def recent_decisions(db: Session = Depends(get_db)):
+    return get_recent_volume_scan_decisions(db)
 
 @app.post("/preview-filtered-files", response_model=dict)
 def preview_filtered_files(
@@ -418,6 +500,7 @@ def preview_filtered_files(
         print(f"Error during preview-filtered-files: {e}")
         return {"status": "error", "reason": str(e)}
 
+# Archive filtered files with restores endpoint
 @app.post("/execute-filtered-transfer", response_model=dict)
 def execute_filtered_transfer(
     request: ArchiveFilterRequest,
@@ -467,6 +550,17 @@ def execute_filtered_transfer(
             for file in restore_candidates:
                 print(f"→ restore: {file.get('archived_path') or file.get('full_path') or 'UNKNOWN'}")
             restore_result = bulk_restore_files(restore_candidates, db)
+        
+        log_entry = ArchivedScannedLog(
+            share_name=share_name,
+            triggered_by_user=True,
+            files_scanned=len(archive_candidates) + len(restore_candidates),
+            files_archived=len(archive_result.get("moved_files", [])),
+            files_restored=len(restore_result.get("restored", [])),
+            filters_used=filters
+        )
+        db.add(log_entry)
+        db.commit()
 
         return {
             "status": "complete",
@@ -489,7 +583,7 @@ def execute_filtered_transfer(
         db.close()
 
 
-# Archive filtered files endpoint
+# Archive filtered files without restores endpoint
 @app.post("/archive-filtered-files", response_model=dict)
 def archive_filtered_files_endpoint(
     filter_request: ArchiveFilterRequest,
@@ -552,7 +646,7 @@ def archive_filtered_files_endpoint(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React app running on port 3000
+    allow_origins=["*"],  # React app running on port 3000
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
