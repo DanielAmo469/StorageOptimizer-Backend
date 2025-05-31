@@ -1,8 +1,10 @@
 from io import BytesIO
-from typing import Dict, List, Optional
+import json
+from typing import Any, Dict, List, Optional
 from datetime import timedelta
-from fastapi import FastAPI, Depends, HTTPException, Request, status
+from fastapi import Body, FastAPI, Depends, HTTPException, Query, Request, status
 from fastapi.responses import StreamingResponse
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from passlib.hash import bcrypt
 from jose import JWTError, jwt
@@ -10,20 +12,17 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_swagger_ui_html
-
-
-
-
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 from database import SessionLocal, engine, Base, get_db
-from models import PendingUser, Role, User
-from netapp_interfaces import archive_filtered_files, move_file, restore_file
-from schemas import ArchiveFilterRequest, BaseResponse, FileInfo, RegistrationRequests, RestoreRequest, UserCreate, UserValues
-from services import get_user_id_by_username, verify_manager
+from models import ArchivedScannedLog, PendingUser, Role, User
+from netapp_btc import filter_files, get_svm_data_volumes, scan_volume
+from netapp_interfaces import analyze_volume_for_archive_and_restore, archive_filtered_files, bulk_restore_files, move_file, bulk_move_files, process_mixed_file_paths, restore_file, restore_multiple_files
+from scan_manager import scan_all_volumes_and_process, scan_single_volume_and_process
+from schemas import ArchiveFilterRequest, ArchiveRestoreRequest, BaseResponse, BlacklistUpdate, FileInfo, RegistrationRequests, RestoreRequest, UserCreate, UserValues
+from services import SETTINGS_FILE, build_filters_from_request, get_dynamic_settings_model, get_file_movement_stats, get_recent_archived_scans, get_recent_file_movements, get_recent_volume_scan_decisions, get_scan_stats, get_time_range, get_user_id_by_username, get_volume_scan_stats, verify_manager
 from auth import ALGORITHM, SECRET_KEY, create_access_token, get_current_user
-
-
 
 
 def create_admin_user(db: Session):
@@ -60,6 +59,18 @@ app = FastAPI(docs_url=None, redoc_url=None)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+scheduler = BackgroundScheduler()
+DynamicSettingsModel = get_dynamic_settings_model()
+
+
+def scheduled_volume_scan():
+    print("[SCHEDULED SCAN] Running scan_all_volumes_and_process...")
+    scan_all_volumes_and_process()
+
+@app.on_event("startup")
+def start_scheduler():
+    scheduler.add_job(scheduled_volume_scan, 'interval', days=1)
+    scheduler.start()
 
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
@@ -72,8 +83,8 @@ async def custom_swagger_ui_html():
 
 @app.get("/openapi.json", include_in_schema=False)
 async def custom_openapi():
-    return JSONResponse(
-        get_openapi(
+    return JSONResponse( # type: ignore
+        get_openapi( # type: ignore
             title="Storage Optimizer",
             version="1.0.0",
             routes=app.routes
@@ -83,12 +94,12 @@ async def custom_openapi():
 
 @app.get(app.swagger_ui_oauth2_redirect_url, include_in_schema=False)
 async def swagger_ui_redirect():
-    return get_swagger_ui_oauth2_redirect_html()
+    return get_swagger_ui_oauth2_redirect_html() # type: ignore
 
 
 @app.get("/redoc", include_in_schema=False)
 async def redoc_html():
-    return get_redoc_html(
+    return get_redoc_html( # type: ignore
         openapi_url=app.openapi_url,
         title=app.title + " - ReDoc",
         redoc_js_url="/static/redoc.standalone.js",
@@ -152,7 +163,8 @@ def get_user_info(current_user=Depends(get_current_user)):
         "user_id": current_user.id,
         "username": current_user.username,
         "email": current_user.email,
-        "date_created": current_user.date_created
+        "date_created": current_user.date_created,
+        "role": current_user.role
     }
 
 
@@ -166,7 +178,8 @@ def get_registration_requests(
         RegistrationRequests(
             user_id=pending_user.id,
             username=pending_user.username,
-            registration_request_description=pending_user.registration_request_description
+            registration_request_description=pending_user.registration_request_description,
+            date_created= pending_user.date_created
         )
         for pending_user in pending_users
     ]
@@ -282,67 +295,358 @@ def downgrade_user_to_viewonly(
 
     return {"message": f"User '{username}' downgraded to viewonly", "user_id": user_to_downgrade.id}
 
-@app.post("/archive-file", response_model=dict)
-def archive_file(
-    file_info: FileInfo,
-    request: Request,
+@app.get("/users", response_model=list[dict])
+def get_all_users(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    users = db.query(User).all()
+    return [
+        {
+            "user_id": user.id, 
+            "username": user.username,
+            "email": user.email,
+            "role": user.role,
+            "date_created": user.date_created
+        }
+        for user in users
+    ]
+
+@app.delete("/remove_viewonly/{username}", response_model=dict)
+def remove_viewonly_user(
+    username: str,
+    db: Session = Depends(get_db),
     current_user: User = Depends(verify_manager)
 ):
-    try:
-        result = move_file(file_info.dict())
-        if not result:
-            raise ValueError("move_file returned False. File may not exist, be accessible, or metadata failed.")
-        return {"message": "File archived successfully", "archived_path": result}
+    user_to_remove = db.query(User).filter(User.username == username).first()
 
-    except Exception as e:
-        print(f"[ERROR] /archive-file failed\n  Path: {file_info.full_path}\n  Reason: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Archive failed: {str(e)}")
-
-
-@app.post("/restore-file", response_model=dict)
-def restore_archived_file(
-    restore_request: RestoreRequest,
-    request: Request,
-    current_user: User = Depends(verify_manager)
-):
-    try:
-        result = restore_file(
-            archive_folder=restore_request.archive_folder,
-            filename=restore_request.filename
+    if not user_to_remove:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
         )
-        if not result:
-            raise ValueError(f"restore_file returned False. File '{restore_request.filename}' may not exist in metadata or restoration failed.")
-        return {"message": "File restored successfully", "restored_path": result}
+
+    if user_to_remove.role != Role.viewonly:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Can only remove viewonly users"
+        )
+
+    db.delete(user_to_remove)
+    db.commit()
+
+    return {"message": f"User '{username}' removed successfully"}
+
+@app.post("/manual-scan")
+def manual_scan(current_user: User = Depends(verify_manager)):
+    try:
+        scan_results = scan_all_volumes_and_process()
+        return {"status": "success", "results": scan_results}
+    except Exception as e:
+        return {"status": "error", "reason": str(e)}
+
+@app.post("/manual-scan/{volume_name}")
+def manual_scan_volume(volume_name: str, current_user: User = Depends(verify_manager)):
+    try:
+        result = scan_single_volume_and_process(volume_name)
+        return {"status": "success", "result": result}
+    except Exception as e:
+        return {"status": "error", "reason": str(e)}
+
+
+@app.post("/archive-multiple", response_model=dict)
+def archive_multiple_files_endpoint(
+    files: List[FileInfo],
+    current_user: User = Depends(verify_manager)
+):
+    try:
+        print(f"Starting bulk archive of {len(files)} files...")
+
+        # Convert FileInfo (Pydantic models) to plain dicts
+        file_dicts = [f.dict() for f in files]
+
+        moved, failed = bulk_move_files(file_dicts)
+
+        return {
+            "status": "complete",
+            "archive_summary": {
+                "success_count": len(moved),
+                "failed_count": len(failed),
+                "failures": failed
+            }
+        }
 
     except Exception as e:
-        print(f"[ERROR] /restore-file failed\n  Archive Folder: {restore_request.archive_folder}\n  Filename: {restore_request.filename}\n  Reason: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Restore failed: {str(e)}")
+        print(f"Error during archive-multiple: {e}")
+        return {
+            "status": "error",
+            "reason": str(e)
+        }
 
+@app.post("/restore-multiple", response_model=dict)
+def restore_multiple_files_endpoint(
+    restore_requests: List[RestoreRequest],
+    current_user: User = Depends(verify_manager)
+):
+    try:
+        print(f"Starting restore process for multiple files...")
 
+        # Convert Pydantic objects to dicts
+        restore_dicts = [r.dict() for r in restore_requests]
 
-@app.post("/archive-filtered-files", response_model=dict)
-def archive_filtered_files_endpoint(
+        result = restore_multiple_files(restore_dicts)
+
+        return result
+
+    except ValueError as ve:
+        print(f"ValueError during restore: {ve}")
+        return {"status": "error", "reason": str(ve)}
+    except Exception as e:
+        print(f"Unexpected error during restore: {e}")
+        return {"status": "error", "reason": f"Failed to restore files: {str(e)}"}
+
+#Restore or Archive depends on the file path 
+@app.post("/process-file-paths", response_model=dict)
+def process_file_paths_endpoint(
+    paths: List[str],
+    current_user: User = Depends(verify_manager)
+):
+    return process_mixed_file_paths(paths)
+
+@app.get("/admin/get-settings")
+def get_settings(current_user: User = Depends(get_current_user)):
+    try:
+        with open(SETTINGS_FILE, "r") as f:
+            settings = json.load(f)
+        return {"status": "success", "settings": settings}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to load settings: {e}")
+
+@app.post("/admin/update-settings")
+def update_settings(
+    updated_values: dict = Body(...),
+    current_user: User = Depends(verify_manager)
+):
+    with open("settings.json", "r") as f:
+        settings = json.load(f)
+
+    # Only update existing keys (top-level)
+    for key, value in updated_values.items():
+        if key in settings:
+            settings[key] = value
+        else:
+            raise HTTPException(status_code=400, detail=f"Invalid key: {key}")
+
+    with open("settings.json", "w") as f:
+        json.dump(settings, f, indent=4)
+
+    return {"status": "success", "settings": settings}
+
+@app.get("/stats/files")
+def stats_files(filter: str = Query("all_time"), db: Session = Depends(get_db)):
+    return get_file_movement_stats(db, filter)
+
+@app.get("/stats/volumes")
+def stats_volumes(filter: str = Query("all_time"), db: Session = Depends(get_db)):
+    return get_volume_scan_stats(db, filter)
+
+@app.get("/stats/scans")
+def stats_scans(filter: str = Query("all_time"), db: Session = Depends(get_db)):
+    return get_scan_stats(db, filter)
+
+@app.get("/stats/recent-scans")
+def recent_scans(db: Session = Depends(get_db)):
+    return get_recent_archived_scans(db)
+
+@app.get("/stats/recent-movements")
+def recent_movements(db: Session = Depends(get_db)):
+    return get_recent_file_movements(db)
+
+@app.get("/stats/recent-decisions")
+def recent_decisions(db: Session = Depends(get_db)):
+    return get_recent_volume_scan_decisions(db)
+
+@app.post("/preview-filtered-files", response_model=dict)
+def preview_filtered_files(
     filter_request: ArchiveFilterRequest,
     current_user: User = Depends(verify_manager)
 ):
     filters = {
-        "file_type": filter_request.file_type,
+        "file_type": filter_request.file_type or [],
         "date_filters": filter_request.date_filters.dict() if filter_request.date_filters else {},
         "min_size": filter_request.min_size,
         "max_size": filter_request.max_size,
     }
 
-    result = archive_filtered_files(
-        filters=filters,
-        blacklist=filter_request.blacklist or [],
-        share_name=filter_request.share_name
-    )
+    try:
+        result = analyze_volume_for_archive_and_restore(
+            share_name=filter_request.share_name,
+            filters=filters,
+            blacklist=filter_request.blacklist or []
+        )
 
-    return result
+        archive_candidates = result.get("archive_candidates", [])
+        restore_candidates = result.get("restore_candidates", [])
+
+        return {
+            "status": "success",
+            "archive_candidates_count": len(archive_candidates),
+            "restore_candidates_count": len(restore_candidates),
+            "archive_candidates": archive_candidates,
+            "restore_candidates": restore_candidates
+        }
+
+    except Exception as e:
+        print(f"Error during preview-filtered-files: {e}")
+        return {"status": "error", "reason": str(e)}
+
+# Archive filtered files with restores endpoint
+@app.post("/execute-filtered-transfer", response_model=dict)
+def execute_filtered_transfer(
+    request: ArchiveFilterRequest,
+    current_user: User = Depends(verify_manager)
+):
+    filters = {
+        "file_type": request.file_type or [],
+        "date_filters": request.date_filters.dict() if request.date_filters else {},
+        "min_size": request.min_size,
+        "max_size": request.max_size,
+    }
+
+    blacklist = request.blacklist or []
+    share_name = request.share_name
+
+    db = SessionLocal()
+    try:
+        #Analyze share and determine archive/restore candidates
+        result = analyze_volume_for_archive_and_restore(share_name, filters, blacklist)
+        archive_candidates = result.get("archive_candidates", [])
+        restore_candidates = result.get("restore_candidates", [])
+
+        valid_archive_candidates = [f for f in archive_candidates if f.get("full_path")]
+
+        #Archive files
+        archive_result = {
+            "moved_files": [],
+            "failed_files": []
+        }
+
+        if valid_archive_candidates:
+            print(f"Archiving {len(valid_archive_candidates)} files...")
+            moved, failed = bulk_move_files(valid_archive_candidates)
+            archive_result["moved_files"] = moved
+            archive_result["failed_files"] = failed
+        else:
+            print("No valid archive candidates.")
+
+        #Restore files
+        restore_result = {
+            "restored": [],
+            "skipped": []
+        }
+
+        if restore_candidates:
+            print(f"Restoring {len(restore_candidates)} files...")
+            for file in restore_candidates:
+                print(f"→ restore: {file.get('archived_path') or file.get('full_path') or 'UNKNOWN'}")
+            restore_result = bulk_restore_files(restore_candidates, db)
+        
+        log_entry = ArchivedScannedLog(
+            share_name=share_name,
+            triggered_by_user=True,
+            files_scanned=len(archive_candidates) + len(restore_candidates),
+            files_archived=len(archive_result.get("moved_files", [])),
+            files_restored=len(restore_result.get("restored", [])),
+            filters_used=filters
+        )
+        db.add(log_entry)
+        db.commit()
+
+        return {
+            "status": "complete",
+            "archive_summary": {
+                "success_count": len(archive_result.get("moved_files", [])),
+                "failed_count": len(archive_result.get("failed_files", [])),
+                "failures": archive_result.get("failed_files", [])
+            },
+            "restore_summary": {
+                "restored_count": len(restore_result.get("restored", [])),
+                "skipped_count": len(restore_result.get("skipped", [])),
+                "skipped": restore_result.get("skipped", [])
+            }
+        }
+
+    except Exception as e:
+        print(f"[ERROR] execute-filtered-transfer failed: {e}")
+        return {"status": "error", "reason": str(e)}
+    finally:
+        db.close()
+
+
+# Archive filtered files without restores endpoint
+@app.post("/archive-filtered-files", response_model=dict)
+def archive_filtered_files_endpoint(
+    filter_request: ArchiveFilterRequest,
+    current_user: User = Depends(verify_manager)
+):
+    try:
+        print(f"Starting archive process for filtered files on share: {filter_request.share_name}")
+
+        filters = build_filters_from_request(filter_request)
+
+        volume_data = get_svm_data_volumes()
+        volumes = volume_data.get("volumes", [])
+        volume_info = next((v for v in volumes if v.get('share_name') == filter_request.share_name), None)
+
+        if not volume_info:
+            raise ValueError(f"Volume info for share '{filter_request.share_name}' not found.")
+
+        all_files = scan_volume(
+            share_name=filter_request.share_name,
+            volume=volume_info,
+            blacklist=filter_request.blacklist or []
+        )
+
+        if not all_files:
+            return {"status": "no_files", "reason": f"No files found in {filter_request.share_name}"}
+
+        scanned_dict = {filter_request.share_name: all_files}
+
+        filtered = filter_files(
+            files=scanned_dict,
+            filters=filters,
+            blacklist=filter_request.blacklist or [],
+            share_name=filter_request.share_name
+        )
+
+        matching_files = filtered.get(filter_request.share_name, [])
+        
+
+        if not matching_files:
+            return {"status": "no_matches", "reason": "No files matched filters"}
+
+        print(f"Found {len(matching_files)} matching files after filter.")
+
+        result = archive_filtered_files(
+            cold_files=matching_files,
+            share_name=filter_request.share_name,
+            volume=volume_info,
+            blacklist=filter_request.blacklist or []
+        )
+
+        return result
+
+    except ValueError as ve:
+        print(f"ValueError during archive: {ve}")
+        return {"status": "error", "reason": str(ve)}
+    except Exception as e:
+        print(f"Unexpected error during archive: {e}")
+        return {"status": "error", "reason": f"Failed to archive files: {str(e)}"}
+
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React app running on port 3000
+    allow_origins=["*"],  # React app running on port 3000
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

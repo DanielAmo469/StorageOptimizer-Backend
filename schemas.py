@@ -45,9 +45,17 @@ class FileInfo(BaseModel):
 
 
 class RestoreRequest(BaseModel):
-    archive_folder: str
-    filename: str
-    
+    archived_path: str
+    original_path: str
+    creation_time: str  # format: 'YYYY-MM-DD HH:MM:SS'
+    last_access_time: str
+    last_modified_time: str
+    file_size: int
+
+
+class ArchiveRestoreRequest(BaseModel):
+    archive_candidates: List[dict]
+    restore_candidates: List[dict]
 
 class DateRange(BaseModel):
     start_date: Optional[str] = None
@@ -62,8 +70,12 @@ class DateFilters(BaseModel):
 
 class ArchiveFilterRequest(BaseModel):
     share_name: Literal["data1", "data2"] = Field(..., description="The share to archive from (data1 or data2 only)")
-    file_type: Optional[str] = None
+    file_type: Optional[List[str]] = None
     date_filters: Optional[DateFilters] = None
     min_size: Optional[int] = None
     max_size: Optional[int] = None
     blacklist: Optional[List[str]] = []
+
+class BlacklistUpdate(BaseModel):
+    blacklist: list[str]
+
