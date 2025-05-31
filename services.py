@@ -46,13 +46,14 @@ def verify_viewonly(user:User =  Depends(get_current_user)):
         )
     return user
 
-
+# Normalize a file path to Windows-style UNC format
 def normalize_path(file_path):
     file_path = file_path.replace("/", "\\")  
     if not file_path.startswith("\\\\"):
         file_path = "\\\\" + file_path.lstrip("\\")
     return file_path
 
+# Safely parse a datetime string (fallback to current UTC time if invalid)
 def parse_datetime_safe(date_str):
     try:
         return datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
@@ -134,7 +135,7 @@ def get_time_range(filter: str):
     else:
         return None
 
-
+# Get aggregated file movement statistics (archive and restore):
 def get_file_movement_stats(db, filter=None):
     start_time = get_time_range(filter)
 
@@ -151,6 +152,7 @@ def get_file_movement_stats(db, filter=None):
     total_archive_size = archived_query.with_entities(func.sum(FileMovement.file_size)).scalar() or 0
     total_restore_size = restored_query.with_entities(func.sum(FileMovement.file_size)).scalar() or 0
 
+    # Calculate total size (in bytes) of archived and restored files
     archived_trend = archived_query.with_entities(
         func.date_trunc('month', FileMovement.timestamp).label('month'),
         func.count().label('archived_count'),
